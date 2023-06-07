@@ -30,7 +30,7 @@
         @if(Session::has('success'))
           <div class="alert alert-success alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <i class="icon fas fa-check"></i> {{ $page_name }} {{ Session::get('success') }}
+            <i class="icon fas fa-check"></i> {{ __('admin.speakers') }} {{ Session::get('success') }}
               @php
                   Session::forget('success');
               @endphp
@@ -51,7 +51,7 @@
           <a class="nav-link" id="tab1" href="{{route($page_update,[$parent_id,$row_event->id])}}" role="tab" aria-controls="tab1" aria-selected="true">{{ __('admin.basic_information') }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="tab2" href="{{route('event_sponsors',[$parent_id,$row_event->id])}}" role="tab" aria-controls="tab2" aria-selected="false">{{ __('admin.speakers') }}</a>
+          <a class="nav-link" id="tab2" href="{{route('event_sponsors',[$parent_id,$row_event->id])}}" role="tab" aria-controls="tab2" aria-selected="false">{{ __('admin.sponsors') }}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" id="tab3" data-toggle="pill" href="javascript:void(0);" role="tab" aria-controls="tab3" aria-selected="false">{{ __('admin.speakers') }}</a>
@@ -115,7 +115,10 @@
         { "width": "10%", "targets": 1 },
         { "width": "70%", "targets": 2 },
         { "width": "10%", "targets": 3},
-      ]
+      ],
+      fnDrawCallback: function (oSettings) {
+        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('speakers_create',[$parent_id,$row_event->id])}}" class="btn btn-primary btn-md"><i class="fas fa-plus"></i> {{ __("admin.add") }} & {{ __("admin.assign") }} {{ __("admin.speakers") }}</a>');
+      }
     });
   });
 

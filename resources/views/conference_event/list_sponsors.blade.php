@@ -10,7 +10,7 @@
       </div><!-- /.col -->
       <div class="col-sm-9">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>ra
+          <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
           <li class="breadcrumb-item"><a href="{{$page_url}}">{{ __('admin.manage') }} {{ $page_name }}</a></li>
           <li class="breadcrumb-item"><a href="{{route($page_update,[$parent_id,$row_event->id])}}">{{ $row_event->event_title }}</a></li>
           <li class="breadcrumb-item active">{{ __('admin.sponsors') }}</li>
@@ -29,7 +29,7 @@
         @if(Session::has('success'))
           <div class="alert alert-success alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <i class="icon fas fa-check"></i> {{ $page_name }} {{ Session::get('success') }}
+            <i class="icon fas fa-check"></i> {{ __('admin.sponsors') }} {{ Session::get('success') }}
               @php
                   Session::forget('success');
               @endphp
@@ -72,7 +72,7 @@
             @foreach($rows as $key => $row)
             <tr>
               <td>{{$key+1}}</td>
-              <td><img class="conference-logo img-circle img-bordered" src="{{config('constants.CDN_URL')}}/{{config('constants.SPONSORS_FOLDER')}}/{{ $row->sponsor_logo}}"/></td>
+              <td><img class="conference-logo img-square img-bordered" src="{{config('constants.CDN_URL')}}/{{config('constants.SPONSORS_FOLDER')}}/{{ $row->sponsor_logo}}"/></td>
               <td>
                 <div><b>{{ __('admin.name') }} : </b>{{$row->sponsor_name}}</div>
                 <div><b>{{ __('admin.type') }} : </b>{{$row->sponsorship_type_name}}</div>
@@ -113,7 +113,10 @@
         { "width": "10%", "targets": 1 },
         { "width": "70%", "targets": 2 },
         { "width": "10%", "targets": 3},
-      ]
+      ],
+      fnDrawCallback: function (oSettings) {
+        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('sponsors_create',[$parent_id,$row_event->id])}}" class="btn btn-primary btn-md"><i class="fas fa-plus"></i> {{ __("admin.add") }} & {{ __("admin.assign") }} {{ __("admin.sponsors") }}</a>');
+      }
     });
   });
 

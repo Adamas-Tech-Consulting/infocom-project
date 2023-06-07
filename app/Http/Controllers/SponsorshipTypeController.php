@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 use DB;
@@ -18,6 +19,7 @@ class SponsorshipTypeController extends Controller
     {
         $this->data = [
             'page_name'             => trans('admin.sponsorship_type'),
+            'page_slug'             => Str::slug(trans('admin.sponsorship_type'),'-'),
             'page_url'              => route('sponsorship_type'),
             'page_add'              => 'sponsorship_type_create',
             'page_update'           => 'sponsorship_type_update',

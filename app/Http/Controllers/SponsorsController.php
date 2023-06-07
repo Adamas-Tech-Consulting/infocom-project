@@ -13,6 +13,7 @@ use DB;
 use App\Models\ConferenceModel;
 use App\Models\SponsorshipTypeModel;
 use App\Models\SponsorsModel;
+use App\Models\ConferenceEventSponsorsModel;
 
 class SponsorsController extends Controller
 {
@@ -22,6 +23,7 @@ class SponsorsController extends Controller
     {
         $this->data = [
             'page_name'             => trans('admin.sponsors'),
+            'page_slug'             => Str::slug(trans('admin.sponsors'),'-'),
             'page_url'              => route('sponsors'),
             'page_add'              => 'sponsors_create',
             'page_update'           => 'sponsors_update',
@@ -37,7 +39,7 @@ class SponsorsController extends Controller
         return view('sponsors.list',$this->data);
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $conference_id=NULL, $event_id=NULL)
     {
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
@@ -68,8 +70,22 @@ class SponsorsController extends Controller
                         //Update Query
                         SponsorsModel::where('id', '=', $id)->update($update_data);
                     }
+                    if($conference_id && $event_id)
+                    {
+                        $assign_data = [
+                            'conference_id' => $conference_id,
+                            'event_id' => $event_id,
+                            'sponsors_id' => $id,
+                        ];
+                        $data = ConferenceEventSponsorsModel::create($assign_data);
+                    }
                     DB::commit();
-                    return redirect()->route('sponsors')->with('success', trans('flash.AddedSuccessfully'));
+                    if($conference_id && $event_id) {
+                        return redirect()->route('event_sponsors',[$conference_id,$event_id])->with('success', trans('flash.AddedAndAssignedSuccessfully'));
+                    }
+                    else {
+                        return redirect()->route('sponsors')->with('success', trans('flash.AddedSuccessfully')); 
+                    }
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 

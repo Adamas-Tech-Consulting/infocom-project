@@ -32,6 +32,7 @@ class ConferenceEventController extends Controller
             'parent_page_single_url'    => route('conference_update',$conference_id),
             'parent_row'                => $conference,
             'page_name'                 => trans('admin.event'),
+            'page_slug'                 => Str::slug(trans('admin.event'),'-'),
             'page_url'                  => route('event',$conference_id),
             'page_add'                  => 'event_create',
             'page_update'               => 'event_update',

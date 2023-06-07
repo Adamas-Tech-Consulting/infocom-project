@@ -102,7 +102,7 @@
                 <div class="card card-widget widget-user mt-2">
                   <div class="card-header">{{ __('admin.sponsors') }} {{ __('admin.logo') }}  {{ __('admin.preview') }}</div>
                   <div class="widget-user-header text-white img-square">
-                  <img src="{{($row->sponsor_logo)?config('constants.CDN_URL').'/'.config('constants.SPONSORS_FOLDER').'/'.$row->sponsor_logo:'/dist/img/no-banner.jpg'}}" class="w-100 h-100" id="sponsor_logo_preview"> 
+                  <img src="{{($row->sponsor_logo)?config('constants.CDN_URL').'/'.config('constants.SPONSORS_FOLDER').'/'.$row->sponsor_logo:'/dist/img/no-banner.jpg'}}" class="w-100 h-100 img-bordered" id="sponsor_logo_preview"> 
                   </div>
                 </div>
               </div>
@@ -122,4 +122,7 @@
   </div><!-- /.container-fluid -->
 </section>
 <!-- /.content -->
+@endsection
+@section('script')
+<script src="/validation/{{ $page_slug }}.js"></script>
 @endsection

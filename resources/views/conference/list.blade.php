@@ -78,7 +78,7 @@
                   <div><b>{{ __('admin.theme') }} : </b>{{ $row->conference_theme}}</div>
                 @endif
               </td>
-              <td><img class="conference-logo" src="{{config('constants.CDN_URL')}}/{{config('constants.CONFERENCE_FOLDER')}}/{{ $row->conference_logo}}"/></td>
+              <td><img class="conference-logo img-bordered" src="{{config('constants.CDN_URL')}}/{{config('constants.CONFERENCE_FOLDER')}}/{{ $row->conference_logo}}"/></td>
               <td class="text-center">
                 <a href="{{route($page_update,$row->id)}}" class="btn btn-sm bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
                 <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,$row->id)}}" method="post">
@@ -86,8 +86,7 @@
                   <button type="button" data-form="#form_{{$row->id}}" class="btn btn-sm bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
                 </form>
                 <button type="button" class="btn btn-sm bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.unpublish') : __('admin.publish') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
-                <a href="#" class="btn btn-sm bg-gradient-info" data-bs-toggle="tooltip" title="{{ __('admin.view') }}"><i class="fas fa-info-circle"></i></a>
-                <a href="{{route('event',$row->id)}}" class="btn btn-sm bg-gradient-success" data-bs-toggle="tooltip" title="{{ __('admin.event') }}"><i class="fas fa-calendar"></i></a>
+                <a href="{{route('event',$row->id)}}" class="btn btn-sm bg-gradient-info" data-bs-toggle="tooltip" title="{{ __('admin.event') }}"><i class="fas fa-calendar"></i></a>
               </td>
             </tr>
             @endforeach

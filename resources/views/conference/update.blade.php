@@ -187,11 +187,11 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-3">
                   <div class="card card-widget widget-user mt-2">
                     <div class="card-header">{{ __('admin.conference') }} {{ __('admin.logo') }}  {{ __('admin.preview') }}</div>
                     <div class="widget-user-header text-white img-square">
-                      <img src="{{($row->conference_logo)?config('constants.CDN_URL').'/'.config('constants.CONFERENCE_FOLDER').'/'.$row->conference_logo:'/dist/img/no-banner.jpg'}}" class="card-img-top w-25 h-100" id="conference_logo_preview">  
+                      <img src="{{($row->conference_logo)?config('constants.CDN_URL').'/'.config('constants.CONFERENCE_FOLDER').'/'.$row->conference_logo:'/dist/img/no-banner.jpg'}}" class="card-img-top w-100 h-100 img-bordered" id="conference_logo_preview">  
                     </div>
                   </div>
                 </div>
@@ -211,4 +211,7 @@
   </div><!-- /.container-fluid -->
 </section>
 <!-- /.content -->
+@endsection
+@section('script')
+<script src="/validation/{{ $page_slug }}.js"></script>
 @endsection

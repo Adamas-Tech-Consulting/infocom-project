@@ -80,3 +80,6 @@
 </section>
 <!-- /.content -->
 @endsection
+@section('script')
+<script src="/validation/{{ $page_slug }}.js"></script>
+@endsection

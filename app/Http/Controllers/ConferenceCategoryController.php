@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 use DB;
@@ -18,6 +19,7 @@ class ConferenceCategoryController extends Controller
     {
         $this->data = [
             'page_name'             => trans('admin.conference_category'),
+            'page_slug'             => Str::slug(trans('admin.conference_category'),'-'),
             'page_url'              => route('conference_category'),
             'page_add'              => 'conference_category_create',
             'page_update'           => 'conference_category_update',

@@ -66,7 +66,7 @@
               <td>{{$row->sponsorship_type_name}}</td>
               <td>
                 {{$row->sponsor_name}}
-                <div><img class="conference-logo" src="{{config('constants.CDN_URL')}}/{{config('constants.SPONSORS_FOLDER')}}/{{ $row->sponsor_logo}}"/></div>
+                <div><img class="conference-logo img-bordered" src="{{config('constants.CDN_URL')}}/{{config('constants.SPONSORS_FOLDER')}}/{{ $row->sponsor_logo}}"/></div>
               </td>
               <td>{{$row->website_link}}</td>
               <td class="text-center">

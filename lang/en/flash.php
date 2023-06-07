@@ -23,4 +23,5 @@ return [
     'UpdateError'=>'Your Information not updated, Please try again',
     'AssignedSuccessfully' => 'Assigned Successfully',
     'RemovedSuccessfully' => 'Removed Successfully',
+    'AddedAndAssignedSuccessfully' => 'Added & Assigned Successfully',
 ];

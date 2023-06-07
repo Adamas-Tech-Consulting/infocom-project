@@ -10,6 +10,7 @@ use DB;
 
 //Model
 use App\Models\SpeakersModel;
+use App\Models\ConferenceEventSpeakersModel;
 
 class SpeakersController extends Controller
 {
@@ -19,6 +20,7 @@ class SpeakersController extends Controller
     {
         $this->data = [
             'page_name'             => trans('admin.speakers'),
+            'page_slug'             => Str::slug(trans('admin.speakers'),'-'),
             'page_url'              => route('speakers'),
             'page_add'              => 'speakers_create',
             'page_update'           => 'speakers_update',
@@ -33,7 +35,7 @@ class SpeakersController extends Controller
         return view('speakers.list',$this->data);
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $conference_id=NULL, $event_id=NULL)
     {
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
@@ -63,8 +65,22 @@ class SpeakersController extends Controller
                         //Update Query
                         SpeakersModel::where('id', '=', $id)->update($update_data);
                     }
+                    if($conference_id && $event_id)
+                    {
+                        $assign_data = [
+                            'conference_id' => $conference_id,
+                            'event_id' => $event_id,
+                            'speakers_id' => $id,
+                        ];
+                        $data = ConferenceEventSpeakersModel::create($assign_data);
+                    }
                     DB::commit();
-                    return redirect()->route('speakers')->with('success', trans('flash.AddedSuccessfully'));
+                    if($conference_id && $event_id) {
+                        return redirect()->route('event_speakers',[$conference_id,$event_id])->with('success', trans('flash.AddedAndAssignedSuccessfully'));
+                    }
+                    else {
+                        return redirect()->route('speakers')->with('success', trans('flash.AddedSuccessfully')); 
+                    }
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 

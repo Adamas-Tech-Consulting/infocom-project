@@ -65,7 +65,7 @@
             @foreach($rows as $key => $row)
             <tr>
               <td>{{$key+1}}</td>
-              <td><img class="conference-logo" src="{{config('constants.CDN_URL')}}/{{config('constants.SPEAKERS_FOLDER')}}/{{ $row->image}}"/></td>
+              <td><img class="conference-logo img-circle img-bordered" src="{{config('constants.CDN_URL')}}/{{config('constants.SPEAKERS_FOLDER')}}/{{ $row->image}}"/></td>
               <td>{{$row->name}}</td>
               <td>{{$row->designation}}</td>
               <td>{{$row->company_name}}</td>

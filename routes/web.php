@@ -63,7 +63,7 @@ Route::middleware(['web'])->group(function () {
         //Sponsors
         Route::prefix('manage-sponsors')->group(function (){
             Route::get('/', [App\Http\Controllers\SponsorsController::class, 'index'])->name('sponsors');
-            Route::any('/create', [App\Http\Controllers\SponsorsController::class, 'create'])->name('sponsors_create');
+            Route::any('/create/{conference_id?}/{event_id?}', [App\Http\Controllers\SponsorsController::class, 'create'])->name('sponsors_create');
             Route::any('/update/{id}', [App\Http\Controllers\SponsorsController::class, 'update'])->name('sponsors_update');
             Route::any('/delete/{id}', [App\Http\Controllers\SponsorsController::class, 'delete'])->name('sponsors_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\SponsorsController::class, 'publish_unpublish'])->name('sponsors_publish_unpublish');
@@ -72,7 +72,7 @@ Route::middleware(['web'])->group(function () {
         //Speakers
         Route::prefix('manage-speakers')->group(function (){
             Route::get('/', [App\Http\Controllers\SpeakersController::class, 'index'])->name('speakers');
-            Route::any('/create', [App\Http\Controllers\SpeakersController::class, 'create'])->name('speakers_create');
+            Route::any('/create/{conference_id?}/{event_id?}', [App\Http\Controllers\SpeakersController::class, 'create'])->name('speakers_create');
             Route::any('/update/{id}', [App\Http\Controllers\SpeakersController::class, 'update'])->name('speakers_update');
             Route::any('/delete/{id}', [App\Http\Controllers\SpeakersController::class, 'delete'])->name('speakers_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\SpeakersController::class, 'publish_unpublish'])->name('speakers_publish_unpublish');

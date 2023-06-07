@@ -101,8 +101,8 @@
                 <div class="col-3">
                   <div class="card card-widget widget-user mt-2">
                     <div class="card-header">{{ __('admin.sponsors') }} {{ __('admin.logo') }}  {{ __('admin.preview') }}</div>
-                    <div class="widget-user-header text-white img-square">
-                      <img src="/dist/img/no-banner.jpg" class="card-img-top w-100 h-100" id="sponsor_logo_preview">  
+                    <div class="widget-user-header text-white">
+                      <img src="/dist/img/no-banner.jpg" class="card-img-top w-100 h-100 img-bordered" id="sponsor_logo_preview">  
                     </div>
                   </div>
                 </div>
@@ -124,5 +124,5 @@
 <!-- /.content -->
 @endsection
 @section('script')
-<script src="/validation/{{ $page_name }}.js"></script>
+<script src="/validation/{{ $page_slug }}.js"></script>
 @endsection

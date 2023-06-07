@@ -229,7 +229,7 @@
 <!-- /.content -->
 @endsection
 @section('script')
-<script src="/validation/{{ $page_name }}.js"></script>
+<script src="/validation/{{ $page_slug }}.js"></script>
 <script>
   $(document).on('click','#add_event_details',function(){
     $.ajax({

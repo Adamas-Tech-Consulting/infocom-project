@@ -21,6 +21,7 @@ class ConferenceController extends Controller
     {
         $this->data = [
             'page_name'             => trans('admin.conference'),
+            'page_slug'             => Str::slug(trans('admin.conference'),'-'),
             'page_url'              => route('conference'),
             'page_add'              => 'conference_create',
             'page_update'           => 'conference_update',

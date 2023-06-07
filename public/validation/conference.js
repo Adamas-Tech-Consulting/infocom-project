@@ -1,4 +1,7 @@
 $(function () {
+  var url = $(location).attr('href');
+  var segments = url.split( '/' );
+  var action = segments[4];
   $.validator.setDefaults({
     submitHandler: function () {
       return true
@@ -28,10 +31,10 @@ $(function () {
         required: true,
       },
       conference_banner: {
-        required: true,
+        required: (action=='create') ? true : false,
       },
       conference_logo: {
-        required: true,
+        required: (action=='create') ? true : false,
       },
     },
     messages: {
@@ -57,10 +60,10 @@ $(function () {
         required: "Please enter conference theme",
       },
       conference_banner: {
-        required: "Please choose conference banner",
+        required: (action=='create') ? "Please choose conference banner" : "",
       },
       conference_logo: {
-        required: "Please choose conference logo",
+        required: (action=='create') ? "Please choose conference logo" : "",
       },
     },
     errorElement: 'span',
