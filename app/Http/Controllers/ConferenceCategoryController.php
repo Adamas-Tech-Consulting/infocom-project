@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
-use App\Models\ConferenceCategoryModel;
+use App\Models\ConferenceCategory;
 
 class ConferenceCategoryController extends Controller
 {
@@ -30,7 +30,7 @@ class ConferenceCategoryController extends Controller
 
     public function index()
     {
-        $this->data['rows'] = ConferenceCategoryModel::all();
+        $this->data['rows'] = ConferenceCategory::all();
         return view('conference_category.list',$this->data);
     }
 
@@ -47,7 +47,7 @@ class ConferenceCategoryController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = ConferenceCategoryModel::create($request->all());
+                    $data = ConferenceCategory::create($request->all());
                     $data->save();
                     DB::commit();
                     return redirect()->route('conference_category')->with('success', trans('flash.AddedSuccessfully'));
@@ -75,7 +75,7 @@ class ConferenceCategoryController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = ConferenceCategoryModel::findOrFail($id);
+                    $data = ConferenceCategory::findOrFail($id);
                     $data->update($request->all());
                     DB::commit();
                     return redirect()->route('conference_category')->with('success', trans('flash.UpdatedSuccessfully'));
@@ -86,7 +86,7 @@ class ConferenceCategoryController extends Controller
                 }
             }
         } else {
-            $this->data['row'] = ConferenceCategoryModel::find($id);
+            $this->data['row'] = ConferenceCategory::find($id);
             return view('conference_category.update',$this->data);
         }
     }
@@ -97,7 +97,7 @@ class ConferenceCategoryController extends Controller
 
             DB::beginTransaction();
             try {
-                $data = ConferenceCategoryModel::findOrFail($id);
+                $data = ConferenceCategory::findOrFail($id);
                 $data->delete();
                 DB::commit();
                 return redirect()->route('conference_category')->with('success', trans('flash.DeletedSuccessfully'));
@@ -122,7 +122,7 @@ class ConferenceCategoryController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = ConferenceCategoryModel::findOrFail($request->id);
+                    $data = ConferenceCategory::findOrFail($request->id);
                     $data->published = $request->published;
                     $data->save();
                     DB::commit();

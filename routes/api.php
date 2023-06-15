@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/auth/otp-request', [App\Http\Controllers\Api\Auth\LoginController::class, 'otp_request']);
+Route::post('/auth/login', [App\Http\Controllers\Api\Auth\LoginController::class, 'login']);
+   
+Route::middleware('auth:api')->group( function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::post('/get-conference',[App\Http\Controllers\Api\HomeController::class, 'getConference']);
 });
+

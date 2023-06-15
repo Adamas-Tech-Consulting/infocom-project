@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+<nav class="main-header navbar navbar-expand navbar-dark">
   <!-- Left navbar links -->
   <ul class="navbar-nav">
     <li class="nav-item">
@@ -40,11 +40,11 @@
 
         <li class="user-footer">
           <div class="float-left">
-            <a href="#" class="btn btn-default btn-flat">{{ __('Profile') }}</a>
+            <a href="#" class="btn btn-warning btn-sm">{{ __('Profile') }}</a>
           </div>
           <div class="float-right">
 
-            <a class="btn btn-default btn-flat" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <a class="btn btn-warning btn-sm" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
               {{ __('Logout') }}
             </a>
 

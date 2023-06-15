@@ -115,7 +115,7 @@
         { "width": "10%", "targets": 3},
       ],
       fnDrawCallback: function (oSettings) {
-        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('sponsors_create',[$parent_id,$row_event->id])}}" class="btn btn-primary btn-md"><i class="fas fa-plus"></i> {{ __("admin.add") }} & {{ __("admin.assign") }} {{ __("admin.sponsors") }}</a>');
+        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('sponsors_create',[$parent_id,$row_event->id])}}" class="btn btn-warning btn-md"><i class="fas fa-plus"></i> {{ __("admin.add") }} & {{ __("admin.assign") }} {{ __("admin.sponsors") }}</a>');
       }
     });
   });

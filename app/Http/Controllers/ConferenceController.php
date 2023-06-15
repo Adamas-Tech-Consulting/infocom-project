@@ -9,9 +9,13 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
-use App\Models\ConferenceCategoryModel;
-use App\Models\ConferenceMethodModel;
-use App\Models\ConferenceModel;
+use App\Models\ConferenceCategory;
+use App\Models\ConferenceMethod;
+use App\Models\Conference;
+use App\Models\Sponsors;
+use App\Models\ConferenceSponsors;
+use App\Models\Speakers;
+use App\Models\ConferenceSpeakers;
 
 class ConferenceController extends Controller
 {
@@ -32,9 +36,9 @@ class ConferenceController extends Controller
 
     public function index()
     {
-        $this->data['rows'] = ConferenceModel::join('conference_category','conference_category.id','=','conference.conference_category_id')
+        $this->data['rows'] = Conference::join('conference_category','conference_category.id','=','conference.conference_category_id')
                                              ->join('conference_method','conference_method.id','=','conference.conference_method_id')
-                                             ->get(['conference.*','conference_category.name as conference_category_name','conference_method.name as conference_method_name']);
+                                             ->get(['conference.*','conference_category.name as conference_category_name','conference_category.color as conference_category_color','conference_method.name as conference_method_name']);
         return view('conference.list',$this->data);
     }
 
@@ -71,7 +75,7 @@ class ConferenceController extends Controller
                         'overview_description' => $request->overview_description,
                         'conference_description' => $request->conference_description,
                     ];
-                    $data = ConferenceModel::create($insert_data);
+                    $data = Conference::create($insert_data);
                     $data->save();
                     $id = $data->id;
                     if($request->file('conference_banner')) {
@@ -81,7 +85,7 @@ class ConferenceController extends Controller
                         //Update DB Data
                         $update_data = array('conference_banner' => $conference_banner);
                         //Update Query
-                        ConferenceModel::where('id', '=', $id)->update($update_data);
+                        Conference::where('id', '=', $id)->update($update_data);
                     }
                     if($request->file('conference_logo')) {
                         $file = $request->file('conference_logo');
@@ -89,7 +93,7 @@ class ConferenceController extends Controller
                         //Update DB Data
                         $update_data = array('conference_logo' => $conference_logo);
                         //Update Query
-                        ConferenceModel::where('id', '=', $id)->update($update_data);
+                        Conference::where('id', '=', $id)->update($update_data);
                     }
                     DB::commit();
                     return redirect()->route('conference')->with('success', trans('flash.AddedSuccessfully'));
@@ -100,8 +104,8 @@ class ConferenceController extends Controller
                 }
             }
         } else {
-            $this->data['rows_method'] = ConferenceMethodModel::where('published','1')->get();
-            $this->data['rows_category'] = ConferenceCategoryModel::where('published','1')->get();
+            $this->data['rows_method'] = ConferenceMethod::where('published','1')->get();
+            $this->data['rows_category'] = ConferenceCategory::where('published','1')->get();
             return view('conference.create',$this->data);
         }
     }
@@ -137,7 +141,7 @@ class ConferenceController extends Controller
                         'overview_description' => $request->overview_description,
                         'conference_description' => $request->conference_description,
                     ];
-                    $data = ConferenceModel::findOrFail($id);
+                    $data = Conference::findOrFail($id);
                     $data->update($update_data);
                     if($request->file('conference_banner')) {
                         $file = $request->file('conference_banner');
@@ -146,7 +150,7 @@ class ConferenceController extends Controller
                         //Update DB Data
                         $update_data = array('conference_banner' => $conference_banner);
                         //Update Query
-                        ConferenceModel::where('id', '=', $id)->update($update_data);
+                        Conference::where('id', '=', $id)->update($update_data);
                     }
                     if($request->file('conference_logo')) {
                         $file = $request->file('conference_logo');
@@ -154,7 +158,7 @@ class ConferenceController extends Controller
                         //Update DB Data
                         $update_data = array('conference_logo' => $conference_logo);
                         //Update Query
-                        ConferenceModel::where('id', '=', $id)->update($update_data);
+                        Conference::where('id', '=', $id)->update($update_data);
                     }
                     DB::commit();
                     return redirect()->route('conference')->with('success', trans('flash.UpdatedSuccessfully'));
@@ -165,9 +169,9 @@ class ConferenceController extends Controller
                 }
             }
         } else {
-            $this->data['row'] = ConferenceModel::find($id);
-            $this->data['rows_method'] = ConferenceMethodModel::where('published','1')->get();
-            $this->data['rows_category'] = ConferenceCategoryModel::where('published','1')->get();
+            $this->data['row'] = Conference::find($id);
+            $this->data['rows_method'] = ConferenceMethod::where('published','1')->get();
+            $this->data['rows_category'] = ConferenceCategory::where('published','1')->get();
             return view('conference.update',$this->data);
         }
     }
@@ -178,7 +182,7 @@ class ConferenceController extends Controller
 
             DB::beginTransaction();
             try {
-                $data = ConferenceModel::findOrFail($id);
+                $data = Conference::findOrFail($id);
                 $data->delete();
                 DB::commit();
                 return redirect()->route('conference')->with('success', trans('flash.DeletedSuccessfully'));
@@ -203,8 +207,128 @@ class ConferenceController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = ConferenceModel::findOrFail($request->id);
+                    $data = Conference::findOrFail($request->id);
                     $data->published = $request->published;
+                    $data->save();
+                    DB::commit();
+                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        }
+    }
+
+    public function sponsors(Request $request, $id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'sponsors_id' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    if($request->id) {
+                        ConferenceSponsors::where('id',$request->id)->delete();
+                        $event_sponsord_id=NULL;
+                        $success_message = trans('flash.RemovedSuccessfully');
+                    } else {
+                        $insert_data = [
+                            'conference_id' => $id,
+                            'sponsors_id' => $request->sponsors_id,
+                        ];
+                        $data = ConferenceSponsors::create($insert_data);
+                        $data->save();
+                        $event_sponsord_id=$data->id;
+                        $success_message = trans('flash.AssignedSuccessfully');
+                    }
+                    DB::commit();
+                    return response()->json(['success' => $success_message,'id' => $event_sponsord_id]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['row_conference'] = Conference::find($id);
+            $this->data['rows'] = Sponsors::leftJoin('conference_sponsors',function($join) use($id) {
+                                                    $join->on('conference_sponsors.sponsors_id','sponsors.id')
+                                                    ->where('conference_sponsors.conference_id',$id);
+                                                })
+                                                ->leftJoin('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
+                                                ->orderByRaw('CASE WHEN conference_sponsors.id IS NULL THEN 1 ELSE 0 END ASC')
+                                                ->get(['sponsors.*','conference_sponsors.id as conference_sponsors_id','sponsorship_type.name as sponsorship_type_name']);
+            return view('conference.list_sponsors',$this->data);
+        }
+    }
+
+    public function speakers(Request $request, $id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'speakers_id' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    if($request->id) {
+                        ConferenceSpeakers::where('id',$request->id)->delete();
+                        $event_speaker_id=NULL;
+                        $success_message = trans('flash.RemovedSuccessfully');
+                    } else {
+                        $insert_data = [
+                            'conference_id' => $id,
+                            'speakers_id' => $request->speakers_id,
+                        ];
+                        $data = ConferenceSpeakers::create($insert_data);
+                        $data->save();
+                        $event_speaker_id=$data->id;
+                        $success_message = trans('flash.AssignedSuccessfully');
+                    }
+                    DB::commit();
+                    return response()->json(['success' => $success_message,'id' => $event_speaker_id]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['row_conference'] = Conference::find($id);
+            $this->data['rows'] = Speakers::leftJoin('conference_speakers',function($join) use($id) {
+                                                    $join->on('conference_speakers.speakers_id','speakers.id')
+                                                    ->where('conference_speakers.conference_id',$id);
+                                                })
+                                                ->orderByRaw('CASE WHEN conference_speakers.id IS NULL THEN 1 ELSE 0 END ASC')
+                                                ->get(['speakers.*','conference_speakers.id as conference_speakers_id','conference_speakers.is_key_speaker']);
+            return view('conference.list_speakers',$this->data);
+        }
+    }
+
+    public function key_speakers(Request $request)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+                'is_key_speaker' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    $data = ConferenceSpeakers::findOrFail($request->id);
+                    $data->is_key_speaker = $request->is_key_speaker;
                     $data->save();
                     DB::commit();
                     return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);

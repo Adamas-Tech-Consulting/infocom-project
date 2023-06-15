@@ -46,7 +46,21 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <div class="card">
+      <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="tab1" data-toggle="pill" href="javascript:void(0);" role="tab" aria-controls="tab1" aria-selected="true"><i class="fa fa-users"></i> {{ __('admin.conference') }} {{ __('admin.details') }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="tab2" href="{{ route('event',$row->id) }}" role="tab" aria-controls="tab2" aria-selected="false"><i class="fa fa-calendar"></i> {{ __('admin.conference') }} {{ __('admin.events') }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="tab3" href="{{ route('conference_sponsors',$row->id) }}" role="tab" aria-controls="tab3" aria-selected="false"><i class="fa fa-user"></i> {{ __('admin.conference') }} {{ __('admin.sponsors') }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="tab4" href="{{ route('conference_speakers',$row->id) }}" role="tab" aria-controls="tab4" aria-selected="false"><i class="fa fa-volume-up"></i> {{ __('admin.conference') }} {{ __('admin.speakers') }}</a>
+        </li>
+      </ul>
+      <div class="card card-warning card-outline direct-chat-warning">
         <form id="validation-form" action="" method="post" enctype="multipart/form-data">
           @csrf
           <div class="card-body">
@@ -97,7 +111,7 @@
                       <div class="input-group-append" data-target="#auto_registration_date_limit" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
-                      <input type="text" name="auto_registration_date_limit" class="form-control datetimepicker-input" data-target="#auto_registration_date_limit" value="{{($row->auto_registration_date_limit)?date('d-m-Y',strtotime($row->auto_registration_date_limit)):''}}" placeholder="DD-MM-YYYY"/>   
+                      <input type="text" name="auto_registration_date_limit" class="form-control datetimepicker-input" data-target="#auto_registration_date_limit"  data-toggle="datetimepicker" value="{{($row->auto_registration_date_limit)?date('d-m-Y',strtotime($row->auto_registration_date_limit)):''}}" placeholder="DD-MM-YYYY"/>   
                     </div>
                   </div>
                 </div>
@@ -112,7 +126,7 @@
                           <div class="input-group-append" data-target="#conference_start_date" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
-                          <input type="text" class="form-control datetimepicker-input" name="conference_start_date" data-target="#conference_start_date" value="{{($row->conference_start_date)?date('d-m-Y',strtotime($row->conference_start_date)):''}}" placeholder="DD-MM-YYYY"/>   
+                          <input type="text" class="form-control datetimepicker-input" name="conference_start_date" data-target="#conference_start_date"  data-toggle="datetimepicker" value="{{($row->conference_start_date)?date('d-m-Y',strtotime($row->conference_start_date)):''}}" placeholder="DD-MM-YYYY"/>   
                         </div>
                       </div>
                     </div>
@@ -123,7 +137,7 @@
                           <div class="input-group-append" data-target="#conference_end_date" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
-                          <input type="text" class="form-control datetimepicker-input" name="conference_end_date" data-target="#conference_end_date" value="{{($row->conference_start_date)?date('d-m-Y',strtotime($row->conference_start_date)):''}}" placeholder="DD-MM-YYYY"/>   
+                          <input type="text" class="form-control datetimepicker-input" name="conference_end_date" data-target="#conference_end_date"  data-toggle="datetimepicker" value="{{($row->conference_start_date)?date('d-m-Y',strtotime($row->conference_start_date)):''}}" placeholder="DD-MM-YYYY"/>   
                         </div>
                       </div>
                     </div>
@@ -199,7 +213,7 @@
             </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <button type="submit" class="btn btn-primary">{{ __('admin.update') }}</button>
+            <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.update') }}</button>
           </div>
         </form>
       </div>

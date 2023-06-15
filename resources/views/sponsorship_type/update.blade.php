@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">{{ __('admin.edit') }} {{ $page_name }}</h1>
+        <h4 class="m-0">{{ __('admin.edit') }} {{ $page_name }}</h4>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -44,7 +44,7 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <div class="card">
+      <div class="card card-warning card-outline direct-chat-warning">
         <form id="validation-form" action="" method="post">
           @csrf
           <div class="card-body">
@@ -52,14 +52,14 @@
               <div class="col-6">
                 <div class="form-group">
                   <label for="name">{{ $page_name }}</label>
-                  <input type="text" class="form-control text-uppercase @error('name') is-invalid @enderror" id="name" name="name" value="{{$row->name}}"  placeholder="{{ __('admin.enter') }} {{ $page_name }}">
+                  <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{$row->name}}"  placeholder="{{ __('admin.enter') }} {{ $page_name }}">
                 </div>
               </div>
             </div>
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <button type="submit" class="btn btn-primary">{{ __('admin.update') }}</button>
+            <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.update') }}</button>
           </div>
         </form>
       </div>

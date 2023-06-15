@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">{{ __('admin.manage') }} {{ $page_name }}</h1>
+        <h5 class="m-0">{{ __('admin.manage') }} {{ $page_name }}</h5>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -43,9 +43,9 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <div class="card">
+      <div class="card card-warning card-outline direct-chat-warning">
         <div class="card-header">
-          <h3 class="card-title"><a href="{{route($page_add)}}" class="btn btn-block btn-primary btn-md"><i class="fas fa-plus"></i> {{ __('admin.add') }} {{ $page_name }}</a></h3>
+          <h3 class="card-title"><a href="{{route($page_add)}}" class="btn btn-sm btn-warning"><i class="fas fa-plus"></i> {{ __('admin.add') }} {{ $page_name }}</a></h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -54,6 +54,7 @@
             <tr>
               <th>#</th>
               <th>{{ __('admin.name') }}</th>
+              <th>{{ __('admin.allow') }} {{ __('admin.sponsors') }}</th>
               <th class="text-center">{{ __('admin.action') }}</th>
             </tr>
             </thead>
@@ -62,13 +63,14 @@
             <tr>
               <td>{{$key+1}}</td>
               <td><span style="color:{{$row->color}}">{{$row->name}}</span></td>
+              <td>{{$row->is_sponsors? __('admin.yes') : __('admin.no')}}</td>
               <td class="text-center">
-                <a href="{{route($page_update,$row->id)}}" class="btn bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
+                <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
                 <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,$row->id)}}" method="post">
                   @csrf
-                  <button type="button" data-form="#form_{{$row->id}}" class="btn bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
+                  <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
                 </form>
-                <button type="button" class="btn bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.unpublish') : __('admin.publish') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
+                <button type="button" class="btn btn-xs bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.unpublish') : __('admin.publish') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
               </td>
             </tr>
             @endforeach

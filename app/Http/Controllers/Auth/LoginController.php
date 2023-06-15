@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use Auth;
+use Artisan;
+
 class LoginController extends Controller
 {
     /*
@@ -36,5 +39,18 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function authenticated()
+    {
+        Artisan::call('cache:clear');
+        if(Auth::User())
+        {
+            if (Auth::User()->published != '1')
+            {
+                Auth::logout();
+                return redirect()->route('login')->withErrors(['message' => 'You are not authorized to access !']);                
+            }
+        }
     }
 }

@@ -10,9 +10,7 @@
       </div><!-- /.col -->
       <div class="col-sm-9">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
-          <li class="breadcrumb-item"><a href="{{$parent_page_url}}">{{ __('admin.manage') }} {{ $parent_page_name }}</a></li>
-          <li class="breadcrumb-item"><a href="{{$parent_page_single_url}}">{{$parent_row->title}}</a></li> 
+          <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li> 
           <li class="breadcrumb-item"><a href="{{$page_url}}">{{ __('admin.manage') }} {{ $page_name }}</a></li>
           <li class="breadcrumb-item active">{{ __('admin.add') }} {{ $page_name }}</li>
         </ol>
@@ -48,10 +46,24 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
-        <div class="card">
+        <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" id="tab1" href="{{ route('conference_update',$parent_id) }}" role="tab" aria-controls="tab1" aria-selected="true"><i class="fa fa-users"></i> {{ __('admin.conference') }} {{ __('admin.details') }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" id="tab2" data-toggle="pill" href="javascript:void(0);" role="tab" aria-controls="tab2" aria-selected="false"><i class="fa fa-calendar"></i> {{ __('admin.conference') }} {{ __('admin.events') }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="tab3" href="{{ route('conference_sponsors',$parent_id) }}" role="tab" aria-controls="tab3" aria-selected="false"><i class="fa fa-user"></i> {{ __('admin.conference') }} {{ __('admin.sponsors') }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="tab4" href="{{ route('conference_speakers',$parent_id) }}" role="tab" aria-controls="tab4" aria-selected="false"><i class="fa fa-volume-up"></i> {{ __('admin.conference') }} {{ __('admin.speakers') }}</a>
+          </li>
+        </ul>
+        <div class="card card-warning card-outline direct-chat-warning">
           <form id="validation-form" action="" method="post" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="conference_id" value="{{$parent_id}}" />
+            <input type="hidden" name="conference_id" value="1" />
             <div class="card-body">
               <div class="row">
                 <div class="col-6">
@@ -92,12 +104,12 @@
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label for="rank">{{ __('admin.rank') }} <span class="text-red">*</span></label>
-                    <select class="form-control select2bs4 @error('rank') is-invalid @enderror" name="rank" style="width: 100%;">
-                        <option value="">{{ __('admin.select') }} {{ __('admin.rank') }}</option>
-                        @for($i=1; $i<=20; $i++)
-                        <option value="{{$i}}">{{$i}}</option>
-                        @endfor
+                    <label for="event_type_id">{{ __('admin.event_type') }} <span class="text-red">*</span></label>
+                    <select class="form-control select2bs4 @error('event_type_id') is-invalid @enderror" name="event_type_id" style="width: 100%;">
+                      <option value="">{{ __('admin.select') }} {{ __('admin.event_type') }}</option>
+                      @foreach($rows_type as $type)
+                      <option value="{{$type->id}}">{{$type->name}}</option>
+                      @endforeach
                     </select>
                   </div>
                 </div>
@@ -155,7 +167,7 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-              <button type="submit" class="btn btn-primary">{{ __('admin.submit') }}</button>
+              <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.submit') }}</button>
             </div>
           </form>
         </div>

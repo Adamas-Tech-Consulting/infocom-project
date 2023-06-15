@@ -10,10 +10,10 @@ use DB;
 
 //Model
 
-use App\Models\ConferenceModel;
-use App\Models\SponsorshipTypeModel;
-use App\Models\SponsorsModel;
-use App\Models\ConferenceEventSponsorsModel;
+use App\Models\Conference;
+use App\Models\SponsorshipType;
+use App\Models\Sponsors;
+use App\Models\ConferenceEventSponsors;
 
 class SponsorsController extends Controller
 {
@@ -34,7 +34,7 @@ class SponsorsController extends Controller
 
     public function index()
     {
-        $this->data['rows'] = SponsorsModel::join('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
+        $this->data['rows'] = Sponsors::join('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
                                            ->get(['sponsors.*','sponsorship_type.name as sponsorship_type_name']);
         return view('sponsors.list',$this->data);
     }
@@ -58,7 +58,7 @@ class SponsorsController extends Controller
                         'website_link' => $request->website_link,
                         'rank' => $request->rank,
                     ];
-                    $data = SponsorsModel::create($insert_data);
+                    $data = Sponsors::create($insert_data);
                     $data->save();
                     $id = $data->id;
                     if($request->file('sponsor_logo')) {
@@ -68,20 +68,20 @@ class SponsorsController extends Controller
                         //Update DB Data
                         $update_data = array('sponsor_logo' => $sponsor_logo);
                         //Update Query
-                        SponsorsModel::where('id', '=', $id)->update($update_data);
+                        Sponsors::where('id', '=', $id)->update($update_data);
                     }
-                    if($conference_id && $event_id)
+                    if($conference_id)
                     {
                         $assign_data = [
                             'conference_id' => $conference_id,
                             'event_id' => $event_id,
                             'sponsors_id' => $id,
                         ];
-                        $data = ConferenceEventSponsorsModel::create($assign_data);
+                        $data = ConferenceEventSponsors::create($assign_data);
                     }
                     DB::commit();
-                    if($conference_id && $event_id) {
-                        return redirect()->route('event_sponsors',[$conference_id,$event_id])->with('success', trans('flash.AddedAndAssignedSuccessfully'));
+                    if($conference_id) {
+                        return redirect()->route('conference_sponsors',$conference_id)->with('success', trans('flash.AddedAndAssignedSuccessfully'));
                     }
                     else {
                         return redirect()->route('sponsors')->with('success', trans('flash.AddedSuccessfully')); 
@@ -93,7 +93,7 @@ class SponsorsController extends Controller
                 }
             }
         } else {
-            $this->data['rows_sponsorship_type'] = SponsorshipTypeModel::where('published','1')->get();
+            $this->data['rows_sponsorship_type'] = SponsorshipType::where('published','1')->get();
             return view('sponsors.create',$this->data);
         }
     }
@@ -116,7 +116,7 @@ class SponsorsController extends Controller
                         'website_link' => $request->website_link,
                         'rank' => $request->rank,
                     ];
-                    $data = SponsorsModel::findOrFail($id);
+                    $data = Sponsors::findOrFail($id);
                     $data->update($update_data);
                     if($request->file('sponsor_logo')) {
                         $file = $request->file('sponsor_logo');
@@ -125,7 +125,7 @@ class SponsorsController extends Controller
                         //Update DB Data
                         $update_data = array('sponsor_logo' => $sponsor_logo);
                         //Update Query
-                        SponsorsModel::where('id', '=', $id)->update($update_data);
+                        Sponsors::where('id', '=', $id)->update($update_data);
                     }
                     DB::commit();
                     return redirect()->route('sponsors')->with('success', trans('flash.UpdatedSuccessfully'));
@@ -136,8 +136,8 @@ class SponsorsController extends Controller
                 }
             }
         } else {
-            $this->data['row'] = SponsorsModel::find($id);
-            $this->data['rows_sponsorship_type'] = SponsorshipTypeModel::where('published','1')->get();
+            $this->data['row'] = Sponsors::find($id);
+            $this->data['rows_sponsorship_type'] = SponsorshipType::where('published','1')->get();
             return view('sponsors.update',$this->data);
         }
     }
@@ -148,7 +148,7 @@ class SponsorsController extends Controller
 
             DB::beginTransaction();
             try {
-                $data = SponsorsModel::findOrFail($id);
+                $data = Sponsors::findOrFail($id);
                 $data->delete();
                 DB::commit();
                 return redirect()->route('sponsors')->with('success', trans('flash.DeletedSuccessfully'));
@@ -173,7 +173,7 @@ class SponsorsController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = SponsorsModel::findOrFail($request->id);
+                    $data = Sponsors::findOrFail($request->id);
                     $data->published = $request->published;
                     $data->save();
                     DB::commit();

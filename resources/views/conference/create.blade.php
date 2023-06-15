@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h1>
+        <h4 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h4>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -46,7 +46,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
-        <div class="card">
+        <div class="card card-warning card-outline direct-chat-warning">
           <form id="validation-form" action="" method="post" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
@@ -97,7 +97,7 @@
                       <div class="input-group-append" data-target="#auto_registration_date_limit" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
-                      <input type="text" name="auto_registration_date_limit" class="form-control datetimepicker-input" data-target="#auto_registration_date_limit" placeholder="DD-MM-YYYY"/>   
+                      <input type="text" name="auto_registration_date_limit" class="form-control datetimepicker-input" data-target="#auto_registration_date_limit" data-toggle="datetimepicker" placeholder="DD-MM-YYYY"/>   
                     </div>
                   </div>
                 </div>
@@ -112,7 +112,7 @@
                           <div class="input-group-append" data-target="#conference_start_date" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
-                          <input type="text" class="form-control datetimepicker-input" name="conference_start_date" data-target="#conference_start_date" placeholder="DD-MM-YYYY"/>   
+                          <input type="text" class="form-control datetimepicker-input" name="conference_start_date" data-target="#conference_start_date" data-toggle="datetimepicker" placeholder="DD-MM-YYYY"/>   
                         </div>
                       </div>
                     </div>
@@ -123,7 +123,7 @@
                           <div class="input-group-append" data-target="#conference_end_date" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
-                          <input type="text" class="form-control datetimepicker-input" name="conference_end_date" data-target="#conference_end_date" placeholder="DD-MM-YYYY"/>   
+                          <input type="text" class="form-control datetimepicker-input" name="conference_end_date" data-target="#conference_end_date" data-toggle="datetimepicker" placeholder="DD-MM-YYYY"/>   
                         </div>
                       </div>
                     </div>
@@ -199,7 +199,7 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-              <button type="submit" class="btn btn-primary">{{ __('admin.submit') }}</button>
+              <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.submit') }}</button>
             </div>
           </form>
         </div>

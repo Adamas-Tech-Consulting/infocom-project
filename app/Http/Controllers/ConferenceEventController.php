@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
-use App\Models\ConferenceModel;
-use App\Models\ConferenceEventModel;
-use App\Models\ConferenceEventDetailsModel;
-use App\Models\SponsorsModel;
-use App\Models\ConferenceEventSponsorsModel;
-use App\Models\SpeakersModel;
-use App\Models\ConferenceEventSpeakersModel;
+use App\Models\Conference;
+use App\Models\ConferenceEvent;
+use App\Models\ConferenceEventDetails;
+use App\Models\Sponsors;
+use App\Models\ConferenceEventSponsors;
+use App\Models\Speakers;
+use App\Models\ConferenceEventSpeakers;
+use App\Models\EventType;
 
 class ConferenceEventController extends Controller
 {
@@ -24,7 +25,7 @@ class ConferenceEventController extends Controller
     public function __construct(Request $request)
     {
         $conference_id = $request->route()->parameter('conference_id');
-        $conference = ConferenceModel::find($conference_id);
+        $conference = Conference::find($conference_id);
         $this->data = [
             'parent_id'                 => $conference_id,
             'parent_page_name'          => trans('admin.conference'),
@@ -44,7 +45,12 @@ class ConferenceEventController extends Controller
 
     public function index($conference_id)
     {
-        $this->data['rows'] = ConferenceEventModel::where('conference_id','=',$conference_id)->get();
+        $this->data['rows'] = ConferenceEvent::join('event_type','event_type.id','=','event.event_type_id')
+                                            
+                                            ->get(['event.*','event_type.name as event_type_name']);
+        
+        
+        ConferenceEvent::where('conference_id','=',$conference_id)->get();
         return view('conference_event.list',$this->data);
     }
 
@@ -56,7 +62,7 @@ class ConferenceEventController extends Controller
                 'event_date' => 'required',
                 'event_day' => 'required',
                 'event_title' => 'required',
-                'rank' => 'required',
+                'event_type_id' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -69,9 +75,9 @@ class ConferenceEventController extends Controller
                         'event_day' => $request->event_day,
                         'event_title' => $request->event_title,
                         'event_venue' => $request->event_venue,
-                        'rank' => $request->rank,
+                        'event_type_id' => $request->event_type_id,
                     ];
-                    $data = ConferenceEventModel::create($insert_data);
+                    $data = ConferenceEvent::create($insert_data);
                     $data->save();
                     $id = $data->id;
                     if(!empty($request->hall_number) && !empty($request->from_time) && !empty($request->to_time) && !empty($request->is_wishlist) && !empty($request->subject_line))
@@ -89,7 +95,7 @@ class ConferenceEventController extends Controller
                                     'is_wishlist' => $request->is_wishlist[$i],
                                     'subject_line' => $request->subject_line[$i],
                                 ];
-                                $details_data = ConferenceEventDetailsModel::create($insert_details_data);
+                                $details_data = ConferenceEventDetails::create($insert_details_data);
                                 $details_data->save();
                             }
                         }
@@ -103,6 +109,7 @@ class ConferenceEventController extends Controller
                 }
             }
         } else {
+            $this->data['rows_type'] = EventType::where('published','1')->get();
             return view('conference_event.create',$this->data);
         }
     }
@@ -115,7 +122,7 @@ class ConferenceEventController extends Controller
                 'event_date' => 'required',
                 'event_day' => 'required',
                 'event_title' => 'required',
-                'rank' => 'required',
+                'event_type_id' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -128,19 +135,19 @@ class ConferenceEventController extends Controller
                         'event_day' => $request->event_day,
                         'event_title' => $request->event_title,
                         'event_venue' => $request->event_venue,
-                        'rank' => $request->rank,
+                        'event_type_id' => $request->event_type_id,
                     ];
-                    $data = ConferenceEventModel::findOrFail($id);
+                    $data = ConferenceEvent::findOrFail($id);
                     $data->update($update_data);
                     if(!empty($request->from_time) && !empty($request->is_wishlist) && !empty($request->subject_line))
                     {
-                        $row_event_details = ConferenceEventDetailsModel::where('conference_id','=', $conference_id)->where('event_id','=', $id)->get(['id']);
+                        $row_event_details = ConferenceEventDetails::where('conference_id','=', $conference_id)->where('event_id','=', $id)->get(['id']);
                         $event_details_ids = (!empty($request->event_details_id) && count($request->event_details_id)>0) ? $request->event_details_id : [];
                         foreach($row_event_details as $event_details)
                         {
                             if(!in_array($event_details->id, $event_details_ids))
                             {
-                                ConferenceEventDetailsModel::where('id','=', $event_details->id)->delete();
+                                ConferenceEventDetails::where('id','=', $event_details->id)->delete();
                             }
                         }                       
                         for($i=0; $i<count($request->from_time); $i++)
@@ -156,7 +163,7 @@ class ConferenceEventController extends Controller
                                         'is_wishlist' => $request->is_wishlist[$i],
                                         'subject_line' => $request->subject_line[$i],
                                     ];
-                                    $details_data = ConferenceEventDetailsModel::findOrFail($request->event_details_id[$i]);
+                                    $details_data = ConferenceEventDetails::findOrFail($request->event_details_id[$i]);
                                     $details_data->update($update_details_data);
                                 }
                                 else
@@ -170,7 +177,7 @@ class ConferenceEventController extends Controller
                                         'is_wishlist' => $request->is_wishlist[$i],
                                         'subject_line' => $request->subject_line[$i],
                                     ];
-                                    $details_data = ConferenceEventDetailsModel::create($insert_details_data);
+                                    $details_data = ConferenceEventDetails::create($insert_details_data);
                                     $details_data->save();
                                 }   
                             }
@@ -185,8 +192,9 @@ class ConferenceEventController extends Controller
                 }
             }
         } else {
-            $this->data['row_details'] = ConferenceEventDetailsModel::where('conference_id','=', $conference_id)->where('event_id','=', $id)->get();
-            $this->data['row'] = ConferenceEventModel::find($id);
+            $this->data['row_details'] = ConferenceEventDetails::where('conference_id','=', $conference_id)->where('event_id','=', $id)->get();
+            $this->data['rows_type'] = EventType::where('published','1')->get();
+            $this->data['row'] = ConferenceEvent::find($id);
             return view('conference_event.update',$this->data);
         }
     }
@@ -197,7 +205,7 @@ class ConferenceEventController extends Controller
 
             DB::beginTransaction();
             try {
-                $data = ConferenceEventModel::findOrFail($id);
+                $data = ConferenceEvent::findOrFail($id);
                 $data->delete();
                 DB::commit();
                 return redirect()->route('event', $conference_id)->with('success', trans('flash.DeletedSuccessfully'));
@@ -222,7 +230,7 @@ class ConferenceEventController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = ConferenceEventModel::findOrFail($request->id);
+                    $data = ConferenceEvent::findOrFail($request->id);
                     $data->published = $request->published;
                     $data->save();
                     DB::commit();
@@ -254,7 +262,7 @@ class ConferenceEventController extends Controller
                 DB::beginTransaction();
                 try {
                     if($request->id) {
-                        ConferenceEventSponsorsModel::where('id',$request->id)->delete();
+                        ConferenceEventSponsors::where('id',$request->id)->delete();
                         $event_sponsord_id=NULL;
                         $success_message = trans('flash.RemovedSuccessfully');
                     } else {
@@ -263,7 +271,7 @@ class ConferenceEventController extends Controller
                             'event_id' => $id,
                             'sponsors_id' => $request->sponsors_id,
                         ];
-                        $data = ConferenceEventSponsorsModel::create($insert_data);
+                        $data = ConferenceEventSponsors::create($insert_data);
                         $data->save();
                         $event_sponsord_id=$data->id;
                         $success_message = trans('flash.AssignedSuccessfully');
@@ -277,8 +285,8 @@ class ConferenceEventController extends Controller
                 }
             }
         } else {
-            $this->data['row_event'] = ConferenceEventModel::find($id);
-            $this->data['rows'] = SponsorsModel::leftJoin('event_sponsors',function($join) use($conference_id,$id) {
+            $this->data['row_event'] = ConferenceEvent::find($id);
+            $this->data['rows'] = Sponsors::leftJoin('event_sponsors',function($join) use($conference_id,$id) {
                                                     $join->on('event_sponsors.sponsors_id','sponsors.id')
                                                     ->where('event_sponsors.conference_id',$conference_id)
                                                     ->where('event_sponsors.event_id',$id);
@@ -303,7 +311,7 @@ class ConferenceEventController extends Controller
                 DB::beginTransaction();
                 try {
                     if($request->id) {
-                        ConferenceEventSpeakersModel::where('id',$request->id)->delete();
+                        ConferenceEventSpeakers::where('id',$request->id)->delete();
                         $event_speaker_id=NULL;
                         $success_message = trans('flash.RemovedSuccessfully');
                     } else {
@@ -312,7 +320,7 @@ class ConferenceEventController extends Controller
                             'event_id' => $id,
                             'speakers_id' => $request->speakers_id,
                         ];
-                        $data = ConferenceEventSpeakersModel::create($insert_data);
+                        $data = ConferenceEventSpeakers::create($insert_data);
                         $data->save();
                         $event_speaker_id=$data->id;
                         $success_message = trans('flash.AssignedSuccessfully');
@@ -326,15 +334,42 @@ class ConferenceEventController extends Controller
                 }
             }
         } else {
-            $this->data['row_event'] = ConferenceEventModel::find($id);
-            $this->data['rows'] = SpeakersModel::leftJoin('event_speakers',function($join) use($conference_id,$id) {
+            $this->data['row_event'] = ConferenceEvent::find($id);
+            $this->data['rows'] = Speakers::leftJoin('event_speakers',function($join) use($conference_id,$id) {
                                                     $join->on('event_speakers.speakers_id','speakers.id')
                                                     ->where('event_speakers.conference_id',$conference_id)
                                                     ->where('event_speakers.event_id',$id);
                                                 })
                                                 ->orderByRaw('CASE WHEN event_speakers.id IS NULL THEN 1 ELSE 0 END ASC')
-                                                ->get(['speakers.*','event_speakers.id as event_speakers_id']);
+                                                ->get(['speakers.*','event_speakers.id as event_speakers_id','event_speakers.is_key_speaker']);
             return view('conference_event.list_speakers',$this->data);
+        }
+    }
+
+    public function key_speakers(Request $request, $conference_id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+                'is_key_speaker' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    $data = ConferenceEventSpeakers::findOrFail($request->id);
+                    $data->is_key_speaker = $request->is_key_speaker;
+                    $data->save();
+                    DB::commit();
+                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
         }
     }
 }

@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h1>
+        <h4 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h4>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -46,7 +46,7 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <div class="card">
+      <div class="card card-warning card-outline direct-chat-warning">
         <form id="validation-form" action="" method="post">
           @csrf
           <div class="card-body">
@@ -54,20 +54,37 @@
               <div class="col-6">
                 <div class="form-group">
                   <label for="name">{{ __('admin.category') }} {{ __('admin.name') }}</label>
-                  <input type="text" class="form-control text-uppercase @error('name') is-invalid @enderror" id="name" name="name" placeholder="{{ __('admin.enter') }} {{ __('admin.category') }} {{ __('admin.name') }}">
+                  <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="{{ __('admin.enter') }} {{ __('admin.category') }} {{ __('admin.name') }}">
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-3">
                 <div class="form-group">
                   <label for="color">{{ __('admin.category') }} {{ __('admin.color') }}</label>
                   <input type="color" class="form-control @error('color') is-invalid @enderror" id="color" name="color">
                 </div>
               </div>
             </div>
+            <!-- /.row -->
+            <div class="row">
+              <div class="col-6">
+                <label for="name">{{ __('admin.allow') }} {{ __('admin.sponsors') }}</label>
+                <div class="form-group clearfix">
+                  <div class="icheck-primary d-inline mr-3">
+                    <input type="radio" id="radioPrimary1" name="is_sponsors" value="1" checked="">
+                    <label for="radioPrimary1">{{ __('admin.yes') }}</label>
+                  </div>
+                  <div class="icheck-primary d-inline">
+                    <input type="radio" id="radioPrimary2" name="is_sponsors" value="0">
+                    <label for="radioPrimary2">{{ __('admin.no') }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.row -->
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <button type="submit" class="btn btn-primary">{{ __('admin.submit') }}</button>
+            <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.submit') }}</button>
           </div>
         </form>
       </div>

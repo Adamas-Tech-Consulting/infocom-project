@@ -21,6 +21,16 @@ Route::middleware(['web'])->group(function () {
         //Dashboard
         Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
+        //Users
+        Route::prefix('manage-users')->group(function (){
+            Route::get('/', [App\Http\Controllers\UserController::class, 'index'])->name('users');
+            Route::any('/create', [App\Http\Controllers\UserController::class, 'create'])->name('users_create');
+            Route::any('/update/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('users_update');
+            Route::any('/update-password/{id}', [App\Http\Controllers\UserController::class, 'update_password'])->name('users_update_password');
+            Route::any('/delete/{id}', [App\Http\Controllers\UserController::class, 'delete'])->name('users_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\UserController::class, 'publish_unpublish'])->name('users_publish_unpublish');
+        });
+
         //Conference Category
         Route::prefix('manage-conference-category')->group(function (){
             Route::get('/', [App\Http\Controllers\ConferenceCategoryController::class, 'index'])->name('conference_category');
@@ -37,6 +47,18 @@ Route::middleware(['web'])->group(function () {
             Route::any('/update/{id}', [App\Http\Controllers\ConferenceController::class, 'update'])->name('conference_update');
             Route::any('/delete/{id}', [App\Http\Controllers\ConferenceController::class, 'delete'])->name('conference_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\ConferenceController::class, 'publish_unpublish'])->name('conference_publish_unpublish');
+            Route::any('/sponsors/{conference_id}', [App\Http\Controllers\ConferenceController::class, 'sponsors'])->name('conference_sponsors');
+            Route::any('/speakers/{conference_id}', [App\Http\Controllers\ConferenceController::class, 'speakers'])->name('conference_speakers');
+            Route::any('/key-speakers', [App\Http\Controllers\ConferenceController::class, 'key_speakers'])->name('conference_key_speakers');
+        });
+
+        //Event Type
+        Route::prefix('manage-event-type')->group(function (){
+            Route::get('/', [App\Http\Controllers\EventTypeController::class, 'index'])->name('event_type');
+            Route::any('/create', [App\Http\Controllers\EventTypeController::class, 'create'])->name('event_type_create');
+            Route::any('/update/{id}', [App\Http\Controllers\EventTypeController::class, 'update'])->name('event_type_update');
+            Route::any('/delete/{id}', [App\Http\Controllers\EventTypeController::class, 'delete'])->name('event_type_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\EventTypeController::class, 'publish_unpublish'])->name('event_type_publish_unpublish');
         });
 
         //Event
@@ -49,6 +71,7 @@ Route::middleware(['web'])->group(function () {
             Route::get('/create-event-details/{conference_id}', [App\Http\Controllers\ConferenceEventController::class, 'create_event_details'])->name('event_details_create');
             Route::any('/sponsors/{conference_id}/{id}', [App\Http\Controllers\ConferenceEventController::class, 'sponsors'])->name('event_sponsors');
             Route::any('/speakers/{conference_id}/{id}', [App\Http\Controllers\ConferenceEventController::class, 'speakers'])->name('event_speakers');
+            Route::any('/key-speakers/{conference_id}', [App\Http\Controllers\ConferenceEventController::class, 'key_speakers'])->name('event_key_speakers');
         });
 
         //Sponsorship Type
@@ -76,6 +99,24 @@ Route::middleware(['web'])->group(function () {
             Route::any('/update/{id}', [App\Http\Controllers\SpeakersController::class, 'update'])->name('speakers_update');
             Route::any('/delete/{id}', [App\Http\Controllers\SpeakersController::class, 'delete'])->name('speakers_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\SpeakersController::class, 'publish_unpublish'])->name('speakers_publish_unpublish');
+        });
+
+        //Registration Requests
+        Route::prefix('manage-registration-request')->group(function (){
+            Route::get('/', [App\Http\Controllers\RegistrationRequestController::class, 'index'])->name('registration_request');
+            Route::any('/create', [App\Http\Controllers\RegistrationRequestController::class, 'create'])->name('registration_request_create');
+            Route::any('/update/{id}', [App\Http\Controllers\RegistrationRequestController::class, 'update'])->name('registration_request_update');
+            Route::any('/delete/{id}', [App\Http\Controllers\RegistrationRequestController::class, 'delete'])->name('registration_request_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\RegistrationRequestController::class, 'publish_unpublish'])->name('registration_request_publish_unpublish');
+        });
+
+        //Contacts
+        Route::prefix('manage-contacts')->group(function (){
+            Route::get('/', [App\Http\Controllers\ContactsController::class, 'index'])->name('contacts');
+            Route::any('/create', [App\Http\Controllers\ContactsController::class, 'create'])->name('contacts_create');
+            Route::any('/update/{id}', [App\Http\Controllers\ContactsController::class, 'update'])->name('contacts_update');
+            Route::any('/delete/{id}', [App\Http\Controllers\ContactsController::class, 'delete'])->name('contacts_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\ContactsController::class, 'publish_unpublish'])->name('contacts_publish_unpublish');
         });
 
     });

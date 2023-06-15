@@ -15,7 +15,7 @@ $(function () {
       event_title: {
         required: true,
       },
-      rank: {
+      event_type_id: {
         required: true,
       },
     },
@@ -29,8 +29,8 @@ $(function () {
       event_title: {
         required: "Please enter an event title",
       },
-      rank: {
-        required: "Please select a rank",
+      event_type_id: {
+        required: "Please select an event type",
       },
     },
     errorElement: 'span',

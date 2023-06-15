@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h1>
+        <h4 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h4>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -46,7 +46,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
-        <div class="card">
+        <div class="card card-warning card-outline direct-chat-warning">
           <form id="validation-form" action="" method="post" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
@@ -105,7 +105,7 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-              <button type="submit" class="btn btn-primary">{{ __('admin.submit') }}</button>
+              <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.submit') }}</button>
             </div>
           </form>
         </div>

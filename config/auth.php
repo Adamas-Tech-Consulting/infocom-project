@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'reg_users',
+        ],
     ],
 
     /*
@@ -65,10 +70,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'reg_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\RegistrationRequest::class,
+        ],
     ],
 
     /*

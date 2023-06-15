@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Session;
-use App\Models\SiteSettingsModel;
+use App\Models\SiteSettings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         if(!Session::get('site_settings')) {
-            Session::put('site_settings',SiteSettingsModel::first());
+            Session::put('site_settings',SiteSettings::first());
         }
     }
 }

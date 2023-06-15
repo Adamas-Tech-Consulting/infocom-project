@@ -14,9 +14,14 @@ return [
 
     //A
     'action' => 'Action',
+    'active' => 'Active',
     'add' => 'Add',
+    'administrator' => 'Administrator',
+    'address' => 'Address',
+    'all' => 'All',
+    'allow' => 'Allow',
     'assign' => 'Assign',
-    'auto_registration_date_limit' => 'Auto Registration Date Limit',
+    'auto_registration_date_limit' => 'Last Registration Date',
 
     //B
     'banner' => 'Banner',
@@ -28,7 +33,9 @@ return [
     'company_website' => 'Company Website',
     'conference' => 'Conference',
     'conference_category' => 'Conference Category',
+    'contacts' => 'Contacts',
     'color' => 'Color',
+    'confirm_password' => 'Confirm Password',
 
     //D
     'day' => 'Day',
@@ -38,20 +45,27 @@ return [
     'dashboard' => 'Dashboard',
     'designation' => 'Designation',
     'details' => 'Details',
+    'download_csv' => 'Download CSV',
     
 
     //E
     'edit' => 'Edit',
+    'email' => 'Email',
     'email_address'=> 'Email Address',
     'end_date' => 'End Date',
     'enter' => 'Enter',
     'event' => 'Event',
+    'event_type' => 'Event Type',
+    'events' => 'Events',
 
     //F
+    'female' => 'Female',
+    'fname'=> 'First Name',
     'free' => 'Free',
     'from' => 'From',
 
     //G
+    'gender' => 'Gender',
 
     //H
     'hall_number' => 'Hall Number',
@@ -60,31 +74,45 @@ return [
     //I
     'image' => 'Image',
     'image_gallery' => 'Image Gallery',
+    'import' => 'Import',
+    'inactive' => 'Inactive',
+    'info' => 'Info',
+    'invitee' => 'Invitee',
 
     //J
 
     //K
+    'key_speaker' => 'Key Speaker',
 
     //L
+    'lname' => 'Last Name',
     'login_btn' => 'Login',
     'login_msg'=> 'Sign in to start your session',
     'logo' => 'Logo',
 
     //M
+    'male' => 'Male',
     'manage' => 'Manage',
+    'master_setup' => 'Master Setup',
+    'mobile' => 'Mobile',
 
     //N
     'name' => 'Name',
+    'new' => 'New',
     'no' => 'No',
+    'non_key_speaker' => 'Non Key Speaker',
 
     //O
     'of' => 'Of',
     'one' => 'One',
+    'organization' => 'Organization',
+    'other' => 'Other',
     'overview_description' => 'Overview Description',
 
     //P
     'paid' => 'Paid',
     'password'=> 'Password',
+    'pickup_address' => 'Pickup Address',
     'preview'=> 'Preview',
     'publish' => 'Publish',
 
@@ -93,12 +121,16 @@ return [
     //R
     'rank' => 'Rank',
     'registration_method' => 'Registration Method',
+    'registered_on' => 'Registered On',
     'registration_type' => 'Registration Type',
+    'registration_request' => 'Registration Request',
     'remember_me' => 'Remember Me',
     'remove' => 'Remove',
+    'role' => 'Role',
 
     //S
     'select' => 'Select',
+    'send_invitation' => 'Send Invitation',
     'session_subject_line' => 'Session Subject Line',
     'speaker' => 'Speaker',
     'speakers' => 'Speakers',
@@ -118,6 +150,8 @@ return [
     'unassign' => 'Unassign',
     'unpublish' => 'Unpublish', 
     'update' => 'Update',
+    'update_password' => 'Update Password',
+    'users' => 'Users',
 
     //V
     'video_gallery' => 'Video Gallery',
@@ -125,7 +159,8 @@ return [
     'venue' => 'Venue',
 
     //W
-    'wishlist_enabled' => 'Wishlist Enabled',
+    'website' => 'Website',
+    'wishlist_enabled' => 'Wishlist',
 
     //X
 

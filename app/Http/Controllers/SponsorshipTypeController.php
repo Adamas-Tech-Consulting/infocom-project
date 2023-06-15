@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
-use App\Models\SponsorshipTypeModel;
+use App\Models\SponsorshipType;
 
 class SponsorshipTypeController extends Controller
 {
@@ -30,7 +30,7 @@ class SponsorshipTypeController extends Controller
 
     public function index()
     {
-        $this->data['rows'] = SponsorshipTypeModel::all();
+        $this->data['rows'] = SponsorshipType::all();
         return view('sponsorship_type.list',$this->data);
     }
 
@@ -46,7 +46,7 @@ class SponsorshipTypeController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = SponsorshipTypeModel::create($request->all());
+                    $data = SponsorshipType::create($request->all());
                     $data->save();
                     DB::commit();
                     return redirect()->route('sponsorship_type')->with('success', trans('flash.AddedSuccessfully'));
@@ -73,7 +73,7 @@ class SponsorshipTypeController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = SponsorshipTypeModel::findOrFail($id);
+                    $data = SponsorshipType::findOrFail($id);
                     $data->update($request->all());
                     DB::commit();
                     return redirect()->route('sponsorship_type')->with('success', trans('flash.UpdatedSuccessfully'));
@@ -84,7 +84,7 @@ class SponsorshipTypeController extends Controller
                 }
             }
         } else {
-            $this->data['row'] = SponsorshipTypeModel::find($id);
+            $this->data['row'] = SponsorshipType::find($id);
             return view('sponsorship_type.update',$this->data);
         }
     }
@@ -95,7 +95,7 @@ class SponsorshipTypeController extends Controller
 
             DB::beginTransaction();
             try {
-                $data = SponsorshipTypeModel::findOrFail($id);
+                $data = SponsorshipType::findOrFail($id);
                 $data->delete();
                 DB::commit();
                 return redirect()->route('sponsorship_type')->with('success', trans('flash.DeletedSuccessfully'));
@@ -120,7 +120,7 @@ class SponsorshipTypeController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = SponsorshipTypeModel::findOrFail($request->id);
+                    $data = SponsorshipType::findOrFail($request->id);
                     $data->published = $request->published;
                     $data->save();
                     DB::commit();

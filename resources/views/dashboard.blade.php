@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">{{ __('admin.dashboard') }}</h1>
+        <h4 class="m-0">{{ __('admin.dashboard') }}</h4>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -26,57 +26,57 @@
     <div class="row">
       <div class="col-lg-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-info">
+        <div class="small-box bg-warning">
           <div class="inner">
-            <h3>3</h3>
-            <p>Conference Category</p>
+            <h3>2</h3>
+            <p>Users</p>
           </div>
           <div class="icon">
-            <i class="fas fa-clipboard-list"></i>
+            <i class="fas fa-user-secret"></i>
           </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{route('users')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->
       <div class="col-lg-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-info">
+        <div class="small-box bg-warning">
           <div class="inner">
-            <h3>10</h3>
+            <h3>2</h3>
             <p>Conference</p>
           </div>
           <div class="icon">
             <i class="fas fa-users"></i>
           </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{route('conference')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->
       <div class="col-lg-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-info">
+        <div class="small-box bg-warning">
           <div class="inner">
-            <h3>30</h3>
-            <p>Events</p>
+            <h3>2</h3>
+            <p>Registration Request</p>
           </div>
           <div class="icon">
-            <i class="fas fa-calendar-plus"></i>
+            <i class="fas fa-user"></i>
           </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{route('registration_request')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->
       <div class="col-lg-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-info">
+        <div class="small-box bg-warning">
           <div class="inner">
-            <h3>150</h3>
-            <p>Invitee</p>
+            <h3>3</h3>
+            <p>Contacts</p>
           </div>
           <div class="icon">
-            <i class="fas fa-users"></i>
+            <i class="fas fa-address-book"></i>
           </div>
-          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{route('contacts')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->

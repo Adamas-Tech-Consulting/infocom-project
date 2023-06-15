@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
-use App\Models\SpeakersModel;
-use App\Models\ConferenceEventSpeakersModel;
+use App\Models\Speakers;
+use App\Models\ConferenceEventSpeakers;
 
 class SpeakersController extends Controller
 {
@@ -31,7 +31,7 @@ class SpeakersController extends Controller
 
     public function index()
     {
-        $this->data['rows'] = SpeakersModel::all();
+        $this->data['rows'] = Speakers::all();
         return view('speakers.list',$this->data);
     }
 
@@ -53,7 +53,7 @@ class SpeakersController extends Controller
                         'company_name' => $request->company_name,
                         'rank' => $request->rank,
                     ];
-                    $data = SpeakersModel::create($insert_data);
+                    $data = Speakers::create($insert_data);
                     $data->save();
                     $id = $data->id;
                     if($request->file('image')) {
@@ -63,20 +63,20 @@ class SpeakersController extends Controller
                         //Update DB Data
                         $update_data = array('image' => $image);
                         //Update Query
-                        SpeakersModel::where('id', '=', $id)->update($update_data);
+                        Speakers::where('id', '=', $id)->update($update_data);
                     }
-                    if($conference_id && $event_id)
+                    if($conference_id)
                     {
                         $assign_data = [
                             'conference_id' => $conference_id,
                             'event_id' => $event_id,
                             'speakers_id' => $id,
                         ];
-                        $data = ConferenceEventSpeakersModel::create($assign_data);
+                        $data = ConferenceEventSpeakers::create($assign_data);
                     }
                     DB::commit();
-                    if($conference_id && $event_id) {
-                        return redirect()->route('event_speakers',[$conference_id,$event_id])->with('success', trans('flash.AddedAndAssignedSuccessfully'));
+                    if($conference_id) {
+                        return redirect()->route('conference_speakers',$conference_id)->with('success', trans('flash.AddedAndAssignedSuccessfully'));
                     }
                     else {
                         return redirect()->route('speakers')->with('success', trans('flash.AddedSuccessfully')); 
@@ -110,7 +110,7 @@ class SpeakersController extends Controller
                         'company_name' => $request->company_name,
                         'rank' => $request->rank,
                     ];
-                    $data = SpeakersModel::findOrFail($id);
+                    $data = Speakers::findOrFail($id);
                     $data->update($update_data);
                     if($request->file('image')) {
                         $file = $request->file('image');
@@ -119,7 +119,7 @@ class SpeakersController extends Controller
                         //Update DB Data
                         $update_data = array('image' => $image);
                         //Update Query
-                        SpeakersModel::where('id', '=', $id)->update($update_data);
+                        Speakers::where('id', '=', $id)->update($update_data);
                     }
                     DB::commit();
                     return redirect()->route('speakers')->with('success', trans('flash.UpdatedSuccessfully'));
@@ -130,7 +130,7 @@ class SpeakersController extends Controller
                 }
             }
         } else {
-            $this->data['row'] = SpeakersModel::find($id);
+            $this->data['row'] = Speakers::find($id);
             return view('speakers.update',$this->data);
         }
     }
@@ -141,7 +141,7 @@ class SpeakersController extends Controller
 
             DB::beginTransaction();
             try {
-                $data = SpeakersModel::findOrFail($id);
+                $data = Speakers::findOrFail($id);
                 $data->delete();
                 DB::commit();
                 return redirect()->route('sponsors')->with('success', trans('flash.DeletedSuccessfully'));
@@ -166,7 +166,7 @@ class SpeakersController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = SpeakersModel::findOrFail($request->id);
+                    $data = Speakers::findOrFail($request->id);
                     $data->published = $request->published;
                     $data->save();
                     DB::commit();
