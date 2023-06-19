@@ -53,6 +53,17 @@
               <div class="row">
                 <div class="col-4">
                   <div class="form-group">
+                    <label for="contacts_group_id">{{ __('admin.contacts_group') }} <span class="text-red">*</span></label>
+                    <select class="form-control select2bs4 @error('contacts_group_id') is-invalid @enderror" name="contacts_group_id" style="width: 100%;">
+                      <option value="">{{ __('admin.select') }} {{ __('admin.contacts_group') }}</option>
+                      @foreach($rows_contacts_group as $contacts_group)
+                      <option value="{{$contacts_group->id}}">{{$contacts_group->name}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
                     <label for="fname">{{ __('admin.fname') }} <span class="text-red">*</span></label>
                     <input type="text" class="form-control @error('fname') is-invalid @enderror" id="fname" name="fname" placeholder="{{ __('admin.enter') }} {{ __('admin.fname') }}">
                   </div>
@@ -61,17 +72,6 @@
                   <div class="form-group">
                     <label for="lname">{{ __('admin.lname') }} <span class="text-red">*</span></label>
                     <input type="text" class="form-control @error('lname') is-invalid @enderror" id="lname" name="lname" placeholder="{{ __('admin.enter') }} {{ __('admin.lname') }}">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="gender">{{ __('admin.gender') }}</label>
-                    <select class="form-control select2bs4 @error('gender') is-invalid @enderror" name="gender" style="width: 100%;">
-                      <option value="">{{ __('admin.select') }} {{ __('admin.gender') }}</option>
-                      <option value="M">{{ __('admin.male') }}</option>
-                      <option value="F">{{ __('admin.female') }}</option>
-                      <option value="O">{{ __('admin.other') }}</option>
-                    </select>
                   </div>
                 </div>
               </div><!-- /.row -->

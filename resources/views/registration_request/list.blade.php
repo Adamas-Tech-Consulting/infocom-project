@@ -45,9 +45,20 @@
     <div class="col-12">
       <div class="card card-warning card-outline direct-chat-warning">
         <div class="card-header">
-          <h3 class="card-title">
-            <a href="javascript:void(0);" class="btn btn-warning btn-sm" disabled><i class="fas fa-download"></i> {{ __('admin.download_csv') }}</a>
-          </h3>
+            <div class="row">
+              <div class="col-3">
+                <div class="form-group">
+                  <select class="form-control select2bs4 @error('conference_id') is-invalid @enderror" name="conference_id" style="width: 100%;">
+                    @foreach($rows_conference as $conference)
+                    <option value="{{$conference->id}}" {{($conference->id == $selected_conference)?'selected':''}}>{{$conference->title}}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <a href="{{route('registration_request_csv_download')}}" class="btn btn-warning btn-sm" disabled><i class="fas fa-download"></i> {{ __('admin.download_csv') }}</a>
+              </div>
+            </div>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -111,54 +122,13 @@
       ]
     });
   });
-
   $(function () {
-    $('.toggle-published').on('click',function() {
-      var buttonObject = $(this);
-      var id = $(this).data('id');
-      var isPublished = $(this).data('is-published') ? 0 : 1;
-      $.ajax({
-        headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        type:"POST",
-        url: "{{route($page_publish_unpublish)}}",
-        data:{'id':id,'published':isPublished},
-        success:function(data){
-          if(data.error) {
-            toastr.error(data.error)
-          } else {
-            toastr.success("{{ $page_name }} "+data.success)
-            $(buttonObject).data('is-published',isPublished)
-            $(buttonObject).toggleClass('bg-gradient-success bg-gradient-warning')
-            $(buttonObject).tooltip('hide').attr('data-original-title', isPublished ? 'Inactive' : 'Active').tooltip('show');
-            $(buttonObject).find('i').toggleClass('fa-check-circle fa-ban')
-          }
-        },  
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-        }
-      })
-    })
+    $('select[name="conference_id"]').on('change', function() {
+      var conference_id = $(this).val();
+      $.get("{{url('manage-registration-request/switch-conference')}}/"+conference_id, function(data, status){
+        location.reload();
+      });
+    });
   });
-
-  $(function () {
-    $(".delete-btn").on('click', function(e) {
-      var form = $(this).data('form');
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          $(form).submit()
-        }
-      })
-    })
-  })
 </script>
 @endsection

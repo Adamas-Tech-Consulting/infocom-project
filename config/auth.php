@@ -44,6 +44,7 @@ return [
         'api' => [
             'driver' => 'passport',
             'provider' => 'reg_users',
+            'hash' => false
         ],
     ],
 

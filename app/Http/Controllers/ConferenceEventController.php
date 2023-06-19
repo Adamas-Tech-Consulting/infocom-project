@@ -46,11 +46,8 @@ class ConferenceEventController extends Controller
     public function index($conference_id)
     {
         $this->data['rows'] = ConferenceEvent::join('event_type','event_type.id','=','event.event_type_id')
-                                            
+                                            ->where('conference_id','=',$conference_id)
                                             ->get(['event.*','event_type.name as event_type_name']);
-        
-        
-        ConferenceEvent::where('conference_id','=',$conference_id)->get();
         return view('conference_event.list',$this->data);
     }
 
@@ -70,7 +67,7 @@ class ConferenceEventController extends Controller
                 DB::beginTransaction();
                 try {
                     $insert_data = [
-                        'conference_id' => $request->conference_id,
+                        'conference_id' => $conference_id,
                         'event_date' => date('Y-m-d',strtotime($request->event_date)),
                         'event_day' => $request->event_day,
                         'event_title' => $request->event_title,
@@ -87,7 +84,7 @@ class ConferenceEventController extends Controller
                             if(isset($request->from_time[$i]) && $request->from_time[$i] && isset($request->subject_line[$i]) && $request->subject_line[$i])
                             {
                                 $insert_details_data = [
-                                    'conference_id' => $request->conference_id,
+                                    'conference_id' => $conference_id,
                                     'event_id' => $id,
                                     'hall_number' => $request->hall_number[$i],
                                     'from_time' => $request->from_time[$i],
@@ -130,7 +127,7 @@ class ConferenceEventController extends Controller
                 DB::beginTransaction();
                 try {
                     $update_data = [
-                        'conference_id' => $request->conference_id,
+                        'conference_id' => $conference_id,
                         'event_date' => date('Y-m-d',strtotime($request->event_date)),
                         'event_day' => $request->event_day,
                         'event_title' => $request->event_title,
@@ -169,7 +166,7 @@ class ConferenceEventController extends Controller
                                 else
                                 {
                                     $insert_details_data = [
-                                        'conference_id' => $request->conference_id,
+                                        'conference_id' => $conference_id,
                                         'event_id' => $id,
                                         'hall_number' => $request->hall_number[$i],
                                         'from_time' => $request->from_time[$i],

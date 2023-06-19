@@ -14,13 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/auth/otp-request', [App\Http\Controllers\Api\Auth\LoginController::class, 'otp_request']);
-Route::post('/auth/login', [App\Http\Controllers\Api\Auth\LoginController::class, 'login']);
+Route::post('infocom/auth/otp-request', [App\Http\Controllers\Api\Auth\LoginController::class, 'otp_request']);
+Route::post('infocom/auth/login', [App\Http\Controllers\Api\Auth\LoginController::class, 'login']);
    
 Route::middleware('auth:api')->group( function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-    Route::post('/get-conference',[App\Http\Controllers\Api\HomeController::class, 'getConference']);
+    Route::get('infocom/get-user',[App\Http\Controllers\Api\Auth\LoginController::class, 'getUser']);
+    Route::get('infocom/get-conference',[App\Http\Controllers\Api\HomeController::class, 'getConference']);
+    Route::get('infocom/get-event/{id}',[App\Http\Controllers\Api\HomeController::class, 'getEvent']);
 });
 

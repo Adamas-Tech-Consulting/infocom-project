@@ -104,10 +104,17 @@ Route::middleware(['web'])->group(function () {
         //Registration Requests
         Route::prefix('manage-registration-request')->group(function (){
             Route::get('/', [App\Http\Controllers\RegistrationRequestController::class, 'index'])->name('registration_request');
-            Route::any('/create', [App\Http\Controllers\RegistrationRequestController::class, 'create'])->name('registration_request_create');
-            Route::any('/update/{id}', [App\Http\Controllers\RegistrationRequestController::class, 'update'])->name('registration_request_update');
-            Route::any('/delete/{id}', [App\Http\Controllers\RegistrationRequestController::class, 'delete'])->name('registration_request_delete');
-            Route::post('/publish-unpublish', [App\Http\Controllers\RegistrationRequestController::class, 'publish_unpublish'])->name('registration_request_publish_unpublish');
+            Route::get('/switch-conference/{conference_id}', [App\Http\Controllers\RegistrationRequestController::class, 'switch_conference'])->name('switch_conference');
+            Route::get('/csv-download', [App\Http\Controllers\RegistrationRequestController::class, 'csv_download'])->name('registration_request_csv_download');
+        });
+
+        //Contacts Group
+        Route::prefix('manage-contacts-group')->group(function (){
+            Route::get('/', [App\Http\Controllers\ContactsGroupController::class, 'index'])->name('contacts_group');
+            Route::any('/create', [App\Http\Controllers\ContactsGroupController::class, 'create'])->name('contacts_group_create');
+            Route::any('/update/{id}', [App\Http\Controllers\ContactsGroupController::class, 'update'])->name('contacts_group_update');
+            Route::any('/delete/{id}', [App\Http\Controllers\ContactsGroupController::class, 'delete'])->name('contacts_group_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\ContactsGroupController::class, 'publish_unpublish'])->name('contacts_group_publish_unpublish');
         });
 
         //Contacts

@@ -34,6 +34,7 @@ return [
     'conference' => 'Conference',
     'conference_category' => 'Conference Category',
     'contacts' => 'Contacts',
+    'contacts_group' => 'Contact Group',
     'color' => 'Color',
     'confirm_password' => 'Confirm Password',
 
@@ -66,6 +67,7 @@ return [
 
     //G
     'gender' => 'Gender',
+    'group' => 'Group',
 
     //H
     'hall_number' => 'Hall Number',
@@ -78,6 +80,7 @@ return [
     'inactive' => 'Inactive',
     'info' => 'Info',
     'invitee' => 'Invitee',
+    'invitation' => 'Invitation',
 
     //J
 
@@ -131,6 +134,7 @@ return [
     //S
     'select' => 'Select',
     'send_invitation' => 'Send Invitation',
+    'sent' => 'Sent',
     'session_subject_line' => 'Session Subject Line',
     'speaker' => 'Speaker',
     'speakers' => 'Speakers',

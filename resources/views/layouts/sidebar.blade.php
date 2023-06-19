@@ -19,8 +19,8 @@
             </p>
           </a>
         </li>
-        <li class="nav-item {{ Nav::hasSegment(['manage-conference-category','manage-sponsorship-type','manage-sponsors','manage-speakers'], 1 ,'menu-is-opening menu-open') }}">
-          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-conference-category','manage-sponsorship-type','manage-sponsors','manage-speakers']) }}">
+        <li class="nav-item {{ Nav::hasSegment(['manage-conference-category','manage-event-type','manage-sponsorship-type','manage-sponsors','manage-speakers'], 1 ,'menu-is-opening menu-open') }}">
+          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-conference-category','manage-event-type','manage-sponsorship-type','manage-sponsors','manage-speakers']) }}">
             <i class="nav-icon fas fa-cogs"></i>
             <p>
               {{ __('admin.master_setup') }}
@@ -93,19 +93,63 @@
             </li>
           </ul> -->
         </li>
+        <li class="nav-item {{ Nav::hasSegment(['manage-contacts-group','manage-contacts'], 1 ,'menu-is-opening menu-open') }}">
+          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-contacts-group','manage-contacts']) }}">
+            <i class="nav-icon fas fa-address-book"></i>
+            <p>
+              {{ __('admin.contacts') }}
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-contacts-group','manage-contacts']) }}">
+            <li class="nav-item">
+              <a href="{{route('contacts_group')}}" class="nav-link {{ Nav::hasSegment('manage-contacts-group') }}">
+                <i class="fas fa-cubes nav-icon"></i>
+                <p>{{ __('admin.contacts_group') }}</p>
+                <!-- <span class="right badge badge-info">2</span> -->
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{route('contacts')}}" class="nav-link {{ Nav::hasSegment('manage-contacts') }}">
+                <i class="nav-icon fas fa-address-book"></i>
+                <p>
+                  {{ __('admin.contacts') }}
+                </p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item {{ Nav::hasSegment(['manage-invitation'], 1 ,'menu-is-opening menu-open') }}">
+          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-invitation']) }}">
+            <i class="nav-icon fas fa-envelope"></i>
+            <p>
+              {{ __('admin.invitation') }}
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-invitation']) }}">
+            <li class="nav-item">
+              <a href="#" class="nav-link {{ Nav::hasSegment('manage-contacts-group') }}">
+                <i class="fas fa-plus nav-icon"></i>
+                <p>{{ __('admin.new') }} {{ __('admin.invitation') }}</p>
+                <!-- <span class="right badge badge-info">2</span> -->
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link {{ Nav::hasSegment('manage-contacts') }}">
+                <i class="nav-icon fas fa-share-square"></i>
+                <p>
+                  {{ __('admin.invitation') }} {{ __('admin.sent') }}
+                </p>
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="nav-item">
           <a href="{{route('registration_request')}}" class="nav-link {{ Nav::isResource('manage-registration-request') }}">
             <i class="nav-icon fas fa-user"></i>
             <p>
               {{ __('admin.registration_request') }}
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="{{route('contacts')}}" class="nav-link {{ Nav::isResource('manage-contacts') }}">
-            <i class="nav-icon fas fa-address-book"></i>
-            <p>
-              {{ __('admin.contacts') }}
             </p>
           </a>
         </li>

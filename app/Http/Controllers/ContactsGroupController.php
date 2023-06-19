@@ -9,51 +9,47 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
-use App\Models\Contacts;
 use App\Models\ContactsGroup;
 
-class ContactsController extends Controller
+class ContactsGroupController extends Controller
 {
     protected $data;
 
     public function __construct()
     {
         $this->data = [
-            'page_name'             => trans('admin.contacts'),
-            'page_slug'             => Str::slug(trans('admin.contacts'),'-'),
-            'page_url'              => route('contacts'),
-            'page_add'              => 'contacts_create',
-            'page_update'           => 'contacts_update',
-            'page_delete'           => 'contacts_delete',
-            'page_publish_unpublish'=> 'contacts_publish_unpublish',
+            'page_name'             => trans('admin.contacts_group'),
+            'page_slug'             => Str::slug(trans('admin.contacts_group'),'-'),
+            'page_url'              => route('contacts_group'),
+            'page_add'              => 'contacts_group_create',
+            'page_update'           => 'contacts_group_update',
+            'page_delete'           => 'contacts_group_delete',
+            'page_publish_unpublish'=> 'contacts_group_publish_unpublish',
         ];
     }  
 
     public function index()
     {
-        $this->data['rows'] = Contacts::join('contacts_group','contacts_group.id','=','contacts.contacts_group_id')
-                                        ->get(['contacts.*','contacts_group.name as contacts_group_name']);
-        return view('contacts.list',$this->data);
+        $this->data['rows'] = ContactsGroup::all();
+        return view('contacts_group.list',$this->data);
     }
 
     public function create(Request $request)
     {
         if ($request->isMethod('post')) {
+
             $validator = Validator::make($request->all(), [
-                'contacts_group_id' => 'required',
-                'fname' => 'required',
-                'lname' => 'required',
-                'email' => 'required|email|unique:contacts,email',
+                'name' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = Contacts::create($request->all());
+                    $data = ContactsGroup::create($request->all());
                     $data->save();
                     DB::commit();
-                    return redirect()->route('contacts')->with('success', trans('flash.AddedSuccessfully'));
+                    return redirect()->route('contacts_group')->with('success', trans('flash.AddedSuccessfully'));
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
@@ -61,39 +57,35 @@ class ContactsController extends Controller
                 }
             }
         } else {
-            $this->data['rows_contacts_group'] = ContactsGroup::where('published','1')->get();
-            return view('contacts.create',$this->data);
+            return view('contacts_group.create',$this->data);
         }
     }
 
     public function update(Request $request,$id)
     {
         if ($request->isMethod('post')) {
+
             $validator = Validator::make($request->all(), [
-                'contacts_group_id' => 'required',
-                'fname' => 'required',
-                'lname' => 'required',
-                'email' => "required|email|unique:contacts,email,$id",
+                'name' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = Contacts::findOrFail($id);
+                    $data = ContactsGroup::findOrFail($id);
                     $data->update($request->all());
                     DB::commit();
-                    return redirect()->route('contacts')->with('success', trans('flash.UpdatedSuccessfully'));
+                    return redirect()->route('contacts_group')->with('success', trans('flash.UpdatedSuccessfully'));
                 }   
-                catch(Exception $e) {
+                catch(Exception $e) {   
                     DB::rollback(); 
                     return back();
                 }
             }
         } else {
-            $this->data['row'] = Contacts::find($id);
-            $this->data['rows_contacts_group'] = ContactsGroup::where('published','1')->get();
-            return view('contacts.update',$this->data);
+            $this->data['row'] = ContactsGroup::find($id);
+            return view('contacts_group.update',$this->data);
         }
     }
 
@@ -103,10 +95,10 @@ class ContactsController extends Controller
 
             DB::beginTransaction();
             try {
-                $data = Contacts::findOrFail($id);
+                $data = ContactsGroup::findOrFail($id);
                 $data->delete();
                 DB::commit();
-                return redirect()->route('contacts')->with('success', trans('flash.DeletedSuccessfully'));
+                return redirect()->route('contacts_group')->with('success', trans('flash.DeletedSuccessfully'));
             }   
             catch(Exception $e) {   
                 DB::rollback(); 
@@ -128,7 +120,7 @@ class ContactsController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = Contacts::findOrFail($request->id);
+                    $data = ContactsGroup::findOrFail($request->id);
                     $data->published = $request->published;
                     $data->save();
                     DB::commit();
