@@ -19,15 +19,15 @@
             </p>
           </a>
         </li>
-        <li class="nav-item {{ Nav::hasSegment(['manage-conference-category','manage-event-type','manage-sponsorship-type','manage-sponsors','manage-speakers'], 1 ,'menu-is-opening menu-open') }}">
-          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-conference-category','manage-event-type','manage-sponsorship-type','manage-sponsors','manage-speakers']) }}">
+        <li class="nav-item {{ Nav::hasSegment(['manage-conference-category','manage-event-type','manage-sponsorship-type','manage-sponsors','manage-speakers','manage-contact-information'], 1 ,'menu-is-opening menu-open') }}">
+          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-conference-category','manage-event-type','manage-sponsorship-type','manage-sponsors','manage-speakers','manage-contact-information']) }}">
             <i class="nav-icon fas fa-cogs"></i>
             <p>
               {{ __('admin.master_setup') }}
               <i class="fas fa-angle-left right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-conference-category','manage-event-type','manage-sponsorship-type','manage-sponsors','manage-speakers']) }}">
+          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-conference-category','manage-event-type','manage-sponsorship-type','manage-sponsors','manage-speakers','manage-contact-information']) }}">
             <li class="nav-item">
               <a href="{{route('conference_category')}}" class="nav-link {{ Nav::hasSegment('manage-conference-category') }}">
                 <i class="fas fa-cubes nav-icon"></i>
@@ -58,6 +58,13 @@
               <a href="{{route('speakers')}}" class="nav-link {{ Nav::hasSegment('manage-speakers') }}">
                 <i class="nav-icon fas fa-volume-up"></i>
                 <p>{{ __('admin.all') }} {{ __('admin.speakers') }}</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{route('contact_information')}}" class="nav-link {{ Nav::hasSegment('manage-contact-information') }}">
+                <i class="fas fa-cubes nav-icon"></i>
+                <p>{{ __('admin.contact_information') }}</p>
+                <!-- <span class="right badge badge-info">2</span> -->
               </a>
             </li>
           </ul>

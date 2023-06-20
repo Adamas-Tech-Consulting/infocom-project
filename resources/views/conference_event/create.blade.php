@@ -59,6 +59,9 @@
           <li class="nav-item">
             <a class="nav-link" id="tab4" href="{{ route('conference_speakers',$parent_id) }}" role="tab" aria-controls="tab4" aria-selected="false"><i class="fa fa-volume-up"></i> {{ __('admin.conference') }} {{ __('admin.speakers') }}</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" id="tab5" href="{{ route('conference_contact_information',$parent_id) }}" role="tab" aria-controls="tab5" aria-selected="false"><i class="fa fa-user"></i> {{ __('admin.contact_information') }}</a>
+          </li>
         </ul>
         <div class="card card-warning card-outline direct-chat-warning">
           <form id="validation-form" action="" method="post" enctype="multipart/form-data">
@@ -150,7 +153,7 @@
                         <div class="col-3">
                           <div class="form-group">
                             <label for="subject_line">{{ __('admin.session_subject_line') }}</label>
-                            <textarea class="form-control" name="subject_line[]" placeholder="{{ __('admin.enter') }} {{ __('admin.session_subject_line') }}" style="height:38px"></textarea>
+                            <textarea class="form-control" name="subject_line[]" placeholder="{{ __('admin.enter') }} {{ __('admin.session_subject_line') }}" style="height:31px"></textarea>
                           </div>
                         </div>
                         <div class="col-1">

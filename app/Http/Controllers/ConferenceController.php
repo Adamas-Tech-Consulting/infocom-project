@@ -12,10 +12,13 @@ use DB;
 use App\Models\ConferenceCategory;
 use App\Models\ConferenceMethod;
 use App\Models\Conference;
+use App\Models\ConferenceEvent;
 use App\Models\Sponsors;
 use App\Models\ConferenceSponsors;
 use App\Models\Speakers;
 use App\Models\ConferenceSpeakers;
+use App\Models\ContactInformation;
+use App\Models\ConferenceContactInformation;
 
 class ConferenceController extends Controller
 {
@@ -314,6 +317,23 @@ class ConferenceController extends Controller
         }
     }
 
+    public function event_speakers(Request $request, $id)
+    {
+        if ($request->isMethod('post')) {
+            $speakers_id = $request->speakers_id;
+            $this->data['speakers_id'] = $speakers_id;
+            $this->data['rows'] = ConferenceEvent::join('event_type','event_type.id','=','event.event_type_id')
+                                            ->leftJoin('event_speakers',function($join) use($speakers_id) {
+                                                $join->on('event_speakers.event_id','event.id')
+                                                ->where('event_speakers.speakers_id',$speakers_id);
+                                            })
+                                            ->where('event.conference_id','=',$id)
+                                            ->get(['event.*','event_type.name as event_type_name','event_speakers.id as event_speakers_id', 'event_speakers.is_key_speaker']);
+            echo view('conference.list_events',$this->data);
+        }
+        
+    }
+
     public function key_speakers(Request $request)
     {
         if ($request->isMethod('post')) {
@@ -338,6 +358,52 @@ class ConferenceController extends Controller
                     return back();
                 }
             }
+        }
+    }
+
+    public function contact_information(Request $request, $id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'contact_information_id' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    if($request->id) {
+                        ConferenceContactInformation::where('id',$request->id)->delete();
+                        $contact_information_id=NULL;
+                        $success_message = trans('flash.RemovedSuccessfully');
+                    } else {
+                        $insert_data = [
+                            'conference_id' => $id,
+                            'contact_information_id' => $request->contact_information_id,
+                        ];
+                        $data = ConferenceContactInformation::create($insert_data);
+                        $data->save();
+                        $contact_information_id=$data->id;
+                        $success_message = trans('flash.AssignedSuccessfully');
+                    }
+                    DB::commit();
+                    return response()->json(['success' => $success_message,'id' => $contact_information_id]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['row_conference'] = Conference::find($id);
+            $this->data['rows'] = ContactInformation::leftJoin('conference_contact_information',function($join) use($id) {
+                                                    $join->on('conference_contact_information.contact_information_id','contact_information.id')
+                                                    ->where('conference_contact_information.conference_id',$id);
+                                                })
+                                                ->orderByRaw('CASE WHEN conference_contact_information.id IS NULL THEN 1 ELSE 0 END ASC')
+                                                ->get(['contact_information.*','conference_contact_information.id as conference_contact_information_id']);
+            return view('conference.list_contact_information',$this->data);
         }
     }
 }

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\RegistrationRequestExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use DB;
 
@@ -56,20 +58,8 @@ class RegistrationRequestController extends Controller
         if ($request->session()->exists('selected_conference')) {
             $conference_id = $request->session()->get('selected_conference');
             $conference = Conference::find($conference_id);
-            $rows = RegistrationRequest::join('conference_registration_request','conference_registration_request.registration_request_id','registration_request.id')
-                                                ->where('conference_registration_request.conference_id',$conference_id)
-                                                ->get('registration_request.*');
             $filename = $conference->slug.".csv";
-            $handle = fopen($filename, 'w+');
-            fputcsv($handle, array(__('admin.name'), __('admin.designation'), __('admin.organization'), __('admin.email'), __('admin.mobile'), __('admin.pickup_address')));
-            foreach($rows as $row) {
-                fputcsv($handle, array($row->fname.' '.$row->lname, $row->designation, $row->organization, $row->email, $row->mobile, $row->pickup_address));
-            }
-            fclose($handle);
-            $headers = array(
-                'Content-Type' => 'text/csv',
-            );
-            return \Response::download($handle, $filename, $headers);
+            return Excel::download(new RegistrationRequestExport($conference_id), $filename);
         } else {
             return redirect()->route('registration_request');
         }

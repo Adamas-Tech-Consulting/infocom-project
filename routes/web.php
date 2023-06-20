@@ -49,7 +49,9 @@ Route::middleware(['web'])->group(function () {
             Route::post('/publish-unpublish', [App\Http\Controllers\ConferenceController::class, 'publish_unpublish'])->name('conference_publish_unpublish');
             Route::any('/sponsors/{conference_id}', [App\Http\Controllers\ConferenceController::class, 'sponsors'])->name('conference_sponsors');
             Route::any('/speakers/{conference_id}', [App\Http\Controllers\ConferenceController::class, 'speakers'])->name('conference_speakers');
+            Route::any('/event-speakers/{conference_id}', [App\Http\Controllers\ConferenceController::class, 'event_speakers'])->name('conference_event_speakers');
             Route::any('/key-speakers', [App\Http\Controllers\ConferenceController::class, 'key_speakers'])->name('conference_key_speakers');
+            Route::any('/contact-information/{conference_id}', [App\Http\Controllers\ConferenceController::class, 'contact_information'])->name('conference_contact_information');
         });
 
         //Event Type
@@ -70,8 +72,9 @@ Route::middleware(['web'])->group(function () {
             Route::post('/publish-unpublish/{conference_id}', [App\Http\Controllers\ConferenceEventController::class, 'publish_unpublish'])->name('event_publish_unpublish');
             Route::get('/create-event-details/{conference_id}', [App\Http\Controllers\ConferenceEventController::class, 'create_event_details'])->name('event_details_create');
             Route::any('/sponsors/{conference_id}/{id}', [App\Http\Controllers\ConferenceEventController::class, 'sponsors'])->name('event_sponsors');
-            Route::any('/speakers/{conference_id}/{id}', [App\Http\Controllers\ConferenceEventController::class, 'speakers'])->name('event_speakers');
+            Route::any('/speakers/{conference_id}/{id?}', [App\Http\Controllers\ConferenceEventController::class, 'speakers'])->name('event_speakers');
             Route::any('/key-speakers/{conference_id}', [App\Http\Controllers\ConferenceEventController::class, 'key_speakers'])->name('event_key_speakers');
+            Route::any('/contact-information/{conference_id}/{id}', [App\Http\Controllers\ConferenceEventController::class, 'contact_information'])->name('event_contact_information');
         });
 
         //Sponsorship Type
@@ -124,6 +127,15 @@ Route::middleware(['web'])->group(function () {
             Route::any('/update/{id}', [App\Http\Controllers\ContactsController::class, 'update'])->name('contacts_update');
             Route::any('/delete/{id}', [App\Http\Controllers\ContactsController::class, 'delete'])->name('contacts_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\ContactsController::class, 'publish_unpublish'])->name('contacts_publish_unpublish');
+        });
+
+        //Contact Information
+        Route::prefix('manage-contact-information')->group(function (){
+            Route::get('/', [App\Http\Controllers\ContactInformationController::class, 'index'])->name('contact_information');
+            Route::any('/create/{conference_id?}/{event_id?}', [App\Http\Controllers\ContactInformationController::class, 'create'])->name('contact_information_create');
+            Route::any('/update/{id}', [App\Http\Controllers\ContactInformationController::class, 'update'])->name('contact_information_update');
+            Route::any('/delete/{id}', [App\Http\Controllers\ContactInformationController::class, 'delete'])->name('contact_information_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\ContactInformationController::class, 'publish_unpublish'])->name('contact_information_publish_unpublish');
         });
 
     });

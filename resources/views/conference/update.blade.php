@@ -59,6 +59,9 @@
         <li class="nav-item">
           <a class="nav-link" id="tab4" href="{{ route('conference_speakers',$row->id) }}" role="tab" aria-controls="tab4" aria-selected="false"><i class="fa fa-volume-up"></i> {{ __('admin.conference') }} {{ __('admin.speakers') }}</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" id="tab5" href="{{ route('conference_contact_information',$row->id) }}" role="tab" aria-controls="tab5" aria-selected="false"><i class="fa fa-user"></i> {{ __('admin.contact_information') }}</a>
+        </li>
       </ul>
       <div class="card card-warning card-outline direct-chat-warning">
         <form id="validation-form" action="" method="post" enctype="multipart/form-data">

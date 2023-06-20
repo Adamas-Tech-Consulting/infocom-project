@@ -72,6 +72,9 @@
         <li class="nav-item">
           <a class="nav-link" id="tab4" href="{{ route('conference_speakers',$parent_id) }}" role="tab" aria-controls="tab4" aria-selected="false"><i class="fa fa-volume-up"></i> {{ __('admin.conference') }} {{ __('admin.speakers') }}</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" id="tab5" href="{{ route('conference_contact_information',$parent_id) }}" role="tab" aria-controls="tab5" aria-selected="false"><i class="fa fa-user"></i> {{ __('admin.contact_information') }}</a>
+        </li>
       </ul>
       <div class="card">
         <form id="validation-form" action="" method="post" enctype="multipart/form-data">
@@ -79,13 +82,14 @@
           <input type="hidden" name="conference_id" value="{{$parent_id}}" />
           <div class="card-body">
             <div class="row">
-              <div class="col-2 col-sm-2">
+              <div class="col-3 col-sm-3">
                 <div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab" role="tablist" aria-orientation="vertical" style="border-right: 0">
                   <a class="nav-link active" id="vert-tabs-home-tab" data-toggle="pill" href="#vert-tabs-home" role="tab" aria-controls="vert-tabs-home" aria-selected="false"><i class="fa fa-calendar"></i> {{ __('admin.event') }} {{ __('admin.details') }}</a>
                   <a class="nav-link" id="vert-tabs-profile-tab" href="{{route('event_speakers',[$parent_id,$row->id])}}" role="tab" aria-controls="vert-tabs-profile" aria-selected="false"><i class="fa fa-volume-up"></i> {{ __('admin.event') }} {{ __('admin.speakers') }}</a>
+                  <a class="nav-link" id="vert-tabs-contact-tab" href="{{route('event_contact_information',[$parent_id,$row->id])}}" role="tab" aria-controls="vert-tabs-profile" aria-selected="false"><i class="fa fa-user"></i> {{ __('admin.contact_information') }}</a>
                 </div>
               </div>
-              <div class="col-10 col-sm-10">
+              <div class="col-9 col-sm-9">
                 <div class="tab-content" id="vert-tabs-tabContent">
                   <div class="tab-pane fade active show" id="vert-tabs-home" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
                     <div class="card">
@@ -177,13 +181,13 @@
                                   <div class="col-3">
                                     <div class="form-group">
                                       <label for="subject_line">{{ __('admin.session_subject_line') }}</label>
-                                      <textarea class="form-control" name="subject_line[]" placeholder="{{ __('admin.enter') }} {{ __('admin.session_subject_line') }}" style="height:38px">{{$event_details->subject_line}}</textarea>
+                                      <textarea class="form-control" name="subject_line[]" placeholder="{{ __('admin.enter') }} {{ __('admin.session_subject_line') }}" style="height:31px">{{$event_details->subject_line}}</textarea>
                                     </div>
                                   </div>
                                   <div class="col-1">
                                     <div class="form-group float-right">
                                       <label for="rem_event_details" style="height:20px"></label>
-                                      <div><button type="button" title="{{ __('admin.remove') }} {{ __('admin.event') }} {{ __('admin.details') }}" id="remove_event_details" class="btn btn-sm btn-danger bW float-right"><i class="fa fa-minus-circle" aria-hidden="true"></i></button></div>
+                                      <div class="table"><button type="button" title="{{ __('admin.remove') }} {{ __('admin.event') }} {{ __('admin.details') }}" id="remove_event_details" class="btn btn-xs btn-danger bW float-right"><i class="fa fa-minus-circle" aria-hidden="true"></i></button></div>
                                     </div>
                                   </div>			
                                 </div>
@@ -224,13 +228,13 @@
                                   <div class="col-3">
                                     <div class="form-group">
                                       <label for="subject_line">{{ __('admin.session_subject_line') }}</label>
-                                      <textarea class="form-control" name="subject_line[]" placeholder="{{ __('admin.enter') }} {{ __('admin.session_subject_line') }}" style="height:38px"></textarea>
+                                      <textarea class="form-control" name="subject_line[]" placeholder="{{ __('admin.enter') }} {{ __('admin.session_subject_line') }}" style="height:31px"></textarea>
                                     </div>
                                   </div>
                                   <div class="col-1">
                                     <div class="form-group float-right">
                                       <label for="add_event_details" style="height:20px"></label>
-                                      <div><button type="button" id="add_event_details" title="{{ __('admin.add') }} {{ __('admin.event') }} {{ __('admin.details') }}" id="rem_event_details" class="btn btn-sm btn-success bW"><i class="fa fa-plus-circle" aria-hidden="true"></i></button></div>
+                                      <div class="table"><button type="button" id="add_event_details" title="{{ __('admin.add') }} {{ __('admin.event') }} {{ __('admin.details') }}" id="rem_event_details" class="btn btn-xs btn-success bW"><i class="fa fa-plus-circle" aria-hidden="true"></i></button></div>
                                     </div>
                                   </div>			
                                 </div>

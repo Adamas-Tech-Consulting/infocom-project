@@ -10,6 +10,7 @@ use DB;
 
 //Model
 use App\Models\Speakers;
+use App\Models\ConferenceSpeakers;
 use App\Models\ConferenceEventSpeakers;
 
 class SpeakersController extends Controller
@@ -69,14 +70,23 @@ class SpeakersController extends Controller
                     {
                         $assign_data = [
                             'conference_id' => $conference_id,
-                            'event_id' => $event_id,
                             'speakers_id' => $id,
                         ];
-                        $data = ConferenceEventSpeakers::create($assign_data);
+
+                        if($event_id) {
+                            $assign_data['event_id'] = $event_id;
+                            ConferenceEventSpeakers::create($assign_data);
+                        } else {
+                            ConferenceSpeakers::create($assign_data);
+                        }
                     }
                     DB::commit();
                     if($conference_id) {
-                        return redirect()->route('conference_speakers',$conference_id)->with('success', trans('flash.AddedAndAssignedSuccessfully'));
+                        if($event_id) {
+                            return redirect()->route('event_speakers',[$conference_id, $event_id])->with('success', trans('flash.AddedAndAssignedSuccessfully'));
+                        } else {
+                            return redirect()->route('conference_speakers',$conference_id)->with('success', trans('flash.AddedAndAssignedSuccessfully'));
+                        }
                     }
                     else {
                         return redirect()->route('speakers')->with('success', trans('flash.AddedSuccessfully')); 

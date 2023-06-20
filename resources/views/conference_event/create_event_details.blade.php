@@ -32,13 +32,13 @@
       <div class="col-3">
         <div class="form-group">
           <label for="subject_line">{{ __('admin.session_subject_line') }}</label>
-          <textarea class="form-control" name="subject_line[]" placeholder="{{ __('admin.enter') }} {{ __('admin.session_subject_line') }}" style="height:38px"></textarea>
+          <textarea class="form-control" name="subject_line[]" placeholder="{{ __('admin.enter') }} {{ __('admin.session_subject_line') }}" style="height:31px"></textarea>
         </div>
       </div>
       <div class="col-1">
         <div class="form-group float-right">
           <label for="rem_event_details" style="height:20px"></label>
-          <div><button type="button" data-bs-toggle="tooltip" title="{{ __('admin.remove') }} {{ __('admin.event') }} {{ __('admin.details') }}" id="remove_event_details" class="btn btn-sm btn-danger bW float-right"><i class="fa fa-minus-circle" aria-hidden="true"></i></button></div>
+          <div class="table"><button type="button" data-bs-toggle="tooltip" title="{{ __('admin.remove') }} {{ __('admin.event') }} {{ __('admin.details') }}" id="remove_event_details" class="btn btn-xs btn-danger bW float-right"><i class="fa fa-minus-circle" aria-hidden="true"></i></button></div>
         </div>
       </div>			
     </div>

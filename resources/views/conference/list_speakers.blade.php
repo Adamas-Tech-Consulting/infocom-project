@@ -13,7 +13,7 @@
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
           <li class="breadcrumb-item"><a href="{{$page_url}}">{{ __('admin.manage') }} {{ $page_name }}</a></li>
           <li class="breadcrumb-item"><a href="{{route($page_update,$row_conference->id)}}">{{ $row_conference->title }}</a></li>
-          <li class="breadcrumb-item active">{{ __('admin.sponsors') }}</li>
+          <li class="breadcrumb-item active">{{ __('admin.speakers') }}</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -58,6 +58,9 @@
         <li class="nav-item">
           <a class="nav-link active" id="tab4" data-toggle="pill" href="javascript:void(0);" role="tab" aria-controls="tab4" aria-selected="false"><i class="fa fa-volume-up"></i> {{ __('admin.conference') }} {{ __('admin.speakers') }}</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" id="tab5" href="{{ route('conference_contact_information',$row_conference->id) }}" role="tab" aria-controls="tab5" aria-selected="false"><i class="fa fa-user"></i> {{ __('admin.contact_information') }}</a>
+        </li>
       </ul>
       <div class="card">
         <!-- /.card-header -->
@@ -82,7 +85,7 @@
               <td>{{$row->designation}}</td>
               <td>{{$row->company_name}}</td>
               <td class="text-center">
-                <button type="button" class="btn btn-xs bg-gradient-info conference-speaker-info {{($row->conference_speakers_id)?'':'d-none'}}"  data-bs-toggle="tooltip" title="{{ __('admin.info') }}" data-id="{{$row->conference_speakers_id}}" data-conference-id="{{$row_conference->id}}" data-speakers-id="{{($row->id)}}"><i class="fa fa-info-circle"></i></button>
+                <button type="button" class="btn btn-xs bg-gradient-info conference-speaker-info {{($row->conference_speakers_id)?'':'d-none'}}"  data-bs-toggle="tooltip" title="{{ __('admin.info') }}" data-id="{{$row->conference_speakers_id}}" data-conference-id="{{$row_conference->id}}" data-speakers-id="{{($row->id)}}" data-speaker-name="{{$row->name}}"><i class="fa fa-info-circle"></i></button>
                 <button type="button" class="btn btn-xs bg-gradient-{{$row->is_key_speaker==1 ? 'success' : 'secondary'}} {{($row->conference_speakers_id)?'':'d-none'}} toggle-key-speaker"  data-bs-toggle="tooltip" title="{{$row->is_key_speaker==1 ? __('admin.key_speaker') : __('admin.non_key_speaker')}}" data-id="{{$row->conference_speakers_id}}" data-conference-id="{{$row_conference->id}}" data-is-key-speaker="{{($row->is_key_speaker)}}"><i class="fa fa-key"></i></button>
                 <button type="button" class="btn btn-xs bg-gradient-{{($row->conference_speakers_id)?'danger':'primary'}} toggle-assigned"  data-bs-toggle="tooltip" title="{{ ($row->conference_speakers_id) ? __('admin.remove') : __('admin.assign') }}" data-id="{{$row->conference_speakers_id}}" data-conference-id="{{$row_conference->id}}" data-speakers-id="{{($row->id)}}"><i class="fa fa-{{($row->conference_speakers_id)?'minus-circle':'plus-circle'}}"></i></button>
               </td>
@@ -100,6 +103,27 @@
   <!-- /.row -->
   </div><!-- /.container-fluid -->
 </section>
+<div class="modal fade" id="conferenceSpeakerModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span class="speaker-name">Atanu Pramanik</span>
+          <p><small>{{ __('admin.conference') }} {{ __('admin.name') }} : {{ $row_conference->title }}</small></p>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6 class="mb-3">{{ __('admin.event') }} {{ __('admin.of') }} {{ $row_conference->title }}</h6>
+        <div id="event_speakers"></div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 <!-- /.content -->
 @endsection
 @section('script')
@@ -150,8 +174,36 @@
             $(buttonObject).find('i').toggleClass('fa-plus-circle fa-minus-circle')
             $(buttonObject).prev().data('id',data.id)
             $(buttonObject).prev().prev().data('id',data.id)
-            data.id?$(buttonObject).prev().removeClass("d-none"):$(buttonObject).prev().addClass("d-none");
-            data.id?$(buttonObject).prev().prev().removeClass("d-none"):$(buttonObject).prev().addClass("d-none");
+            data.id?$(buttonObject).prev().removeClass("d-none"):$(buttonObject).prev().addClass("d-none").removeClass('bg-gradient-success').addClass('bg-gradient-secondary');
+            data.id?$(buttonObject).prev().prev().removeClass("d-none"):$(buttonObject).prev().prev().addClass("d-none");
+          }
+        },  
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+        }
+      })
+    })
+  });
+
+  $(function () {
+    $(document).on('click','.conference-speaker-info', function() {
+      var buttonObject = $(this);
+      var id = $(this).data('id');
+      var speakersId = $(this).data('speakers-id');
+      $(".speaker-name").html($(this).data('speaker-name'));
+      $("#conferenceSpeakerModal").modal();
+      $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type:"POST",
+        url: "{{route('conference_event_speakers',$row_conference->id)}}", 
+        data:{'id':id,'speakers_id':speakersId},
+        success:function(data){
+          if(data.error) {
+            toastr.error(data.error)
+          } else {
+            $("#event_speakers").html(data);
           }
         },  
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -172,6 +224,68 @@
         },
         type:"POST",
         url: "{{route('conference_key_speakers')}}",
+        data:{'id':id,'is_key_speaker':isKeySpeaker},
+        success:function(data){
+          if(data.error) {
+            toastr.error(data.error)
+          } else {
+            toastr.success("{{ __('admin.speakers') }} "+data.success)
+            $(buttonObject).data('is-key-speaker',isKeySpeaker)
+            $(buttonObject).toggleClass('bg-gradient-success bg-gradient-secondary')
+            $(buttonObject).tooltip('hide').attr('data-original-title', isKeySpeaker ? 'Key Speaker' : 'Non Key Speaker').tooltip('show');
+          }
+        },  
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+        }
+      })
+    })
+  });
+
+  $(function () {
+    $(document).on('click','.toggle-event-assigned',function() {
+      var buttonObject = $(this);
+      var id = $(this).data('id');
+      var eventId = $(this).data('event-id');
+      var speakersId = $(this).data('speakers-id');
+      $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type:"POST",
+        url: "{{route('event_speakers',[$row_conference->id])}}", 
+        data:{'id':id,'event_id':eventId,'speakers_id':speakersId},
+        success:function(data){
+          if(data.error) {
+            toastr.error(data.error)
+          } else {
+            toastr.success("{{ __('admin.speakers') }} "+data.success)
+            $(buttonObject).data('id',data.id)
+            $(buttonObject).toggleClass('bg-gradient-primary bg-gradient-danger')
+            $(buttonObject).tooltip('hide').attr('data-original-title', data.id ? "{{ __('admin.remove') }} " : "{{ __('admin.assign') }} ").tooltip('show');
+            $(buttonObject).find('i').toggleClass('fa-plus-circle fa-minus-circle')
+            $(buttonObject).prev().data('id',data.id)
+            data.id?$(buttonObject).prev().removeClass("d-none"):$(buttonObject).prev().addClass("d-none").removeClass('bg-gradient-success').addClass('bg-gradient-secondary');
+          }
+        },  
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+        }
+      })
+    })
+  });
+
+  $(function () {
+    $(document).on('click','.toggle-event-key-speaker',function() {
+      var buttonObject = $(this);
+      var id = $(this).data('id');
+      var isKeySpeaker = $(this).data('is-key-speaker') ? 0 : 1;
+      $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type:"POST",
+        url: "{{route('event_key_speakers',$row_conference->id)}}",
         data:{'id':id,'is_key_speaker':isKeySpeaker},
         success:function(data){
           if(data.error) {

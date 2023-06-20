@@ -16,9 +16,14 @@
   font-size: .75rem;
 }
 
-#vert-tabs-tab .nav-item.show .nav-link, #vert-tabs-tab .nav-link.active {
+.nav-tabs .nav-item .nav-link.active {
   color: #1f2d3d;
   background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+#vert-tabs-tab .nav-item.show .nav-link, #vert-tabs-tab .nav-link.active, #vert-tabs-tab .nav-link:hover, #vert-tabs-tab .nav-link:focus {
+  color: #1f2d3d;
   border-color: #ffc107;
 }
 
@@ -63,4 +68,18 @@
 
 .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
   line-height: calc(1.5em + .55rem);
+}
+
+.content-header h4.m-0 {
+  font-size: 20px;
+}
+
+.modal-title {
+  font-size: 22px;
+}
+
+.modal-title p {
+  font-size: 21px;
+  line-height: 16px;
+  color: #7a7575;
 }

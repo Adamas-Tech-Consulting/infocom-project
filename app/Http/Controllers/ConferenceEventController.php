@@ -17,6 +17,10 @@ use App\Models\ConferenceEventSponsors;
 use App\Models\Speakers;
 use App\Models\ConferenceEventSpeakers;
 use App\Models\EventType;
+use App\Models\ContactInformation;
+use App\Models\ConferenceEventContactInformation;
+
+
 
 class ConferenceEventController extends Controller
 {
@@ -295,7 +299,7 @@ class ConferenceEventController extends Controller
         }
     }
 
-    public function speakers(Request $request, $conference_id, $id)
+    public function speakers(Request $request, $conference_id, $id=NULL)
     {
         if ($request->isMethod('post')) {
 
@@ -314,7 +318,7 @@ class ConferenceEventController extends Controller
                     } else {
                         $insert_data = [
                             'conference_id' => $conference_id,
-                            'event_id' => $id,
+                            'event_id' => !empty($id) ? $id : $request->event_id,
                             'speakers_id' => $request->speakers_id,
                         ];
                         $data = ConferenceEventSpeakers::create($insert_data);
@@ -367,6 +371,54 @@ class ConferenceEventController extends Controller
                     return back();
                 }
             }
+        }
+    }
+
+    public function contact_information(Request $request, $conference_id, $id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'contact_information_id' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    if($request->id) {
+                        ConferenceEventContactInformation::where('id',$request->id)->delete();
+                        $contact_information_id=NULL;
+                        $success_message = trans('flash.RemovedSuccessfully');
+                    } else {
+                        $insert_data = [
+                            'conference_id' => $conference_id,
+                            'event_id' => $id,
+                            'contact_information_id' => $request->contact_information_id,
+                        ];
+                        $data = ConferenceEventContactInformation::create($insert_data);
+                        $data->save();
+                        $contact_information_id=$data->id;
+                        $success_message = trans('flash.AssignedSuccessfully');
+                    }
+                    DB::commit();
+                    return response()->json(['success' => $success_message,'id' => $contact_information_id]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['row_event'] = ConferenceEvent::find($id);
+            $this->data['rows'] = ContactInformation::leftJoin('event_contact_information',function($join) use($conference_id,$id) {
+                                                    $join->on('event_contact_information.contact_information_id','contact_information.id')
+                                                    ->where('event_contact_information.conference_id',$conference_id)
+                                                    ->where('event_contact_information.event_id',$id);
+                                                })
+                                                ->orderByRaw('CASE WHEN event_contact_information.id IS NULL THEN 1 ELSE 0 END ASC')
+                                                ->get(['contact_information.*','event_contact_information.id as event_contact_information_id']);
+            return view('conference_event.list_contact_information',$this->data);
         }
     }
 }

@@ -21,6 +21,7 @@ return [
     'all' => 'All',
     'allow' => 'Allow',
     'assign' => 'Assign',
+    'assign_or_remove' => 'Assign/Remove',
     'auto_registration_date_limit' => 'Last Registration Date',
 
     //B
@@ -33,6 +34,7 @@ return [
     'company_website' => 'Company Website',
     'conference' => 'Conference',
     'conference_category' => 'Conference Category',
+    'contact_information' => 'Contact Information',
     'contacts' => 'Contacts',
     'contacts_group' => 'Contact Group',
     'color' => 'Color',
@@ -106,7 +108,7 @@ return [
     'non_key_speaker' => 'Non Key Speaker',
 
     //O
-    'of' => 'Of',
+    'of' => 'of',
     'one' => 'One',
     'organization' => 'Organization',
     'other' => 'Other',
