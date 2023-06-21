@@ -1,0 +1,369 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+
+use DB;
+
+//Model
+use App\Models\Event;
+use App\Models\Schedule;
+use App\Models\ScheduleDetails;
+use App\Models\Sponsors;
+use App\Models\ScheduleSponsors;
+use App\Models\Speakers;
+use App\Models\ScheduleSpeakers;
+use App\Models\ScheduleType;
+use App\Models\ContactInformation;
+use App\Models\ScheduleContactInformation;
+
+
+
+class ScheduleController extends Controller
+{
+    protected $data;
+
+    public function __construct(Request $request)
+    {
+        $event_id = $request->route()->parameter('event_id');
+        $event = Event::find($event_id);
+        $this->data = [
+            'parent_id'                 => $event_id,
+            'parent_page_name'          => trans('admin.event'),
+            'parent_page_url'           => route('event'),
+            'parent_page_single_url'    => route('event_update',$event_id),
+            'parent_row'                => $event,
+            'event_id'                  => $event_id,
+            'page_name'                 => trans('admin.schedule'),
+            'page_slug'                 => Str::slug(trans('admin.schedule'),'-'),
+            'page_url'                  => route('schedule',$event_id),
+            'page_add'                  => 'schedule_create',
+            'page_update'               => 'schedule_update',
+            'page_delete'               => 'schedule_delete',
+            'page_publish_unpublish'    => 'schedule_publish_unpublish',
+        ];
+    }  
+
+    public function index($event_id)
+    {
+        $this->data['rows'] = Schedule::join('schedule_type','schedule_type.id','=','schedule.schedule_type_id')
+                                            ->where('event_id','=',$event_id)
+                                            ->get(['schedule.*','schedule_type.name as schedule_type_name']);
+        return view('schedule.list',$this->data);
+    }
+
+    public function create(Request $request, $event_id)
+    {
+        if ($request->isMethod('post')) {
+            $validator = Validator::make($request->all(), [
+                'schedule_day' => 'required',
+                'schedule_title' => 'required',
+                'schedule_type_id' => 'required',
+                'schedule_details' => 'required',
+                'from_time' => 'required',
+                'to_time' => 'required',
+            ]);
+            if($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            } else {
+                DB::beginTransaction();
+                try {
+                    $event = Event::find($event_id);
+                    $day = ($request->schedule_day) - 1;
+                    $insert_data = [
+                        'event_id' => $event_id,
+                        'schedule_date' => date('Y-m-d', strtotime($event->event_start_date . " +$day day")),
+                        'schedule_day' => $request->schedule_day,
+                        'schedule_title' => $request->schedule_title,
+                        'schedule_venue' => $request->schedule_venue,
+                        'schedule_type_id' => 1, //$request->schedule_type_id,
+                        'schedule_details' => $request->schedule_details,
+                        'from_time' => $request->from_time,
+                        'to_time' => $request->to_time,
+                    ];
+                    $data = Schedule::create($insert_data);
+                    $data->save();
+                    $id = $data->id;
+                    DB::commit();
+                    return redirect()->route('schedule_speakers', [$event_id, $id])->with('success', trans('flash.AddedSuccessfully'));
+                }   
+                catch(Exception $e) {
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['rows_type'] = ScheduleType::where('published','1')->get();
+            return view('schedule.create',$this->data);
+        }
+    }
+
+    public function update(Request $request, $event_id, $id)
+    {
+        if ($request->isMethod('post')) {
+            $validator = Validator::make($request->all(), [
+                'schedule_day' => 'required',
+                'schedule_title' => 'required',
+                'schedule_type_id' => 'required',
+                'schedule_details' => 'required',
+                'from_time' => 'required',
+                'to_time' => 'required',
+            ]);
+            if($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            } else {
+                DB::beginTransaction();
+                try {
+                    $event = Event::find($event_id);
+                    $day = ($request->schedule_day) - 1;
+                    $update_data = [
+                        'event_id' => $event_id,
+                        'schedule_date' => date('Y-m-d', strtotime($event->event_start_date . " +$day day")),
+                        'schedule_day' => $request->schedule_day,
+                        'schedule_title' => $request->schedule_title,
+                        'schedule_venue' => $request->schedule_venue,
+                        'schedule_type_id' => 1, //$request->schedule_type_id,
+                        'schedule_details' => $request->schedule_details,
+                        'from_time' => $request->from_time,
+                        'to_time' => $request->to_time,
+                    ];
+                    $data = Schedule::findOrFail($id);
+                    $data->update($update_data);
+                    DB::commit();
+                    return redirect()->route('schedule', $event_id)->with('success', trans('flash.UpdatedSuccessfully'));
+                }   
+                catch(Exception $e) {
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['schedule_id'] = $id;
+            $this->data['rows_type'] = ScheduleType::where('published','1')->get();
+            $this->data['row'] = Schedule::find($id);
+            return view('schedule.update',$this->data);
+        }
+    }
+
+    public function delete(Request $request, $event_id, $id)
+    {
+        if ($request->isMethod('post')) {
+
+            DB::beginTransaction();
+            try {
+                $data = Schedule::findOrFail($id);
+                $data->delete();
+                DB::commit();
+                return redirect()->route('schedule', $event_id)->with('success', trans('flash.DeletedSuccessfully'));
+            }   
+            catch(Exception $e) {   
+                DB::rollback(); 
+                return back();
+            }
+        }
+    }
+
+    public function publish_unpublish(Request $request, $event_id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+                'published' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    $data = Schedule::findOrFail($request->id);
+                    $data->published = $request->published;
+                    $data->save();
+                    DB::commit();
+                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        }
+    }
+
+    public function sponsors(Request $request, $event_id, $id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'sponsors_id' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    if($request->id) {
+                        ScheduleSponsors::where('id',$request->id)->delete();
+                        $schedule_sponsord_id=NULL;
+                        $success_message = trans('flash.RemovedSuccessfully');
+                    } else {
+                        $insert_data = [
+                            'event_id' => $event_id,
+                            'schedule_id' => $id,
+                            'sponsors_id' => $request->sponsors_id,
+                        ];
+                        $data = ScheduleSponsors::create($insert_data);
+                        $data->save();
+                        $schedule_sponsord_id=$data->id;
+                        $success_message = trans('flash.AssignedSuccessfully');
+                    }
+                    DB::commit();
+                    return response()->json(['success' => $success_message,'id' => $schedule_sponsord_id]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['row_schedule'] = Schedule::find($id);
+            $this->data['rows'] = Sponsors::leftJoin('schedule_sponsors',function($join) use($event_id,$id) {
+                                                    $join->on('schedule_sponsors.sponsors_id','sponsors.id')
+                                                    ->where('schedule_sponsors.event_id',$event_id)
+                                                    ->where('schedule_sponsors.schedule_id',$id);
+                                                })
+                                                ->leftJoin('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
+                                                ->orderByRaw('CASE WHEN schedule_sponsors.id IS NULL THEN 1 ELSE 0 END ASC')
+                                                ->get(['sponsors.*','schedule_sponsors.id as schedule_sponsors_id','sponsorship_type.name as sponsorship_type_name']);
+            return view('schedule.list_sponsors',$this->data);
+        }
+    }
+
+    public function speakers(Request $request, $event_id, $id=NULL)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'speakers_id' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    if($request->id) {
+                        ScheduleSpeakers::where('id',$request->id)->delete();
+                        $schedule_speaker_id=NULL;
+                        $success_message = trans('flash.RemovedSuccessfully');
+                    } else {
+                        $insert_data = [
+                            'event_id' => $event_id,
+                            'schedule_id' => !empty($id) ? $id : $request->schedule_id,
+                            'speakers_id' => $request->speakers_id,
+                        ];
+                        $data = ScheduleSpeakers::create($insert_data);
+                        $data->save();
+                        $schedule_speaker_id=$data->id;
+                        $success_message = trans('flash.AssignedSuccessfully');
+                    }
+                    DB::commit();
+                    return response()->json(['success' => $success_message,'id' => $schedule_speaker_id]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['schedule_id'] = $id;
+            $this->data['row_schedule'] = Schedule::find($id);
+            $this->data['rows'] = Speakers::leftJoin('schedule_speakers',function($join) use($event_id,$id) {
+                                                    $join->on('schedule_speakers.speakers_id','speakers.id')
+                                                    ->where('schedule_speakers.event_id',$event_id)
+                                                    ->where('schedule_speakers.schedule_id',$id);
+                                                })
+                                                ->orderByRaw('CASE WHEN schedule_speakers.id IS NULL THEN 1 ELSE 0 END ASC')
+                                                ->get(['speakers.*','schedule_speakers.id as schedule_speakers_id','schedule_speakers.is_key_speaker']);
+            return view('schedule.list_speakers',$this->data);
+        }
+    }
+
+    public function key_speakers(Request $request, $event_id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+                'is_key_speaker' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    $data = ScheduleSpeakers::findOrFail($request->id);
+                    $data->is_key_speaker = $request->is_key_speaker;
+                    $data->save();
+                    DB::commit();
+                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        }
+    }
+
+    public function contact_information(Request $request, $event_id, $id)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'contact_information_id' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    if($request->id) {
+                        ScheduleContactInformation::where('id',$request->id)->delete();
+                        $contact_information_id=NULL;
+                        $success_message = trans('flash.RemovedSuccessfully');
+                    } else {
+                        $insert_data = [
+                            'event_id' => $event_id,
+                            'schedule_id' => $id,
+                            'contact_information_id' => $request->contact_information_id,
+                        ];
+                        $data = ScheduleContactInformation::create($insert_data);
+                        $data->save();
+                        $contact_information_id=$data->id;
+                        $success_message = trans('flash.AssignedSuccessfully');
+                    }
+                    DB::commit();
+                    return response()->json(['success' => $success_message,'id' => $contact_information_id]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        } else {
+            $this->data['schedule_id'] = $id;
+            $this->data['row_schedule'] = Schedule::find($id);
+            $this->data['rows'] = ContactInformation::leftJoin('schedule_contact_information',function($join) use($event_id,$id) {
+                                                    $join->on('schedule_contact_information.contact_information_id','contact_information.id')
+                                                    ->where('schedule_contact_information.event_id',$event_id)
+                                                    ->where('schedule_contact_information.schedule_id',$id);
+                                                })
+                                                ->orderByRaw('CASE WHEN schedule_contact_information.id IS NULL THEN 1 ELSE 0 END ASC')
+                                                ->get(['contact_information.*','schedule_contact_information.id as schedule_contact_information_id']);
+            return view('schedule.list_contact_information',$this->data);
+        }
+    }
+}

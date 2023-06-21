@@ -29,7 +29,7 @@
         <div class="small-box bg-warning">
           <div class="inner">
             <h3>2</h3>
-            <p>Users</p>
+            <p>{{ __('admin.users') }}</p>
           </div>
           <div class="icon">
             <i class="fas fa-user-secret"></i>
@@ -43,12 +43,12 @@
         <div class="small-box bg-warning">
           <div class="inner">
             <h3>2</h3>
-            <p>Conference</p>
+            <p>{{ __('admin.event') }}</p>
           </div>
           <div class="icon">
-            <i class="fas fa-users"></i>
+            <i class="fas fa-calendar-plus"></i>
           </div>
-          <a href="{{route('conference')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{route('event')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->

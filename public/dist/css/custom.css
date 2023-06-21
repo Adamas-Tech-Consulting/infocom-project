@@ -16,10 +16,20 @@
   font-size: .75rem;
 }
 
+.nav-sidebar .menu-is-opening>.nav-link i.right, .nav-sidebar .menu-is-opening>.nav-link svg.right, .nav-sidebar .menu-open>.nav-link i.right, .nav-sidebar .menu-open>.nav-link svg.right {
+  -webkit-transform: rotate(+90deg);
+  transform: rotate(+90deg);
+}
+
 .nav-tabs .nav-item .nav-link.active {
   color: #1f2d3d;
   background-color: #ffc107;
   border-color: #ffc107;
+}
+
+.nav-side .nav-link.active, .nav-side .show>.nav-link {
+  color: #ff8100;
+  background-color: #fff;
 }
 
 #vert-tabs-tab .nav-item.show .nav-link, #vert-tabs-tab .nav-link.active, #vert-tabs-tab .nav-link:hover, #vert-tabs-tab .nav-link:focus {
@@ -82,4 +92,12 @@
   font-size: 21px;
   line-height: 16px;
   color: #7a7575;
+}
+
+.reservationdate .input-group-text {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0.375rem 0.24rem;
 }
