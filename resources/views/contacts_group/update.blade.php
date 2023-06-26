@@ -42,32 +42,36 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <div class="card card-warning card-outline direct-chat-warning">
-        <form id="validation-form" action="" method="post">
-          @csrf
-          <div class="card-body">
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group">
-                  <label for="name">{{ $page_name }}</label>
-                  <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{$row->name}}"  placeholder="{{ __('admin.enter') }} {{ $page_name }}">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- Profile Image -->
+        @include('layouts.contact_group_sidebar')
+      </div>
+      <!-- /.col -->
+      <div class="col-md-9">
+        <div class="card card-warning card-outline direct-chat-warning">
+          <form id="validation-form" action="" method="post">
+            @csrf
+            <div class="card-body">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="name">{{ $page_name }}</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{$row->name}}"  placeholder="{{ __('admin.enter') }} {{ $page_name }}">
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- /.card-body -->
-          <div class="card-footer">
-            <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.update') }}</button>
-          </div>
-        </form>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.update') }}</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.card -->
       </div>
-      <!-- /.card -->
+      <!-- /.col -->
     </div>
-    <!-- /.col -->
-  </div>
-  <!-- /.row -->
   </div><!-- /.container-fluid -->
 </section>
 <!-- /.content -->

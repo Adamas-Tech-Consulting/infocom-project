@@ -9,29 +9,35 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
-use App\Models\ConferenceCategory;
+use App\Models\ContactsGroup;
+use App\Models\Contacts;
+use App\Models\Event;
+use App\Models\Invitation;
+use App\Models\InvitationGroup;
+use App\Models\InvitationTemplate;
 
-class ConferenceCategoryController extends Controller
+class InvitationController extends Controller
 {
     protected $data;
 
     public function __construct()
     {
         $this->data = [
-            'page_name'             => trans('admin.conference_category'),
-            'page_slug'             => Str::slug(trans('admin.conference_category'),'-'),
-            'page_url'              => route('conference_category'),
-            'page_add'              => 'conference_category_create',
-            'page_update'           => 'conference_category_update',
-            'page_delete'           => 'conference_category_delete',
-            'page_publish_unpublish'=> 'conference_category_publish_unpublish',
+            'page_name'             => trans('admin.invitation'),
+            'page_slug'             => Str::slug(trans('admin.invitation'),'-'),
+            'page_url'              => route('invitation'),
+            'page_add'              => 'invitation_create',
+            'page_update'           => 'invitation_update',
+            'page_delete'           => 'invitation_delete',
+            'page_publish_unpublish'=> 'invitation_publish_unpublish',
         ];
-    }  
+    }
 
     public function index()
     {
-        $this->data['rows'] = ConferenceCategory::all();
-        return view('conference_category.list',$this->data);
+        $this->data['rows'] = InvitationGroup::join('event','event.id','invitation_group.event_id')
+                                            ->get(['invitation_group.*','event.title as event_title']);
+        return view('invitation.list',$this->data);
     }
 
     public function create(Request $request)
@@ -39,26 +45,39 @@ class ConferenceCategoryController extends Controller
         if ($request->isMethod('post')) {
 
             $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'color' => 'required',
+                'event_id' => 'required',
+                'source_group' => 'required',
+                'mail_subject' => 'required',
+                'mail_body' => 'required',
+                'mail_signature' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = ConferenceCategory::create($request->all());
+                    $data = InvitationGroup::create($request->all());
                     $data->save();
+                    $id = $data->id;
+                    $contacts = Contacts::where('contacts_group_id', 1)->where('published', 1)->selectRaw("$id as invitation_group_id, fname, lname, email, mobile")->get();
+                    Invitation::insert($contacts->toArray());
+                    $update_data = array('total_invitee' => count($contacts->toArray()));
+                    InvitationGroup::where('id', '=', $id)->update($update_data);
                     DB::commit();
-                    return redirect()->route('conference_category')->with('success', trans('flash.AddedSuccessfully'));
+                    return redirect()->route('invitation')->with('success', trans('flash.AddedSuccessfully'));
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
                     return back();
                 }
             }
-        } else {
-            return view('conference_category.create',$this->data);
+        } else {    
+            $this->data['row_template'] = InvitationTemplate::find(1);
+            $this->data['rows_contacts_group'] = ContactsGroup::where('published','1')->get();
+            $this->data['rows_event'] = Event::whereNotIn('id',function($query) {
+                $query->select('event_id')->from('invitation_group');
+            })->get(['event.id','event.title']);
+            return view('invitation.create',$this->data);
         }
     }
 
@@ -75,10 +94,10 @@ class ConferenceCategoryController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = ConferenceCategory::findOrFail($id);
+                    $data = InvitationGroup::findOrFail($id);
                     $data->update($request->all());
                     DB::commit();
-                    return redirect()->route('conference_category')->with('success', trans('flash.UpdatedSuccessfully'));
+                    return redirect()->route('invitation')->with('success', trans('flash.UpdatedSuccessfully'));
                 }   
                 catch(Exception $e) {   
                     DB::rollback(); 
@@ -86,8 +105,10 @@ class ConferenceCategoryController extends Controller
                 }
             }
         } else {
-            $this->data['row'] = ConferenceCategory::find($id);
-            return view('conference_category.update',$this->data);
+            $this->data['row'] = InvitationGroup::find($id);
+            $this->data['rows_contacts_group'] = ContactsGroup::where('published','1')->get();
+            $this->data['rows_event'] = Event::where('id',$this->data['row']->event_id)->get(['event.id','event.title']);
+            return view('invitation.update',$this->data);
         }
     }
 
@@ -97,10 +118,10 @@ class ConferenceCategoryController extends Controller
 
             DB::beginTransaction();
             try {
-                $data = ConferenceCategory::findOrFail($id);
+                $data = InvitationGroup::findOrFail($id);
                 $data->delete();
                 DB::commit();
-                return redirect()->route('conference_category')->with('success', trans('flash.DeletedSuccessfully'));
+                return redirect()->route('invitation')->with('success', trans('flash.DeletedSuccessfully'));
             }   
             catch(Exception $e) {   
                 DB::rollback(); 
@@ -122,7 +143,7 @@ class ConferenceCategoryController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $data = ConferenceCategory::findOrFail($request->id);
+                    $data = InvitationGroup::findOrFail($request->id);
                     $data->published = $request->published;
                     $data->save();
                     DB::commit();
@@ -132,6 +153,32 @@ class ConferenceCategoryController extends Controller
                     DB::rollback(); 
                     return back();
                 }
+            }
+        }
+    }
+
+    public function invitee(Request $request, $id)
+    {
+        $this->data['row_invitation'] = InvitationGroup::join('event','event.id','invitation_group.event_id')->where('invitation_group.id', $id)
+                                            ->first(['invitation_group.id','invitation_group.total_invitee','event.title as event_title']);                                   
+        $this->data['rows'] = Invitation::where('invitation_group_id', $id)->get();
+        return view('invitation.list_invitee',$this->data);
+    }
+
+    public function delete_invitee(Request $request, $id)
+    {
+        if ($request->isMethod('post')) {
+
+            DB::beginTransaction();
+            try {
+                $data = InvitationGroup::findOrFail($id);
+                $data->delete();
+                DB::commit();
+                return redirect()->route('invitation_invitee', $id)->with('success', trans('flash.DeletedSuccessfully'));
+            }   
+            catch(Exception $e) {   
+                DB::rollback(); 
+                return back();
             }
         }
     }

@@ -32,16 +32,14 @@
               <a href="{{route('event_category')}}" class="nav-link {{ Nav::hasSegment('manage-event-category') }}">
                 <i class="fas fa-cubes nav-icon"></i>
                 <p>{{ __('admin.event_category') }}</p>
-                <!-- <span class="right badge badge-info">2</span> -->
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="{{route('schedule_type')}}" class="nav-link {{ Nav::hasSegment('manage-schedule-type') }}">
                 <i class="fas fa-cubes nav-icon"></i>
                 <p>{{ __('admin.schedule_type') }}</p>
-                <!-- <span class="right badge badge-info">2</span> -->
               </a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a href="{{route('sponsorship_type')}}" class="nav-link {{ Nav::hasSegment('manage-sponsorship-type') }}">
                 <i class="fas fa-cubes nav-icon"></i>
@@ -87,56 +85,20 @@
           </a>
         </li>
         <li class="nav-item {{ Nav::hasSegment(['manage-contacts-group','manage-contacts'], 1 ,'menu-is-opening menu-open') }}">
-          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-contacts-group','manage-contacts']) }}">
+          <a href="{{route('contacts_group')}}" class="nav-link {{ Nav::hasSegment(['manage-contacts-group','manage-contacts']) }}">
             <i class="nav-icon fas fa-address-book"></i>
             <p>
               {{ __('admin.contacts') }}
-              <i class="fas fa-angle-right right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-contacts-group','manage-contacts']) }}">
-            <li class="nav-item">
-              <a href="{{route('contacts_group')}}" class="nav-link {{ Nav::hasSegment('manage-contacts-group') }}">
-                <i class="fas fa-cubes nav-icon"></i>
-                <p>{{ __('admin.contacts_group') }}</p>
-                <!-- <span class="right badge badge-info">2</span> -->
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{route('contacts')}}" class="nav-link {{ Nav::hasSegment('manage-contacts') }}">
-                <i class="nav-icon fas fa-address-book"></i>
-                <p>
-                  {{ __('admin.contacts') }}
-                </p>
-              </a>
-            </li>
-          </ul>
         </li>
         <li class="nav-item {{ Nav::hasSegment(['manage-invitation'], 1 ,'menu-is-opening menu-open') }}">
-          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-invitation']) }}">
+          <a href="{{route('invitation')}}" class="nav-link {{ Nav::hasSegment(['manage-invitation']) }}">
             <i class="nav-icon fas fa-envelope"></i>
             <p>
               {{ __('admin.invitation') }}
-              <i class="fas fa-angle-right right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-invitation']) }}">
-            <li class="nav-item">
-              <a href="#" class="nav-link {{ Nav::hasSegment('manage-contacts-group') }}">
-                <i class="fas fa-plus nav-icon"></i>
-                <p>{{ __('admin.new') }} {{ __('admin.invitation') }}</p>
-                <!-- <span class="right badge badge-info">2</span> -->
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link {{ Nav::hasSegment('manage-contacts') }}">
-                <i class="nav-icon fas fa-share-square"></i>
-                <p>
-                  {{ __('admin.invitation') }} {{ __('admin.sent') }}
-                </p>
-              </a>
-            </li>
-          </ul>
         </li>
         <li class="nav-item">
           <a href="{{route('registration_request')}}" class="nav-link {{ Nav::isResource('manage-registration-request') }}">

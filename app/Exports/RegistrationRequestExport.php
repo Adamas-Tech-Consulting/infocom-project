@@ -9,19 +9,19 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class RegistrationRequestExport implements FromCollection, WithHeadings
 {
-    protected $conference_id;
+    protected $event_id;
 
-    public function __construct($conference_id)
+    public function __construct($event_id)
     {
-        $this->conference_id = $conference_id;
+        $this->event_id = $event_id;
     }
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return RegistrationRequest::join('conference_registration_request','conference_registration_request.registration_request_id','registration_request.id')
-                            ->where('conference_registration_request.conference_id', $this->conference_id)
+        return RegistrationRequest::join('event_registration_request','event_registration_request.registration_request_id','registration_request.id')
+                            ->where('event_registration_request.event_id', $this->event_id)
                             ->get(['fname','lname','designation','organization','mobile','email','pickup_address']);
 
         //return RegistrationRequest::all();

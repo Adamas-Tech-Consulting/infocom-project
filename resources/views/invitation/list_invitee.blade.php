@@ -6,12 +6,13 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h4 class="m-0">{{ __('admin.manage') }} {{ $page_name }}</h4>
+        <h4 class="m-0">{{ $row_invitation->event_title}} : {{ __('admin.invitee') }}</h4>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
-          <li class="breadcrumb-item active">{{ __('admin.manage') }} {{ $page_name }}</li>
+          <li class="breadcrumb-item active"><a href="{{$page_url}}">{{ __('admin.manage') }} {{ $page_name }}</a></li>
+          <li class="breadcrumb-item active">{{ __('admin.invitee') }}</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -44,9 +45,9 @@
   <div class="row">
     <div class="col-12">
       <div class="card card-warning card-outline direct-chat-warning">
-        <div class="card-header">
-          <h3 class="card-title"><a href="{{route($page_add)}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __('admin.add') }} {{ $page_name }}</a></h3>
-        </div>
+        <!-- <div class="card-header">
+          <h3 class="card-title"><a href="{{route($page_add)}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __('admin.new') }} {{ $page_name }}</a></h3>
+        </div> -->
         <!-- /.card-header -->
         <div class="card-body">
           <table id="list_table" class="table table-bordered table-striped w-100">
@@ -54,23 +55,24 @@
             <tr>
               <th>#</th>
               <th>{{ __('admin.name') }}</th>
-              <th class="text-center">{{ __('admin.action') }}</th>
+              <th>{{ __('admin.email') }}</th>
+              <th>{{ __('admin.mobile') }}</th>
+              <!-- <th class="text-center">{{ __('admin.action') }}</th> -->
             </tr>
             </thead>
             <tbody>
             @foreach($rows as $key => $row)
             <tr>
               <td>{{$key+1}}</td>
-              <td><span>{{$row->name}}</span></td>
-              <td class="text-center">
-                <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
+              <td><span>{{$row->fname}} {{$row->lname}}</span></td>
+              <td><span>{{$row->email}}</span></td>
+              <td><span>{{$row->mobile}}</span></td>
+              <!-- <td class="text-center">
                 <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,$row->id)}}" method="post">
                   @csrf
                   <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
                 </form>
-                <button type="button" class="btn btn-xs bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.unpublish') : __('admin.publish') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
-                <a href="{{route('contacts',$row->id)}}" class="btn btn-xs bg-gradient-secondary" data-bs-toggle="tooltip" title="{{ __('admin.contacts') }}"><i class="fas fa-address-book"></i></a>
-              </td>
+              </td> -->
             </tr>
             @endforeach
             </tbody>

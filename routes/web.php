@@ -21,15 +21,7 @@ Route::middleware(['web'])->group(function () {
         //Dashboard
         Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
-        //Users
-        Route::prefix('manage-users')->group(function (){
-            Route::get('/', [App\Http\Controllers\UserController::class, 'index'])->name('users');
-            Route::any('/create', [App\Http\Controllers\UserController::class, 'create'])->name('users_create');
-            Route::any('/update/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('users_update');
-            Route::any('/update-password/{id}', [App\Http\Controllers\UserController::class, 'update_password'])->name('users_update_password');
-            Route::any('/delete/{id}', [App\Http\Controllers\UserController::class, 'delete'])->name('users_delete');
-            Route::post('/publish-unpublish', [App\Http\Controllers\UserController::class, 'publish_unpublish'])->name('users_publish_unpublish');
-        });
+        /* Master Setup */
 
         //Event Category
         Route::prefix('manage-event-category')->group(function (){
@@ -40,20 +32,6 @@ Route::middleware(['web'])->group(function () {
             Route::post('/publish-unpublish', [App\Http\Controllers\EventCategoryController::class, 'publish_unpublish'])->name('event_category_publish_unpublish');
         });
 
-        //Event
-        Route::prefix('manage-event')->group(function (){
-            Route::get('/', [App\Http\Controllers\EventController::class, 'index'])->name('event');
-            Route::any('/create', [App\Http\Controllers\EventController::class, 'create'])->name('event_create');
-            Route::any('/update/{id}', [App\Http\Controllers\EventController::class, 'update'])->name('event_update');
-            Route::any('/delete/{id}', [App\Http\Controllers\EventController::class, 'delete'])->name('event_delete');
-            Route::post('/publish-unpublish', [App\Http\Controllers\EventController::class, 'publish_unpublish'])->name('event_publish_unpublish');
-            Route::any('/sponsors/{event_id}', [App\Http\Controllers\EventController::class, 'sponsors'])->name('event_sponsors');
-            Route::any('/speakers/{event_id}', [App\Http\Controllers\EventController::class, 'speakers'])->name('event_speakers');
-            Route::any('/schedule-speakers/{event_id}', [App\Http\Controllers\EventController::class, 'schedule_speakers'])->name('event_schedule_speakers');
-            Route::any('/key-speakers', [App\Http\Controllers\EventController::class, 'key_speakers'])->name('event_key_speakers');
-            Route::any('/contact-information/{event_id}', [App\Http\Controllers\EventController::class, 'contact_information'])->name('event_contact_information');
-        });
-
         //Schedule Type
         Route::prefix('manage-schedule-type')->group(function (){
             Route::get('/', [App\Http\Controllers\ScheduleTypeController::class, 'index'])->name('schedule_type');
@@ -61,19 +39,6 @@ Route::middleware(['web'])->group(function () {
             Route::any('/update/{id}', [App\Http\Controllers\ScheduleTypeController::class, 'update'])->name('schedule_type_update');
             Route::any('/delete/{id}', [App\Http\Controllers\ScheduleTypeController::class, 'delete'])->name('schedule_type_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\ScheduleTypeController::class, 'publish_unpublish'])->name('schedule_type_publish_unpublish');
-        });
-
-        //Schedule
-        Route::prefix('manage-schedule')->group(function (){
-            Route::get('/{event_id}', [App\Http\Controllers\ScheduleController::class, 'index'])->name('schedule');
-            Route::any('/create/{event_id}', [App\Http\Controllers\ScheduleController::class, 'create'])->name('schedule_create');
-            Route::any('/update/{event_id}/{id}', [App\Http\Controllers\ScheduleController::class, 'update'])->name('schedule_update');
-            Route::any('/delete/{event_id}/{id}', [App\Http\Controllers\ScheduleController::class, 'delete'])->name('schedule_delete');
-            Route::post('/publish-unpublish/{event_id}', [App\Http\Controllers\ScheduleController::class, 'publish_unpublish'])->name('schedule_publish_unpublish');
-            Route::any('/sponsors/{event_id}/{id}', [App\Http\Controllers\ScheduleController::class, 'sponsors'])->name('schedule_sponsors');
-            Route::any('/speakers/{event_id}/{id?}', [App\Http\Controllers\ScheduleController::class, 'speakers'])->name('schedule_speakers');
-            Route::any('/key-speakers/{event_id}', [App\Http\Controllers\ScheduleController::class, 'key_speakers'])->name('schedule_key_speakers');
-            Route::any('/contact-information/{event_id}/{id}', [App\Http\Controllers\ScheduleController::class, 'contact_information'])->name('schedule_contact_information');
         });
 
         //Sponsorship Type
@@ -103,13 +68,64 @@ Route::middleware(['web'])->group(function () {
             Route::post('/publish-unpublish', [App\Http\Controllers\SpeakersController::class, 'publish_unpublish'])->name('speakers_publish_unpublish');
         });
 
-        //Registration Requests
-        Route::prefix('manage-registration-request')->group(function (){
-            Route::get('/', [App\Http\Controllers\RegistrationRequestController::class, 'index'])->name('registration_request');
-            Route::get('/switch-event/{event_id}', [App\Http\Controllers\RegistrationRequestController::class, 'switch_event'])->name('switch_event');
-            Route::get('/csv-download', [App\Http\Controllers\RegistrationRequestController::class, 'csv_download'])->name('registration_request_csv_download');
+        //Contact Information
+        Route::prefix('manage-contact-information')->group(function (){
+            Route::get('/', [App\Http\Controllers\ContactInformationController::class, 'index'])->name('contact_information');
+            Route::any('/create/{event_id?}/{schedule_id?}', [App\Http\Controllers\ContactInformationController::class, 'create'])->name('contact_information_create');
+            Route::any('/update/{id}', [App\Http\Controllers\ContactInformationController::class, 'update'])->name('contact_information_update');
+            Route::any('/delete/{id}', [App\Http\Controllers\ContactInformationController::class, 'delete'])->name('contact_information_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\ContactInformationController::class, 'publish_unpublish'])->name('contact_information_publish_unpublish');
         });
 
+        //Users
+        Route::prefix('manage-users')->group(function (){
+            Route::get('/', [App\Http\Controllers\UserController::class, 'index'])->name('users');
+            Route::any('/create', [App\Http\Controllers\UserController::class, 'create'])->name('users_create');
+            Route::any('/update/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('users_update');
+            Route::any('/update-password/{id}', [App\Http\Controllers\UserController::class, 'update_password'])->name('users_update_password');
+            Route::any('/delete/{id}', [App\Http\Controllers\UserController::class, 'delete'])->name('users_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\UserController::class, 'publish_unpublish'])->name('users_publish_unpublish');
+        });
+
+        
+        //Event
+        Route::prefix('manage-event')->group(function (){
+            Route::get('/', [App\Http\Controllers\EventController::class, 'index'])->name('event');
+            Route::any('/create', [App\Http\Controllers\EventController::class, 'create'])->name('event_create');
+            Route::any('/update/{id}', [App\Http\Controllers\EventController::class, 'update'])->name('event_update');
+            Route::any('/delete/{id}', [App\Http\Controllers\EventController::class, 'delete'])->name('event_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\EventController::class, 'publish_unpublish'])->name('event_publish_unpublish');
+            Route::any('/sponsors/{event_id}', [App\Http\Controllers\EventController::class, 'sponsors'])->name('event_sponsors');
+            Route::any('/speakers/{event_id}', [App\Http\Controllers\EventController::class, 'speakers'])->name('event_speakers');
+            Route::any('/schedule-speakers/{event_id}', [App\Http\Controllers\EventController::class, 'schedule_speakers'])->name('event_schedule_speakers');
+            Route::any('/key-speakers', [App\Http\Controllers\EventController::class, 'key_speakers'])->name('event_key_speakers');
+            Route::any('/contact-information/{event_id}', [App\Http\Controllers\EventController::class, 'contact_information'])->name('event_contact_information');
+        });
+
+        //Schedule
+        Route::prefix('manage-schedule')->group(function (){
+            Route::get('/{event_id}', [App\Http\Controllers\ScheduleController::class, 'index'])->name('schedule');
+            Route::any('/create/{event_id}', [App\Http\Controllers\ScheduleController::class, 'create'])->name('schedule_create');
+            Route::any('/update/{event_id}/{id}', [App\Http\Controllers\ScheduleController::class, 'update'])->name('schedule_update');
+            Route::any('/delete/{event_id}/{id}', [App\Http\Controllers\ScheduleController::class, 'delete'])->name('schedule_delete');
+            Route::post('/publish-unpublish/{event_id}', [App\Http\Controllers\ScheduleController::class, 'publish_unpublish'])->name('schedule_publish_unpublish');
+            Route::any('/sponsors/{event_id}/{id}', [App\Http\Controllers\ScheduleController::class, 'sponsors'])->name('schedule_sponsors');
+            Route::any('/speakers/{event_id}/{id?}', [App\Http\Controllers\ScheduleController::class, 'speakers'])->name('schedule_speakers');
+            Route::any('/key-speakers/{event_id}', [App\Http\Controllers\ScheduleController::class, 'key_speakers'])->name('schedule_key_speakers');
+            Route::any('/contact-information/{event_id}/{id}', [App\Http\Controllers\ScheduleController::class, 'contact_information'])->name('schedule_contact_information');
+        });
+
+        //Invitation
+        Route::prefix('manage-invitation')->group(function (){
+            Route::get('/', [App\Http\Controllers\InvitationController::class, 'index'])->name('invitation');
+            Route::any('/create', [App\Http\Controllers\InvitationController::class, 'create'])->name('invitation_create');
+            Route::any('/update/{id}', [App\Http\Controllers\InvitationController::class, 'update'])->name('invitation_update');
+            Route::any('/delete/{id}', [App\Http\Controllers\InvitationController::class, 'delete'])->name('invitation_delete');
+            Route::get('/invitee/{id}', [App\Http\Controllers\InvitationController::class, 'invitee'])->name('invitation_invitee');
+            Route::post('/publish-unpublish', [App\Http\Controllers\InvitationController::class, 'publish_unpublish'])->name('invitation_publish_unpublish');
+        });
+
+        
         //Contacts Group
         Route::prefix('manage-contacts-group')->group(function (){
             Route::get('/', [App\Http\Controllers\ContactsGroupController::class, 'index'])->name('contacts_group');
@@ -121,20 +137,19 @@ Route::middleware(['web'])->group(function () {
 
         //Contacts
         Route::prefix('manage-contacts')->group(function (){
-            Route::get('/', [App\Http\Controllers\ContactsController::class, 'index'])->name('contacts');
-            Route::any('/create', [App\Http\Controllers\ContactsController::class, 'create'])->name('contacts_create');
-            Route::any('/update/{id}', [App\Http\Controllers\ContactsController::class, 'update'])->name('contacts_update');
-            Route::any('/delete/{id}', [App\Http\Controllers\ContactsController::class, 'delete'])->name('contacts_delete');
-            Route::post('/publish-unpublish', [App\Http\Controllers\ContactsController::class, 'publish_unpublish'])->name('contacts_publish_unpublish');
+            Route::get('/{group_id}', [App\Http\Controllers\ContactsController::class, 'index'])->name('contacts');
+            Route::any('/create/{group_id}', [App\Http\Controllers\ContactsController::class, 'create'])->name('contacts_create');
+            Route::any('/update/{group_id}/{id}', [App\Http\Controllers\ContactsController::class, 'update'])->name('contacts_update');
+            Route::any('/delete/{group_id}/{id}', [App\Http\Controllers\ContactsController::class, 'delete'])->name('contacts_delete');
+            Route::post('/publish-unpublish/{group_id}', [App\Http\Controllers\ContactsController::class, 'publish_unpublish'])->name('contacts_publish_unpublish');
         });
+        
 
-        //Contact Information
-        Route::prefix('manage-contact-information')->group(function (){
-            Route::get('/', [App\Http\Controllers\ContactInformationController::class, 'index'])->name('contact_information');
-            Route::any('/create/{event_id?}/{schedule_id?}', [App\Http\Controllers\ContactInformationController::class, 'create'])->name('contact_information_create');
-            Route::any('/update/{id}', [App\Http\Controllers\ContactInformationController::class, 'update'])->name('contact_information_update');
-            Route::any('/delete/{id}', [App\Http\Controllers\ContactInformationController::class, 'delete'])->name('contact_information_delete');
-            Route::post('/publish-unpublish', [App\Http\Controllers\ContactInformationController::class, 'publish_unpublish'])->name('contact_information_publish_unpublish');
+        //Registration Requests
+        Route::prefix('manage-registration-request')->group(function (){
+            Route::get('/', [App\Http\Controllers\RegistrationRequestController::class, 'index'])->name('registration_request');
+            Route::get('/switch-event/{event_id}', [App\Http\Controllers\RegistrationRequestController::class, 'switch_event'])->name('switch_event');
+            Route::get('/csv-download', [App\Http\Controllers\RegistrationRequestController::class, 'csv_download'])->name('registration_request_csv_download');
         });
 
     });

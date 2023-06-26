@@ -84,6 +84,7 @@ class ContactsGroupController extends Controller
                 }
             }
         } else {
+            $this->data['group_id'] = $id;
             $this->data['row'] = ContactsGroup::find($id);
             return view('contacts_group.update',$this->data);
         }

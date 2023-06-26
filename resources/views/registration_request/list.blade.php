@@ -6,7 +6,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">{{ __('admin.manage') }} {{ $page_name }}</h1>
+        <h4 class="m-0">{{ __('admin.manage') }} {{ $page_name }}</h4>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -48,9 +48,9 @@
             <div class="row">
               <div class="col-3">
                 <div class="form-group">
-                  <select class="form-control select2bs4 @error('conference_id') is-invalid @enderror" name="conference_id" style="width: 100%;">
-                    @foreach($rows_conference as $conference)
-                    <option value="{{$conference->id}}" {{($conference->id == $selected_conference)?'selected':''}}>{{$conference->title}}</option>
+                  <select class="form-control select2bs4 @error('event_id') is-invalid @enderror" name="event_id" style="width: 100%;">
+                    @foreach($rows_event as $event)
+                    <option value="{{$event->id}}" {{($event->id == $selected_event)?'selected':''}}>{{$event->title}}</option>
                     @endforeach
                   </select>
                 </div>
@@ -123,9 +123,9 @@
     });
   });
   $(function () {
-    $('select[name="conference_id"]').on('change', function() {
-      var conference_id = $(this).val();
-      $.get("{{url('manage-registration-request/switch-conference')}}/"+conference_id, function(data, status){
+    $('select[name="event_id"]').on('change', function() {
+      var event_id = $(this).val();
+      $.get("{{url('manage-registration-request/switch-event')}}/"+event_id, function(data, status){
         location.reload();
       });
     });

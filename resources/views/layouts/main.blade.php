@@ -155,7 +155,13 @@ $(function () {
   //Initialize Date picker
   if( $('.summernote').length > 0) {
     $('.summernote').summernote({
-      height: 100
+      height: 200
+    });
+  }
+
+  if( $('.summernote-large').length > 0) {
+    $('.summernote-large').summernote({
+      height: 400
     });
   }
 

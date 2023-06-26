@@ -13,7 +13,7 @@ use DB;
 
 //Model
 use App\Models\RegistrationRequest;
-use App\Models\Conference;
+use App\Models\Event;
 
 class RegistrationRequestController extends Controller
 {
@@ -34,32 +34,32 @@ class RegistrationRequestController extends Controller
 
     public function index(Request $request)
     {
-        $this->data['rows_conference'] = Conference::where('published','1')->orderBy('id','DESC')->get();
-        $conference_id = isset($this->data['rows_conference'][0]) ? $this->data['rows_conference'][0]->id : 0;
-        if ($request->session()->exists('selected_conference')) {
-            $conference_id = $request->session()->get('selected_conference');
+        $this->data['rows_event'] = Event::where('published','1')->orderBy('id','DESC')->get();
+        $event_id = isset($this->data['rows_event'][0]) ? $this->data['rows_event'][0]->id : 0;
+        if ($request->session()->exists('selected_event')) {
+            $event_id = $request->session()->get('selected_event');
         } else {
-            $request->session()->put('selected_conference', $conference_id);
+            $request->session()->put('selected_event', $event_id);
         }
-        $this->data['selected_conference'] = $conference_id;
-        $this->data['rows'] = RegistrationRequest::join('conference_registration_request','conference_registration_request.registration_request_id','registration_request.id')
-                                                ->where('conference_registration_request.conference_id',$conference_id)
+        $this->data['selected_event'] = $event_id;
+        $this->data['rows'] = RegistrationRequest::join('event_registration_request','event_registration_request.registration_request_id','registration_request.id')
+                                                ->where('event_registration_request.event_id',$event_id)
                                                 ->get('registration_request.*');
         return view('registration_request.list',$this->data);
     }
 
-    public function switch_conference(Request $request, $conference_id)
+    public function switch_event(Request $request, $event_id)
     {
-        $request->session()->put('selected_conference', $conference_id);
+        $request->session()->put('selected_event', $event_id);
     }
 
     public function csv_download(Request $request)
     {
-        if ($request->session()->exists('selected_conference')) {
-            $conference_id = $request->session()->get('selected_conference');
-            $conference = Conference::find($conference_id);
-            $filename = $conference->slug.".csv";
-            return Excel::download(new RegistrationRequestExport($conference_id), $filename);
+        if ($request->session()->exists('selected_event')) {
+            $event_id = $request->session()->get('selected_event');
+            $event = Event::find($event_id);
+            $filename = $event->slug.".csv";
+            return Excel::download(new RegistrationRequestExport($event_id), $filename);
         } else {
             return redirect()->route('registration_request');
         }

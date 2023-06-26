@@ -28,7 +28,7 @@
         <!-- small box -->
         <div class="small-box bg-warning">
           <div class="inner">
-            <h3>2</h3>
+            <h3>1</h3>
             <p>{{ __('admin.users') }}</p>
           </div>
           <div class="icon">
@@ -42,7 +42,7 @@
         <!-- small box -->
         <div class="small-box bg-warning">
           <div class="inner">
-            <h3>2</h3>
+            <h3>3</h3>
             <p>{{ __('admin.event') }}</p>
           </div>
           <div class="icon">
@@ -70,13 +70,13 @@
         <!-- small box -->
         <div class="small-box bg-warning">
           <div class="inner">
-            <h3>3</h3>
+            <h3>2</h3>
             <p>Contacts</p>
           </div>
           <div class="icon">
             <i class="fas fa-address-book"></i>
           </div>
-          <a href="{{route('contacts')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{route('contacts_group')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->

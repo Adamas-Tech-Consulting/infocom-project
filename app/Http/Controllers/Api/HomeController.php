@@ -7,11 +7,11 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Auth;
 
 //Model
-use App\Models\ConferenceCategory;
-use App\Models\ConferenceMethod;
-use App\Models\Conference;
-use App\Models\ConferenceEvent;
-use App\Models\ConferenceEventDetails;
+use App\Models\EventCategory;
+use App\Models\EventMethod;
+use App\Models\Event;
+use App\Models\Schedule;
+use App\Models\ScheduleDetails;
 use App\Models\Sponsors;
 use App\Models\SponsorshipType;
 use App\Models\Speakers;
@@ -24,90 +24,88 @@ class HomeController extends BaseController
     {
         $this->data = [];
     }  
-    public function getConference(Request $request)
+    public function getEvent(Request $request)
     {
         if ($request->isMethod('get')) 
         {
             try {
-                $conferences = Conference::join('conference_category','conference_category.id','=','conference.conference_category_id')
-                                ->join('conference_method','conference_method.id','=','conference.conference_method_id')
-                                ->where('conference.published','1')
+                $events = Event::join('event_category','event_category.id','=','event.event_category_id')
+                                ->join('event_method','event_method.id','=','event.event_method_id')
+                                ->where('event.published','1')
                                 ->get(
                                     [
-                                        'conference.id as conference_id',
+                                        'event.id as event_id',
                                         'title',
-                                        'conference_category.name as conference_category',
-                                        'conference_method.name as conference_method',
+                                        'event_category.name as event_category',
+                                        'event_method.name as event_method',
                                         'registration_type',
                                         'last_registration_date',
-                                        'conference_start_date',
-                                        'conference_end_date',
-                                        'conference_venue',
-                                        'conference_theme',
+                                        'event_start_date',
+                                        'event_end_date',
+                                        'event_venue',
+                                        'event_theme',
                                         'overview_description',
-                                        'conference_description',
-                                        'conference_banner',
-                                        'conference_logo',
+                                        'event_description',
+                                        'event_banner',
+                                        'event_logo',
                                     ]
                                 )->toArray();
                 $sponsors = Sponsors::join('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
-                                    ->join('conference_sponsors','conference_sponsors.sponsors_id','=','sponsors.id')
-                                    ->join('conference','conference_sponsors.conference_id','=','conference.id')
-                                    ->where('conference.published','1')
+                                    ->join('event_sponsors','event_sponsors.sponsors_id','=','sponsors.id')
+                                    ->join('event','event_sponsors.event_id','=','event.id')
+                                    ->where('event.published','1')
                                     ->get(
                                         [
                                             'sponsors.id as sponsors_id',
-                                            'conference_id',
+                                            'event_id',
                                             'sponsor_name',
                                             'sponsor_logo',
                                             'website_link',
-                                            'rank',
                                             'sponsorship_type.name as sponsorship_type'
                                         ]
                                     )->toArray();
 
-                $speakers = Speakers::join('conference_speakers','conference_speakers.speakers_id','=','speakers.id')
-                                    ->join('conference','conference_speakers.conference_id','=','conference.id')
-                                    ->where('conference.published','1')
+                $speakers = Speakers::join('event_speakers','event_speakers.speakers_id','=','speakers.id')
+                                    ->join('event','event_speakers.event_id','=','event.id')
+                                    ->where('event.published','1')
                                     ->get(
                                         [
                                             'speakers.id as speakers_id',
-                                            'conference_id',
+                                            'event_id',
                                             'speakers.name as speakers_name',
                                             'designation',
                                             'company_name',
-                                            'rank',
                                             'image as speaker_logo',
                                             'is_key_speaker'
                                         ]
                                     )->toArray();
 
                 
-                foreach($conferences as $conf_key => $conference)
+                foreach($events as $conf_key => $event)
                 {
-                    $conferences[$conf_key]['conference_banner'] = config('constants.CDN_URL').'/'.config('constants.CONFERENCE_FOLDER').'/'.$conference['conference_banner'];
-                    $conferences[$conf_key]['conference_logo'] = config('constants.CDN_URL').'/'.config('constants.CONFERENCE_FOLDER').'/'.$conference['conference_logo'];
-                    $conferences[$conf_key]['sponsors'] = [];
+                    $events[$conf_key]['event_banner'] = config('constants.CDN_URL').'/'.config('constants.CONFERENCE_FOLDER').$event['event_banner'];
+                    $events[$conf_key]['event_logo'] = config('constants.CDN_URL').'/'.config('constants.CONFERENCE_FOLDER').$event['event_logo'];
+                    $events[$conf_key]['sponsors'] = [];
                     foreach($sponsors as $spon_key => $sponsor)
                     {
-                        if($sponsor['conference_id'] == $conference['conference_id'])
+                        if($sponsor['event_id'] == $event['event_id'])
                         {
                             $sponsors[$spon_key]['sponsor_logo'] = config('constants.CDN_URL').'/'.config('constants.SPONSORS_FOLDER').'/'.$sponsor['sponsor_logo'];
-                            $conferences[$conf_key]['sponsors'][] = $sponsors[$spon_key];
+                            $events[$conf_key]['sponsors'][] = $sponsors[$spon_key];
                         }
                     }
-                    $conferences[$conf_key]['speakers'] = [];
+                    $events[$conf_key]['speakers'] = [];
                     foreach($speakers as $spkr_key => $speaker)
                     {
-                        if($speaker['conference_id'] == $conference['conference_id'])
+                        if($speaker['event_id'] == $event['event_id'])
                         {
                             $speakers[$spkr_key]['speaker_logo'] = config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$speaker['speaker_logo'];
-                            $conferences[$conf_key]['speakers'][] = $speakers[$spkr_key];
+                            $events[$conf_key]['speakers'][] = $speakers[$spkr_key];
                         }
                     }
                     
                 } 
-                $this->data = $conferences;
+                $this->data = $events;
                 return $this->sendResponse($this->data,'');
             }   
             catch(Exception $e) {   
@@ -117,93 +115,65 @@ class HomeController extends BaseController
          
     }
 
-    public function getEvent(Request $request, $id)
+    public function getSchedule(Request $request, $id)
     {
         if ($request->isMethod('get')) 
         {
             try {
-                $events = ConferenceEvent::join('event_type','event_type.id','=','event.event_type_id')
-                                        ->join('conference',function($join) use($id) {
-                                            $join->on('event.conference_id','conference.id')
-                                            ->where('conference.published','1');
+                $schedules = Schedule::join('schedule_type','schedule_type.id','=','schedule.schedule_type_id')
+                                        ->join('event',function($join) use($id) {
+                                            $join->on('schedule.event_id','event.id')
+                                            ->where('event.published','1');
                                         })
-                                        ->where('event.conference_id',$id)
-                                        ->where('event.published','1')
+                                        ->where('schedule.event_id',$id)
+                                        ->where('schedule.published','1')
                                         ->get(
                                             [
-                                                'event.id as event_id',
-                                                'event_title',
-                                                'event_type.name as event_type',
-                                                'event_date',
-                                                'event_day',
-                                                'event_venue',
+                                                'schedule.id as schedule_id',
+                                                'schedule_title',
+                                                'schedule_date',
+                                                'schedule_day',
+                                                'from_time',
+                                                'to_time',
+                                                'schedule_venue',
                                             ]
                                         )->toArray();
 
-                $event_details = ConferenceEventDetails::join('event',function($join) use($id) {
-                                                            $join->on('event.id','event_details.event_id')
-                                                            ->where('event.published','1');
-                                                        })
-                                                        ->join('conference',function($join) use($id) {
-                                                            $join->on('event_details.conference_id','conference.id')
-                                                            ->where('event_details.conference_id',$id)
-                                                            ->where('conference.published','1');
-                                                        })->get(
-                                                            [
-                                                                'event_details.event_id',
-                                                                'hall_number',
-                                                                'from_time',
-                                                                'to_time',
-                                                                'is_wishlist',
-                                                                'subject_line',
-                                                            ]
-                                                        )->toArray();
-
-                $speakers = Speakers::join('event_speakers','event_speakers.speakers_id','=','speakers.id')
-                                    ->join('event','event_speakers.event_id','=','event.id')
-                                    ->join('conference',function($join) use($id) {
-                                        $join->on('event_speakers.conference_id','conference.id')
-                                        ->where('event_speakers.conference_id',$id);
+                $speakers = Speakers::join('schedule_speakers','schedule_speakers.speakers_id','=','speakers.id')
+                                    ->join('schedule','schedule_speakers.schedule_id','=','schedule.id')
+                                    ->join('event',function($join) use($id) {
+                                        $join->on('schedule_speakers.event_id','event.id')
+                                        ->where('schedule_speakers.event_id',$id);
                                      })
-                                    ->where('conference.published','1')
+                                    ->where('event.published','1')
                                     ->get(
                                         [
                                             'speakers.id as speakers_id',
-                                            'event_speakers.event_id',
+                                            'schedule_speakers.schedule_id',
                                             'speakers.name as speakers_name',
                                             'speakers.designation',
                                             'speakers.company_name',
-                                            'speakers.rank',
                                             'speakers.image as speaker_logo',
-                                            'event_speakers.is_key_speaker'
+                                            'schedule_speakers.is_key_speaker'
                                         ]
                                     )->toArray();
 
                 
-                foreach($events as $evnt_key => $event)
+                foreach($schedules as $evnt_key => $schedule)
                 {
-                    $events[$evnt_key]['details'] = [];
-                    foreach($event_details as $evdt_key => $event_detail)
-                    {
-                        if($event_detail['event_id'] == $event['event_id'])
-                        {
-                            $events[$evnt_key]['details'][] = $event_details[$evdt_key];
-                        }
-                    }
-
-                    $events[$evnt_key]['speakers'] = [];
+                    $schedules[$evnt_key]['speakers'] = [];
                     foreach($speakers as $spkr_key => $speaker)
                     {
-                        if($speaker['event_id'] == $event['event_id'])
+                        if($speaker['schedule_id'] == $schedule['schedule_id'])
                         {
                             $speakers[$spkr_key]['speaker_logo'] = config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$speaker['speaker_logo'];
-                            $events[$evnt_key]['speakers'][] = $speakers[$spkr_key];
+                            $schedules[$evnt_key]['speakers'][] = $speakers[$spkr_key];
                         }
                     }
                 }
                 
                 
-                $this->data = $events;
+                $this->data = $schedules;
                 return $this->sendResponse($this->data,'');
             }   
             catch(Exception $e) {   

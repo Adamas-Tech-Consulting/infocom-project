@@ -16,27 +16,29 @@ class ContactsController extends Controller
 {
     protected $data;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $group_id = $request->route()->parameter('group_id');
         $this->data = [
             'page_name'             => trans('admin.contacts'),
             'page_slug'             => Str::slug(trans('admin.contacts'),'-'),
-            'page_url'              => route('contacts'),
+            'page_url'              => route('contacts', $group_id),
             'page_add'              => 'contacts_create',
             'page_update'           => 'contacts_update',
             'page_delete'           => 'contacts_delete',
             'page_publish_unpublish'=> 'contacts_publish_unpublish',
+            'contact_group'         => ContactsGroup::find($group_id),
+            'group_id'              => $group_id
         ];
     }  
 
-    public function index()
+    public function index(Request $request, $group_id)
     {
-        $this->data['rows'] = Contacts::join('contacts_group','contacts_group.id','=','contacts.contacts_group_id')
-                                        ->get(['contacts.*','contacts_group.name as contacts_group_name']);
+        $this->data['rows'] = Contacts::where('contacts_group_id', $group_id)->get();
         return view('contacts.list',$this->data);
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $group_id)
     {
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
@@ -53,7 +55,7 @@ class ContactsController extends Controller
                     $data = Contacts::create($request->all());
                     $data->save();
                     DB::commit();
-                    return redirect()->route('contacts')->with('success', trans('flash.AddedSuccessfully'));
+                    return redirect()->route('contacts',$group_id)->with('success', trans('flash.AddedSuccessfully'));
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
@@ -66,7 +68,7 @@ class ContactsController extends Controller
         }
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $group_id, $id)
     {
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
@@ -83,7 +85,7 @@ class ContactsController extends Controller
                     $data = Contacts::findOrFail($id);
                     $data->update($request->all());
                     DB::commit();
-                    return redirect()->route('contacts')->with('success', trans('flash.UpdatedSuccessfully'));
+                    return redirect()->route('contacts',$group_id)->with('success', trans('flash.UpdatedSuccessfully'));
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
@@ -97,7 +99,7 @@ class ContactsController extends Controller
         }
     }
 
-    public function delete(Request $request,$id)
+    public function delete(Request $request, $group_id, $id)
     {
         if ($request->isMethod('post')) {
 
@@ -106,7 +108,7 @@ class ContactsController extends Controller
                 $data = Contacts::findOrFail($id);
                 $data->delete();
                 DB::commit();
-                return redirect()->route('contacts')->with('success', trans('flash.DeletedSuccessfully'));
+                return redirect()->route('contacts',$group_id)->with('success', trans('flash.DeletedSuccessfully'));
             }   
             catch(Exception $e) {   
                 DB::rollback(); 
@@ -115,7 +117,7 @@ class ContactsController extends Controller
         }
     }
 
-    public function publish_unpublish(Request $request)
+    public function publish_unpublish(Request $request, $group_id)
     {
         if ($request->isMethod('post')) {
 

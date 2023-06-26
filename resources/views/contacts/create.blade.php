@@ -6,11 +6,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h1>
+        <h4 class="m-0">{{ $contact_group->name }} : {{ __('admin.add') }} {{ $page_name }}</h4>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
+          <li class="breadcrumb-item"><a href="{{route('contacts_group_update',$group_id)}}">{{ $contact_group->name }}</a></li>
           <li class="breadcrumb-item"><a href="{{$page_url}}">{{ __('admin.manage') }} {{ $page_name }}</a></li>
           <li class="breadcrumb-item active">{{ __('admin.add') }} {{ $page_name }}</li>
         </ol>
@@ -45,30 +46,25 @@
 <section class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-12">
-        <div class="card">
+      <div class="col-md-3">
+        <!-- Profile Image -->
+        @include('layouts.contact_group_sidebar')
+      </div>
+      <!-- /.col -->
+      <div class="col-md-9">
+        <div class="card card-warning card-outline direct-chat-warning">
           <form id="validation-form" action="" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="contacts_group_id" value="{{$group_id}}" />
             @csrf
             <div class="card-body">
               <div class="row">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="contacts_group_id">{{ __('admin.contacts_group') }} <span class="text-red">*</span></label>
-                    <select class="form-control select2bs4 @error('contacts_group_id') is-invalid @enderror" name="contacts_group_id" style="width: 100%;">
-                      <option value="">{{ __('admin.select') }} {{ __('admin.contacts_group') }}</option>
-                      @foreach($rows_contacts_group as $contacts_group)
-                      <option value="{{$contacts_group->id}}">{{$contacts_group->name}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                </div>
-                <div class="col-4">
+                <div class="col-6">
                   <div class="form-group">
                     <label for="fname">{{ __('admin.fname') }} <span class="text-red">*</span></label>
                     <input type="text" class="form-control @error('fname') is-invalid @enderror" id="fname" name="fname" placeholder="{{ __('admin.enter') }} {{ __('admin.fname') }}">
                   </div>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                   <div class="form-group">
                     <label for="lname">{{ __('admin.lname') }} <span class="text-red">*</span></label>
                     <input type="text" class="form-control @error('lname') is-invalid @enderror" id="lname" name="lname" placeholder="{{ __('admin.enter') }} {{ __('admin.lname') }}">
@@ -122,7 +118,6 @@
       </div>
       <!-- /.col -->
     </div>
-    <!-- /.row -->
   </div><!-- /.container-fluid -->
 </section>
 <!-- /.content -->

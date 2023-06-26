@@ -66,6 +66,7 @@ return [
     //F
     'female' => 'Female',
     'fname'=> 'First Name',
+    'for' => 'For',
     'free' => 'Free',
     'from' => 'From',
 
@@ -92,12 +93,16 @@ return [
     'key_speaker' => 'Key Speaker',
 
     //L
+    'list' => 'List',
     'lname' => 'Last Name',
     'login_btn' => 'Login',
     'login_msg'=> 'Sign in to start your session',
     'logo' => 'Logo',
 
     //M
+    'mail_body' => 'Mail Body',
+    'mail_signature' => 'Mail Signature',
+    'mail_subject' => 'Mail Subject',
     'male' => 'Male',
     'manage' => 'Manage',
     'master_setup' => 'Master Setup',
@@ -107,6 +112,7 @@ return [
     'name' => 'Name',
     'new' => 'New',
     'no' => 'No',
+    'no_of_invitee' => 'No of Invitee',
     'non_key_speaker' => 'Non Key Speaker',
 
     //O
@@ -121,6 +127,7 @@ return [
     'password'=> 'Password',
     'pickup_address' => 'Pickup Address',
     'preview'=> 'Preview',
+    'previous_event'=> 'Previous Event',
     'publish' => 'Publish',
 
     //Q
@@ -142,6 +149,7 @@ return [
     'session_subject_line' => 'Session Subject Line',
     'schedule' => 'Schedule',
     'schedule_type' => 'Schedule Type',
+    'source_group' => 'Source Group',
     'speaker' => 'Speaker',
     'speakers' => 'Speakers',
     'sponsors' => 'Sponsors',
@@ -150,6 +158,7 @@ return [
     'submit' => 'Submit',
 
     //T
+    'template_name' => 'Template Name',
     'theme' => 'Theme',
     'title' => 'Title',
     'time' => 'Time',

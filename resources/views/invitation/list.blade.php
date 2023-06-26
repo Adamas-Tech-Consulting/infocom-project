@@ -45,7 +45,7 @@
     <div class="col-12">
       <div class="card card-warning card-outline direct-chat-warning">
         <div class="card-header">
-          <h3 class="card-title"><a href="{{route($page_add)}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __('admin.add') }} {{ $page_name }}</a></h3>
+          <h3 class="card-title"><a href="{{route($page_add)}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __('admin.new') }} {{ $page_name }}</a></h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -53,7 +53,8 @@
             <thead>
             <tr>
               <th>#</th>
-              <th>{{ __('admin.name') }}</th>
+              <th>{{ __('admin.event') }} {{ __('admin.name') }}</th>
+              <th>{{ __('admin.no_of_invitee') }}</th>
               <th class="text-center">{{ __('admin.action') }}</th>
             </tr>
             </thead>
@@ -61,7 +62,8 @@
             @foreach($rows as $key => $row)
             <tr>
               <td>{{$key+1}}</td>
-              <td><span>{{$row->name}}</span></td>
+              <td><span>{{$row->event_title}}</span></td>
+              <td><span>{{$row->total_invitee}}</span></td>
               <td class="text-center">
                 <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
                 <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,$row->id)}}" method="post">
@@ -69,7 +71,7 @@
                   <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
                 </form>
                 <button type="button" class="btn btn-xs bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.unpublish') : __('admin.publish') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
-                <a href="{{route('contacts',$row->id)}}" class="btn btn-xs bg-gradient-secondary" data-bs-toggle="tooltip" title="{{ __('admin.contacts') }}"><i class="fas fa-address-book"></i></a>
+                <a href="{{route('invitation_invitee',$row->id)}}" class="btn btn-xs bg-gradient-secondary" data-bs-toggle="tooltip" title="{{ __('admin.invitee') }}"><i class="fas fa-address-book"></i></a>
               </td>
             </tr>
             @endforeach
