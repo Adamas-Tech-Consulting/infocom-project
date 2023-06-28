@@ -17,12 +17,12 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ route('event_sponsors', $event_id) }}" class="nav-link {{ Nav::isResource('manage-event/sponsors') }}">
+        <a href="{{ route('sponsors', $event_id) }}" class="nav-link {{ Nav::isResource('manage-sponsors') }}">
           <i class="fa fa-user"></i> {{ __('admin.sponsors') }}
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ route('event_speakers', $event_id) }}" class="nav-link {{ Nav::isResource('manage-event/speakers') }}">
+        <a href="{{ route('speakers', $event_id) }}" class="nav-link {{ Nav::isResource('manage-speakers') }}">
           <i class="fa fa-volume-up"></i> {{ __('admin.speakers') }}
         </a>
       </li>

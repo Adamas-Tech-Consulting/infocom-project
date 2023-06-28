@@ -9,34 +9,48 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
+use App\Models\Event;
 use App\Models\Speakers;
-use App\Models\ConferenceSpeakers;
-use App\Models\ConferenceEventSpeakers;
+use App\Models\EventSpeakers;
 
 class SpeakersController extends Controller
 {
     protected $data;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $event_id = $request->route()->parameter('event_id');
         $this->data = [
             'page_name'             => trans('admin.speakers'),
             'page_slug'             => Str::slug(trans('admin.speakers'),'-'),
-            'page_url'              => route('speakers'),
+            'page_url'              => route('speakers',$event_id),
             'page_add'              => 'speakers_create',
             'page_update'           => 'speakers_update',
             'page_delete'           => 'speakers_delete',
             'page_publish_unpublish'=> 'speakers_publish_unpublish',
+            'event_id'              => !empty($event_id) ? $event_id : NULL,
         ];
+        if($event_id) {
+            $this->data['row_event'] =  Event::find($event_id);
+        }
     }  
 
-    public function index()
+    public function index(Request $request, $event_id=NULL)
     {
-        $this->data['rows'] = Speakers::all();
+        $rows = Speakers::join('speakers_category','speakers_category.id','=','speakers.speakers_category_id');
+        if($event_id)
+        {
+            $rows = $rows->Join('event_speakers',function($join) use($event_id) {
+                $join->on('event_speakers.speakers_id','speakers.id')
+                ->where('event_speakers.event_id',$event_id);
+            });
+        }
+        $rows = $rows->get(['speakers.*','speakers_category.name as speakers_category_name']);
+        $this->data['rows'] = $rows;
         return view('speakers.list',$this->data);
     }
 
-    public function create(Request $request, $conference_id=NULL, $event_id=NULL)
+    public function create(Request $request, $event_id=NULL)
     {
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
@@ -65,31 +79,16 @@ class SpeakersController extends Controller
                         //Update Query
                         Speakers::where('id', '=', $id)->update($update_data);
                     }
-                    if($conference_id)
+                    if($event_id)
                     {
                         $assign_data = [
-                            'conference_id' => $conference_id,
+                            'event_id' => $event_id,
                             'speakers_id' => $id,
                         ];
-
-                        if($event_id) {
-                            $assign_data['event_id'] = $event_id;
-                            ConferenceEventSpeakers::create($assign_data);
-                        } else {
-                            ConferenceSpeakers::create($assign_data);
-                        }
+                        EventSpeakers::create($assign_data);
                     }
                     DB::commit();
-                    if($conference_id) {
-                        if($event_id) {
-                            return redirect()->route('event_speakers',[$conference_id, $event_id])->with('success', trans('flash.AddedAndAssignedSuccessfully'));
-                        } else {
-                            return redirect()->route('conference_speakers',$conference_id)->with('success', trans('flash.AddedAndAssignedSuccessfully'));
-                        }
-                    }
-                    else {
-                        return redirect()->route('speakers')->with('success', trans('flash.AddedSuccessfully')); 
-                    }
+                    return redirect()->route('speakers', $event_id)->with('success', trans('flash.AddedSuccessfully'));
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
@@ -101,7 +100,7 @@ class SpeakersController extends Controller
         }
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request,$id, $event_id=NULL)
     {
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
@@ -130,7 +129,7 @@ class SpeakersController extends Controller
                         Speakers::where('id', '=', $id)->update($update_data);
                     }
                     DB::commit();
-                    return redirect()->route('speakers')->with('success', trans('flash.UpdatedSuccessfully'));
+                    return redirect()->route('speakers', $event_id)->with('success', trans('flash.UpdatedSuccessfully'));
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
@@ -143,16 +142,19 @@ class SpeakersController extends Controller
         }
     }
 
-    public function delete(Request $request,$id)
+    public function delete(Request $request,$id, $event_id=NULL)
     {
         if ($request->isMethod('post')) {
 
             DB::beginTransaction();
             try {
+                $rel_data = EventSpeakers::where('speakers_id', $id);
+                $rel_data->delete();
                 $data = Speakers::findOrFail($id);
+                image_delete(config("constants.SPEAKERS_FOLDER"),$data->image);
                 $data->delete();
                 DB::commit();
-                return redirect()->route('sponsors')->with('success', trans('flash.DeletedSuccessfully'));
+                return redirect()->route('speakers', $event_id)->with('success', trans('flash.DeletedSuccessfully'));
             }   
             catch(Exception $e) {   
                 DB::rollback(); 

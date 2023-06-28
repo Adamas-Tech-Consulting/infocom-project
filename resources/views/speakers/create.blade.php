@@ -7,6 +7,9 @@
     <div class="row mb-2">
       <div class="col-sm-6">
         <h4 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h4>
+        @if(!empty($row_event))
+        <h6 class="mt-1">{{$row_event->title}} ({{ date('d M, Y',strtotime($row_event->event_start_date))}} - {{ date('d M, Y',strtotime($row_event->event_end_date))}})</h6>
+        @endif
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -45,35 +48,46 @@
 <section class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-12">
+      @if(!empty($row_event))
+      <div class="col-md-3">
+        <!-- Profile Image -->
+        @include('layouts.event_sidebar')
+      </div>
+      @endif
+      <div class="col-{{(!empty($row_event)) ? 9 : 12}}">
         <div class="card card-warning card-outline direct-chat-warning">
           <form id="validation-form" action="" method="post" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
               <div class="row">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="name">{{ __('admin.name') }} <span class="text-red">*</span></label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="{{ __('admin.enter') }} {{ __('admin.speaker') }} {{ __('admin.name') }}">
+                <div class="col-7">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="name">{{ __('admin.name') }} <span class="text-red">*</span></label>
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="{{ __('admin.enter') }} {{ __('admin.speaker') }} {{ __('admin.name') }}">
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="designation">{{ __('admin.designation') }} <span class="text-red">*</span></label>
+                        <input type="text" class="form-control @error('designation') is-invalid @enderror" id="designation" name="designation" placeholder="{{ __('admin.enter') }} {{ __('admin.designation') }}">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="company_name">{{ __('admin.company_name') }}</label>
+                        <input type="text" class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" placeholder="{{ __('admin.enter') }} {{ __('admin.company_name') }}">
+                      </div>
+                    </div>
+                    
                   </div>
                 </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="designation">{{ __('admin.designation') }} <span class="text-red">*</span></label>
-                    <input type="text" class="form-control @error('designation') is-invalid @enderror" id="designation" name="designation" placeholder="{{ __('admin.enter') }} {{ __('admin.designation') }}">
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="form-group">
-                    <label for="company_name">{{ __('admin.company_name') }}</label>
-                    <input type="text" class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" placeholder="{{ __('admin.enter') }} {{ __('admin.company_name') }}">
-                  </div>
-                </div>
-              </div><!-- /.row -->
-              <div class="row">
-                <div class="col-4">
-                  <div class="card card-widget card-secondary card-outline widget-user mt-2">
-                    <div class="card-header"><label class="mb-0" for="image">{{ __('admin.image') }} <span class="text-red">*</span></label><span class="float-right"><b>(Dimension : 150 X 150)</b></span></div>
+                <div class="col-5">
+                  <div class="card card-widget widget-user mt-2">
+                    <div class="card-header"><label class="mb-0" for="image">{{ __('admin.speaker') }} {{ __('admin.image') }} <span class="text-red">*</span></label><span class="float-right"><b>(Dimension : 150 X 150)</b></span></div>
                     <div class="card-body widget-user-header logo-image">
                       <img src="/dist/img/no-banner.jpg" class="w-100 h-100 img-bordered" id="image_preview">
                     </div>

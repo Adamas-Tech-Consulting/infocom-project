@@ -43,10 +43,10 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <ul class="nav nav-pills nav-events mb-1 float-center">
-        <li class="nav-item"><a class="nav-link {{ Nav::isResource('manage-event') }}" href="#"><i class="fas fa-calendar"></i> {{ __('admin.current') }} {{ __('admin.event') }}</a></li>
-        <li class="nav-item"><a class="nav-link {{ Nav::isResource('manage-schedule/speakers') }}" href="#"><i class="fa fa-calendar"></i> {{ __('admin.upcoming') }} {{ __('admin.event') }}</a></li>
-        <li class="nav-item"><a class="nav-link {{ Nav::isResource('manage-schedule/contact-information') }}" href="#"><i class="fa fa-calendar"></i> {{ __('admin.past') }} {{ __('admin.event') }}</a></li>
+      <ul class="nav nav-pills nav-events">
+        <li class="nav-item"><a class="nav-link {{ (Request::segment(2) == '') ? 'active' : '' }}" href="{{route('event')}}"><i class="fas fa-calendar"></i> {{ __('admin.current') }} {{ __('admin.event') }}</a></li>
+        <li class="nav-item"><a class="nav-link {{ (Request::segment(2) == 'upcoming') ? 'active' : '' }}" href="{{route('event','upcoming')}}"><i class="fa fa-calendar"></i> {{ __('admin.upcoming') }} {{ __('admin.event') }}</a></li>
+        <li class="nav-item"><a class="nav-link {{ (Request::segment(2) == 'past') ? 'active' : '' }}" href="{{route('event','past')}}"><i class="fa fa-calendar"></i> {{ __('admin.past') }} {{ __('admin.event') }}</a></li>
       </ul>
       <div class="card card-warning card-outline direct-chat-warning">
         <div class="card-header">

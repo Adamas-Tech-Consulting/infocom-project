@@ -38,11 +38,19 @@ class EventController extends Controller
         ];
     }  
 
-    public function index()
+    public function index(Request $request, $mode=NULL)
     {
-        $this->data['rows'] = Event::join('event_category','event_category.id','=','event.event_category_id')
-                                             ->join('event_method','event_method.id','=','event.event_method_id')
-                                             ->get(['event.*','event_category.name as event_category_name','event_category.color as event_category_color','event_method.name as event_method_name']);
+        $rows = Event::join('event_category','event_category.id','=','event.event_category_id')
+                    ->join('event_method','event_method.id','=','event.event_method_id');
+        if($mode=='upcoming') {
+            $rows->whereDate('event_start_date', '>', NOW());
+        } else if($mode == 'past') {
+            $rows->whereDate('event_end_date', '<', NOW());
+        } else {
+            $rows->whereDate('event_start_date', '<=', NOW())->whereDate('event_end_date', '>=', NOW());
+        }
+        $rows = $rows->get(['event.*','event_category.name as event_category_name','event_category.color as event_category_color','event_method.name as event_method_name']);
+        $this->data['rows'] = $rows;                                    
         return view('event.list',$this->data);
     }
 
@@ -279,53 +287,53 @@ class EventController extends Controller
         }
     }
 
-    public function sponsors(Request $request, $id)
-    {
-        if ($request->isMethod('post')) {
+    // public function sponsors(Request $request, $id)
+    // {
+    //     if ($request->isMethod('post')) {
 
-            $validator = Validator::make($request->all(), [
-                'sponsors_id' => 'required',
-            ]);
-            if($validator->fails()) {
-                return response()->json(['error' => trans('flash.UpdateError')]);
-            } else {
-                DB::beginTransaction();
-                try {
-                    if($request->id) {
-                        EventSponsors::where('id',$request->id)->delete();
-                        $event_sponsord_id=NULL;
-                        $success_message = trans('flash.RemovedSuccessfully');
-                    } else {
-                        $insert_data = [
-                            'event_id' => $id,
-                            'sponsors_id' => $request->sponsors_id,
-                        ];
-                        $data = EventSponsors::create($insert_data);
-                        $data->save();
-                        $event_sponsord_id=$data->id;
-                        $success_message = trans('flash.AssignedSuccessfully');
-                    }
-                    DB::commit();
-                    return response()->json(['success' => $success_message,'id' => $event_sponsord_id]);
-                }   
-                catch(Exception $e) {   
-                    DB::rollback(); 
-                    return back();
-                }
-            }
-        } else {
-            $this->data['event_id'] = $id;
-            $this->data['row_event'] = Event::find($id);
-            $this->data['rows'] = Sponsors::Join('event_sponsors',function($join) use($id) {
-                                                    $join->on('event_sponsors.sponsors_id','sponsors.id')
-                                                    ->where('event_sponsors.event_id',$id);
-                                                })
-                                                ->leftJoin('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
-                                                ->orderByRaw('CASE WHEN event_sponsors.id IS NULL THEN 1 ELSE 0 END ASC')
-                                                ->get(['sponsors.*','event_sponsors.id as event_sponsors_id','sponsorship_type.name as sponsorship_type_name']);
-            return view('event.list_sponsors',$this->data);
-        }
-    }
+    //         $validator = Validator::make($request->all(), [
+    //             'sponsors_id' => 'required',
+    //         ]);
+    //         if($validator->fails()) {
+    //             return response()->json(['error' => trans('flash.UpdateError')]);
+    //         } else {
+    //             DB::beginTransaction();
+    //             try {
+    //                 if($request->id) {
+    //                     EventSponsors::where('id',$request->id)->delete();
+    //                     $event_sponsord_id=NULL;
+    //                     $success_message = trans('flash.RemovedSuccessfully');
+    //                 } else {
+    //                     $insert_data = [
+    //                         'event_id' => $id,
+    //                         'sponsors_id' => $request->sponsors_id,
+    //                     ];
+    //                     $data = EventSponsors::create($insert_data);
+    //                     $data->save();
+    //                     $event_sponsord_id=$data->id;
+    //                     $success_message = trans('flash.AssignedSuccessfully');
+    //                 }
+    //                 DB::commit();
+    //                 return response()->json(['success' => $success_message,'id' => $event_sponsord_id]);
+    //             }   
+    //             catch(Exception $e) {   
+    //                 DB::rollback(); 
+    //                 return back();
+    //             }
+    //         }
+    //     } else {
+    //         $this->data['event_id'] = $id;
+    //         $this->data['row_event'] = Event::find($id);
+    //         $this->data['rows'] = Sponsors::Join('event_sponsors',function($join) use($id) {
+    //                                                 $join->on('event_sponsors.sponsors_id','sponsors.id')
+    //                                                 ->where('event_sponsors.event_id',$id);
+    //                                             })
+    //                                             ->leftJoin('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
+    //                                             ->orderByRaw('CASE WHEN event_sponsors.id IS NULL THEN 1 ELSE 0 END ASC')
+    //                                             ->get(['sponsors.*','event_sponsors.id as event_sponsors_id','sponsorship_type.name as sponsorship_type_name']);
+    //         return view('event.list_sponsors',$this->data);
+    //     }
+    // }
 
     public function speakers(Request $request, $id)
     {

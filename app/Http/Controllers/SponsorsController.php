@@ -9,37 +9,49 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 
 //Model
-
-use App\Models\Conference;
+use App\Models\Event;
 use App\Models\SponsorshipType;
 use App\Models\Sponsors;
-use App\Models\ConferenceEventSponsors;
+use App\Models\EventSponsors;
 
 class SponsorsController extends Controller
 {
     protected $data;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $event_id = $request->route()->parameter('event_id');
         $this->data = [
             'page_name'             => trans('admin.sponsors'),
             'page_slug'             => Str::slug(trans('admin.sponsors'),'-'),
-            'page_url'              => route('sponsors'),
+            'page_url'              => route('sponsors',$event_id),
             'page_add'              => 'sponsors_create',
             'page_update'           => 'sponsors_update',
             'page_delete'           => 'sponsors_delete',
             'page_publish_unpublish'=> 'sponsors_publish_unpublish',
+            'event_id'              => !empty($event_id) ? $event_id : NULL,
         ];
+        if($event_id) {
+            $this->data['row_event'] =  Event::find($event_id);
+        }
     }  
 
-    public function index()
+    public function index(Request $request, $event_id=NULL)
     {
-        $this->data['rows'] = Sponsors::join('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
-                                           ->get(['sponsors.*','sponsorship_type.name as sponsorship_type_name']);
+        $rows = Sponsors::join('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id');
+        if($event_id)
+        {
+            $rows = $rows->Join('event_sponsors',function($join) use($event_id) {
+                $join->on('event_sponsors.sponsors_id','sponsors.id')
+                ->where('event_sponsors.event_id',$event_id);
+            });
+        }
+        $rows = $rows->get(['sponsors.*','sponsorship_type.name as sponsorship_type_name']);
+        $this->data['rows'] = $rows;
         return view('sponsors.list',$this->data);
     }
 
-    public function create(Request $request, $conference_id=NULL, $event_id=NULL)
+    public function create(Request $request, $event_id=NULL)
     {
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
@@ -70,22 +82,16 @@ class SponsorsController extends Controller
                         //Update Query
                         Sponsors::where('id', '=', $id)->update($update_data);
                     }
-                    if($conference_id)
+                    if($event_id)
                     {
                         $assign_data = [
-                            'conference_id' => $conference_id,
                             'event_id' => $event_id,
                             'sponsors_id' => $id,
                         ];
-                        $data = ConferenceEventSponsors::create($assign_data);
+                        $data = EventSponsors::create($assign_data);
                     }
                     DB::commit();
-                    if($conference_id) {
-                        return redirect()->route('conference_sponsors',$conference_id)->with('success', trans('flash.AddedAndAssignedSuccessfully'));
-                    }
-                    else {
-                        return redirect()->route('sponsors')->with('success', trans('flash.AddedSuccessfully')); 
-                    }
+                    return redirect()->route('sponsors',$event_id)->with('success', trans('flash.AddedSuccessfully')); 
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
@@ -98,7 +104,7 @@ class SponsorsController extends Controller
         }
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id, $event_id=NULL)
     {
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
@@ -128,7 +134,7 @@ class SponsorsController extends Controller
                         Sponsors::where('id', '=', $id)->update($update_data);
                     }
                     DB::commit();
-                    return redirect()->route('sponsors')->with('success', trans('flash.UpdatedSuccessfully'));
+                    return redirect()->route('sponsors', $event_id)->with('success', trans('flash.UpdatedSuccessfully'));
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
@@ -142,16 +148,19 @@ class SponsorsController extends Controller
         }
     }
 
-    public function delete(Request $request,$id)
+    public function delete(Request $request, $id, $event_id=NULL)
     {
         if ($request->isMethod('post')) {
 
             DB::beginTransaction();
             try {
+                $rel_data = EventSponsors::where('sponsors_id', $id);
+                $rel_data->delete();
                 $data = Sponsors::findOrFail($id);
+                image_delete(config("constants.SPONSORS_FOLDER"),$data->sponsor_logo);
                 $data->delete();
                 DB::commit();
-                return redirect()->route('sponsors')->with('success', trans('flash.DeletedSuccessfully'));
+                return redirect()->route('sponsors', $event_id)->with('success', trans('flash.DeletedSuccessfully'));
             }   
             catch(Exception $e) {   
                 DB::rollback(); 

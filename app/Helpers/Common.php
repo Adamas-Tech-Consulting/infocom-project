@@ -23,6 +23,18 @@ if(!function_exists('image_upload')) {
   }
 }
 
+if(!function_exists('image_delete')) {
+  function image_delete($folder,$unlink_filename=NULL)
+  {
+    if(!empty($unlink_filename))
+    {
+      if(file_exists(config("constants.CDN_PATH").'/'.$folder.'/'.$unlink_filename)){
+          unlink(config("constants.CDN_PATH").'/'.$folder.'/'.$unlink_filename);
+      }
+    }
+  }
+}
+
 if(!function_exists('site_settings')) {
   function site_settings($key) 
   {

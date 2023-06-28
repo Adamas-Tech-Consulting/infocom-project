@@ -19,15 +19,15 @@
             </p>
           </a>
         </li>
-        <li class="nav-item {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-sponsors','manage-speakers','manage-contact-information'], 1 ,'menu-is-opening menu-open') }}">
-          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-sponsors','manage-speakers','manage-contact-information']) }}">
+        <li class="nav-item {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-contact-information'], 1 ,'menu-is-opening menu-open') }}">
+          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-contact-information']) }}">
             <i class="nav-icon fas fa-cogs"></i>
             <p>
               {{ __('admin.master_setup') }}
               <i class="fas fa-angle-right right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-sponsors','manage-speakers','manage-contact-information']) }}">
+          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-contact-information']) }}">
             <li class="nav-item">
               <a href="{{route('event_category')}}" class="nav-link {{ Nav::hasSegment('manage-event-category') }}">
                 <i class="fas fa-cubes nav-icon"></i>
@@ -47,18 +47,6 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('sponsors')}}" class="nav-link {{ Nav::hasSegment('manage-sponsors') }}">
-                <i class="far fa-user nav-icon"></i>
-                <p>{{ __('admin.all') }} {{ __('admin.sponsors') }}</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{route('speakers')}}" class="nav-link {{ Nav::hasSegment('manage-speakers') }}">
-                <i class="nav-icon fas fa-volume-up"></i>
-                <p>{{ __('admin.all') }} {{ __('admin.speakers') }}</p>
-              </a>
-            </li>
-            <li class="nav-item">
               <a href="{{route('contact_information')}}" class="nav-link {{ Nav::hasSegment('manage-contact-information') }}">
                 <i class="fas fa-cubes nav-icon"></i>
                 <p>{{ __('admin.admin_contact') }}</p>
@@ -75,8 +63,8 @@
             </p>
           </a>
         </li>
-        <li class="nav-item {{ Nav::hasSegment(['manage-event','manage-schedule','manage-registration-request'], 1, 'menu-is-opening menu-open') }}">
-          <a href="{{route('event')}}" class="nav-link {{ Nav::hasSegment(['manage-event','manage-schedule','manage-registration-request']) }}">
+        <li class="nav-item {{ Nav::hasSegment(['manage-event','manage-schedule','manage-sponsors','manage-speakers','manage-registration-request'], 1, 'menu-is-opening menu-open') }}">
+          <a href="{{route('event')}}" class="nav-link {{ Nav::hasSegment(['manage-event','manage-schedule','manage-sponsors','manage-speakers','manage-registration-request']) }}">
             <i class="nav-icon fas fa-calendar-plus"></i>
             <p>
               {{ __('admin.event') }}

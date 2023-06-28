@@ -27,9 +27,18 @@
   border-color: #ffc107;
 }
 
-.nav-side .nav-link.active, .nav-side .show>.nav-link {
+.nav-side .nav-link.active {
   color: #ff8100;
   background-color: #fff;
+}
+
+.nav-events {
+  justify-content: center;
+}
+
+.nav-events .nav-link{
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .nav-events .nav-link.active, .nav-events .show>.nav-link {
@@ -121,7 +130,7 @@
 }
 
 .logo-image {
-  height: 250px !important;
+  height: 220px !important;
 }
 
 .upload-image-button {

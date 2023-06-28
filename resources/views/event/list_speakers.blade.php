@@ -90,7 +90,7 @@
     <!-- /.row -->
   </div><!-- /.container-fluid -->
 </section>
-<div class="modal fade" id="conferenceSpeakerModal">
+<div class="modal fade" id="eventSpeakerModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -178,7 +178,7 @@
       var id = $(this).data('id');
       var speakersId = $(this).data('speakers-id');
       $(".speaker-name").html($(this).data('speaker-name'));
-      $("#conferenceSpeakerModal").modal();
+      $("#eventSpeakerModal").modal();
       $.ajax({
         headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

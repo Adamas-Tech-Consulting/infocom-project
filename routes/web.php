@@ -52,19 +52,19 @@ Route::middleware(['web'])->group(function () {
 
         //Sponsors
         Route::prefix('manage-sponsors')->group(function (){
-            Route::get('/', [App\Http\Controllers\SponsorsController::class, 'index'])->name('sponsors');
-            Route::any('/create/{event_id?}/{schedule_id?}', [App\Http\Controllers\SponsorsController::class, 'create'])->name('sponsors_create');
-            Route::any('/update/{id}', [App\Http\Controllers\SponsorsController::class, 'update'])->name('sponsors_update');
-            Route::any('/delete/{id}', [App\Http\Controllers\SponsorsController::class, 'delete'])->name('sponsors_delete');
+            Route::get('/{event_id?}', [App\Http\Controllers\SponsorsController::class, 'index'])->name('sponsors')->where('event_id', '[0-9]+');
+            Route::any('/create/{event_id?}', [App\Http\Controllers\SponsorsController::class, 'create'])->name('sponsors_create');
+            Route::any('/update/{id}/{event_id?}', [App\Http\Controllers\SponsorsController::class, 'update'])->name('sponsors_update');
+            Route::any('/delete/{id}/{event_id?}', [App\Http\Controllers\SponsorsController::class, 'delete'])->name('sponsors_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\SponsorsController::class, 'publish_unpublish'])->name('sponsors_publish_unpublish');
         });
 
         //Speakers
         Route::prefix('manage-speakers')->group(function (){
-            Route::get('/', [App\Http\Controllers\SpeakersController::class, 'index'])->name('speakers');
-            Route::any('/create/{event_id?}/{schedule_id?}', [App\Http\Controllers\SpeakersController::class, 'create'])->name('speakers_create');
-            Route::any('/update/{id}', [App\Http\Controllers\SpeakersController::class, 'update'])->name('speakers_update');
-            Route::any('/delete/{id}', [App\Http\Controllers\SpeakersController::class, 'delete'])->name('speakers_delete');
+            Route::get('/{event_id?}', [App\Http\Controllers\SpeakersController::class, 'index'])->name('speakers')->where('event_id', '[0-9]+');
+            Route::any('/create/{event_id?}', [App\Http\Controllers\SpeakersController::class, 'create'])->name('speakers_create');
+            Route::any('/update/{id}/{event_id?}', [App\Http\Controllers\SpeakersController::class, 'update'])->name('speakers_update');
+            Route::any('/delete/{id}/{event_id?}', [App\Http\Controllers\SpeakersController::class, 'delete'])->name('speakers_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\SpeakersController::class, 'publish_unpublish'])->name('speakers_publish_unpublish');
         });
 
@@ -90,14 +90,14 @@ Route::middleware(['web'])->group(function () {
         
         //Event
         Route::prefix('manage-event')->group(function (){
-            Route::get('/', [App\Http\Controllers\EventController::class, 'index'])->name('event');
+            Route::get('/{mode?}', [App\Http\Controllers\EventController::class, 'index'])->name('event');
             Route::any('/create', [App\Http\Controllers\EventController::class, 'create'])->name('event_create');
             Route::any('/update/{id}', [App\Http\Controllers\EventController::class, 'update'])->name('event_update');
             Route::any('/delete/{id}', [App\Http\Controllers\EventController::class, 'delete'])->name('event_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\EventController::class, 'publish_unpublish'])->name('event_publish_unpublish');
             Route::post('/featured', [App\Http\Controllers\EventController::class, 'featured'])->name('event_featured');
-            Route::any('/sponsors/{event_id}', [App\Http\Controllers\EventController::class, 'sponsors'])->name('event_sponsors');
-            Route::any('/speakers/{event_id}', [App\Http\Controllers\EventController::class, 'speakers'])->name('event_speakers');
+            //Route::any('/sponsors/{event_id}', [App\Http\Controllers\EventController::class, 'sponsors'])->name('event_sponsors');
+            //Route::any('/speakers/{event_id}', [App\Http\Controllers\EventController::class, 'speakers'])->name('event_speakers');
             Route::any('/schedule-speakers/{event_id}', [App\Http\Controllers\EventController::class, 'schedule_speakers'])->name('event_schedule_speakers');
             Route::any('/key-speakers', [App\Http\Controllers\EventController::class, 'key_speakers'])->name('event_key_speakers');
             Route::any('/contact-information/{event_id}', [App\Http\Controllers\EventController::class, 'contact_information'])->name('event_contact_information');

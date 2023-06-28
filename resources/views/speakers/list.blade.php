@@ -7,10 +7,16 @@
     <div class="row mb-2">
       <div class="col-sm-6">
         <h4 class="m-0">{{ __('admin.manage') }} {{ $page_name }}</h4>
+        @if(!empty($row_event))
+        <h6 class="mt-1">{{$row_event->title}} ({{ date('d M, Y',strtotime($row_event->event_start_date))}} - {{ date('d M, Y',strtotime($row_event->event_end_date))}})</h6>
+        @endif
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
+          @if(!empty($row_event))
+          <li class="breadcrumb-item"><a href="{{route('event_update',$row_event->id)}}">{{ $row_event->title }}</a></li>
+          @endif
           <li class="breadcrumb-item active">{{ __('admin.manage') }} {{ $page_name }}</li>
         </ol>
       </div><!-- /.col -->
@@ -42,10 +48,16 @@
 <section class="content">
   <div class="container-fluid">
   <div class="row">
-    <div class="col-12">
+    @if(!empty($row_event))
+    <div class="col-md-3">
+      <!-- Profile Image -->
+      @include('layouts.event_sidebar')
+    </div>
+    @endif
+    <div class="col-{{(!empty($row_event)) ? 9 : 12}}">
       <div class="card card-warning card-outline direct-chat-warning">
         <div class="card-header">
-          <h3 class="card-title"><a href="{{route($page_add)}}" class="btn btn-block btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __('admin.add') }} {{ $page_name }}</a></h3>
+          <h3 class="card-title"><a href="{{route($page_add,$event_id)}}" class="btn btn-block btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __('admin.add') }} {{ $page_name }}</a></h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -69,8 +81,9 @@
               <td>{{$row->designation}}</td>
               <td>{{$row->company_name}}</td>
               <td class="text-center">
-                <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
-                <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,$row->id)}}" method="post">
+                <button type="button" class="btn btn-xs bg-gradient-info event-speaker-info"  data-bs-toggle="tooltip" title="{{ __('admin.info') }}" data-id="{{$row->event_speakers_id}}" data-conference-id="{{$row_event->id}}" data-speakers-id="{{($row->id)}}" data-speaker-name="{{$row->name}}"><i class="fa fa-info-circle"></i></button>
+                <a href="{{route($page_update,[$row->id,$event_id])}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
+                <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,[$row->id,$event_id])}}" method="post">
                   @csrf
                   <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
                 </form>
@@ -90,6 +103,27 @@
   <!-- /.row -->
   </div><!-- /.container-fluid -->
 </section>
+<div class="modal fade" id="eventSpeakerModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span class="speaker-name">Atanu Pramanik</span>
+          <p><small>{{ __('admin.conference') }} {{ __('admin.name') }} : {{ $row_event->title }}</small></p>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6 class="mb-3">{{ __('admin.event') }} {{ __('admin.of') }} {{ $row_event->title }}</h6>
+        <div id="event_speakers"></div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 <!-- /.content -->
 @endsection
 @section('script')
@@ -108,10 +142,75 @@
         { "width": "10%", "targets": 1 },
         { "width": "20%", "targets": 2 },
         { "width": "20%", "targets": 3 },
-        { "width": "20%", "targets": 4 },
-        { "width": "15%", "targets": 5 },
+        { "width": "25%", "targets": 4 },
+        { "width": "20%", "targets": 5 },
       ]
     });
+  });
+
+  $(function () {
+    $(document).on('click','.event-speaker-info', function() {
+      var buttonObject = $(this);
+      var id = $(this).data('id');
+      var speakersId = $(this).data('speakers-id');
+      $(".speaker-name").html($(this).data('speaker-name'));
+      $("#eventSpeakerModal").modal();
+      $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type:"POST",
+        url: "{{route('event_schedule_speakers',$row_event->id)}}", 
+        data:{'id':id,'speakers_id':speakersId},
+        success:function(data){
+          if(data.error) {
+            toastr.error(data.error)
+          } else {
+            $("#event_speakers").html(data);
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+          }
+        },  
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+        }
+      })
+    })
+  });
+
+  $(function () {
+    $(document).on('click','.toggle-schedule-assigned',function() {
+      var buttonObject = $(this);
+      var id = $(this).data('id');
+      var scheduleId = $(this).data('schedule-id');
+      var speakersId = $(this).data('speakers-id');
+      $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type:"POST",
+        url: "{{route('schedule_speakers',[$row_event->id])}}", 
+        data:{'id':id,'schedule_id':scheduleId,'speakers_id':speakersId},
+        success:function(data){
+          if(data.error) {
+            toastr.error(data.error)
+          } else {
+            toastr.success("{{ __('admin.speakers') }} "+data.success)
+            $(buttonObject).data('id',data.id)
+            $(buttonObject).toggleClass('bg-gradient-primary bg-gradient-danger')
+            $(buttonObject).tooltip('hide').attr('data-original-title', data.id ? "{{ __('admin.remove') }} " : "{{ __('admin.assign') }} ").tooltip('show');
+            $(buttonObject).find('i').toggleClass('fa-plus-circle fa-minus-circle')
+            $(buttonObject).prev().data('id',data.id)
+            data.id?$(buttonObject).prev().removeClass("d-none"):$(buttonObject).prev().addClass("d-none").removeClass('bg-gradient-success').addClass('bg-gradient-secondary');
+          }
+        },  
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+        }
+      })
+    })
   });
 
   $(function () {
