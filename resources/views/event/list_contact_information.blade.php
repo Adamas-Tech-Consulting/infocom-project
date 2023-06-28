@@ -5,14 +5,14 @@
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-4">
-        <h4 class="m-0">{{ $row_conference->title }} : {{ __('admin.contact_information') }}</h4>
+      <div class="col-sm-5">
+        <h4 class="m-0">{{ __('admin.contact_information') }}</h4>
+        <h6 class="mt-1">{{$row_event->title}} ({{ date('d M, Y',strtotime($row_event->event_start_date))}} - {{ date('d M, Y',strtotime($row_event->event_end_date))}})</h6>
       </div><!-- /.col -->
-      <div class="col-sm-8">
+      <div class="col-sm-7">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
-          <li class="breadcrumb-item"><a href="{{$page_url}}">{{ __('admin.manage') }} {{ $page_name }}</a></li>
-          <li class="breadcrumb-item"><a href="{{route($page_update,$row_conference->id)}}">{{ $row_conference->title }}</a></li>
+          <li class="breadcrumb-item"><a href="{{route($page_update,$row_event->id)}}">{{ $row_event->title }}</a></li>
           <li class="breadcrumb-item active">{{ __('admin.contact_information') }}</li>
         </ol>
       </div><!-- /.col -->
@@ -71,7 +71,7 @@
                 <td>{{$row->email}}</td>
                 <td>{{$row->mobile}}</td>
                 <td class="text-center">
-                  <button type="button" class="btn btn-xs bg-gradient-{{($row->event_contact_information_id)?'danger':'primary'}} toggle-assigned"  data-bs-toggle="tooltip" title="{{ ($row->event_contact_information_id) ? __('admin.remove') : __('admin.assign') }}" data-id="{{$row->event_contact_information_id}}" data-conference-id="{{$row_conference->id}}" data-contact-information-id="{{($row->id)}}"><i class="fa fa-{{($row->event_contact_information_id)?'minus-circle':'plus-circle'}}"></i></button>
+                  <button type="button" class="btn btn-xs bg-gradient-{{($row->event_contact_information_id)?'danger':'primary'}} toggle-assigned"  data-bs-toggle="tooltip" title="{{ ($row->event_contact_information_id) ? __('admin.remove') : __('admin.assign') }}" data-id="{{$row->event_contact_information_id}}" data-conference-id="{{$row_event->id}}" data-contact-information-id="{{($row->id)}}"><i class="fa fa-{{($row->event_contact_information_id)?'minus-circle':'plus-circle'}}"></i></button>
                 </td>
               </tr>
               @endforeach
@@ -107,7 +107,7 @@
         { "width": "10%", "targets": 4 },
       ],
       fnDrawCallback: function (oSettings) {
-        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('contact_information_create',$row_conference->id)}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __("admin.add") }} & {{ __("admin.assign") }} {{ __("admin.contact_information") }}</a>');
+        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('contact_information_create',$row_event->id)}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __("admin.add") }} {{ __("admin.contact_information") }}</a>');
       }
     });
   });
@@ -122,7 +122,7 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         type:"POST",
-        url: "{{route('event_contact_information',$row_conference->id)}}", 
+        url: "{{route('event_contact_information',$row_event->id)}}", 
         data:{'id':id,'contact_information_id':contactInformationId},
         success:function(data){
           if(data.error) {

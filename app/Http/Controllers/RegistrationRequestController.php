@@ -19,49 +19,35 @@ class RegistrationRequestController extends Controller
 {
     protected $data;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $event_id = $request->route()->parameter('event_id');
         $this->data = [
             'page_name'             => trans('admin.registration_request'),
             'page_slug'             => Str::slug(trans('admin.registration_request'),'-'),
-            'page_url'              => route('registration_request'),
-            'page_add'              => 'registration_request_create',
-            'page_update'           => 'registration_request_update',
-            'page_delete'           => 'registration_request_delete',
-            'page_publish_unpublish'=> 'registration_request_publish_unpublish',
+            'page_url'              => route('registration_request',$event_id),
+            'export_excel'          => route('registration_request_download',$event_id),
         ];
     }  
 
-    public function index(Request $request)
+    public function index(Request $request, $event_id)
     {
-        $this->data['rows_event'] = Event::where('published','1')->orderBy('id','DESC')->get();
-        $event_id = isset($this->data['rows_event'][0]) ? $this->data['rows_event'][0]->id : 0;
-        if ($request->session()->exists('selected_event')) {
-            $event_id = $request->session()->get('selected_event');
-        } else {
-            $request->session()->put('selected_event', $event_id);
-        }
-        $this->data['selected_event'] = $event_id;
+        $this->data['event_id'] = $event_id;
+        $this->data['row'] = Event::find($event_id);
         $this->data['rows'] = RegistrationRequest::join('event_registration_request','event_registration_request.registration_request_id','registration_request.id')
                                                 ->where('event_registration_request.event_id',$event_id)
                                                 ->get('registration_request.*');
         return view('registration_request.list',$this->data);
     }
 
-    public function switch_event(Request $request, $event_id)
+    public function download(Request $request, $event_id)
     {
-        $request->session()->put('selected_event', $event_id);
-    }
-
-    public function csv_download(Request $request)
-    {
-        if ($request->session()->exists('selected_event')) {
-            $event_id = $request->session()->get('selected_event');
+        if ($event_id) {
             $event = Event::find($event_id);
-            $filename = $event->slug.".csv";
+            $filename = $event->slug.".xlsx";
             return Excel::download(new RegistrationRequestExport($event_id), $filename);
         } else {
-            return redirect()->route('registration_request');
+            return redirect()->route('registration_request', $event_id);
         }
         
     }

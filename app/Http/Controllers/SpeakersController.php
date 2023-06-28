@@ -52,7 +52,6 @@ class SpeakersController extends Controller
                         'name' => $request->name,
                         'designation' => $request->designation,
                         'company_name' => $request->company_name,
-                        'rank' => $request->rank,
                     ];
                     $data = Speakers::create($insert_data);
                     $data->save();
@@ -118,7 +117,6 @@ class SpeakersController extends Controller
                         'name' => $request->name,
                         'designation' => $request->designation,
                         'company_name' => $request->company_name,
-                        'rank' => $request->rank,
                     ];
                     $data = Speakers::findOrFail($id);
                     $data->update($update_data);

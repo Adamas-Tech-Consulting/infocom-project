@@ -159,42 +159,52 @@
                 </div>
               </div><!-- /.row -->
               <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="event_banner">{{ __('admin.event') }} {{ __('admin.banner') }} <span class="text-red">*</span></label>
-                    <div class="custom-file">
+                <div class="col-4">
+                  <div class="card card-widget card-secondary card-outline widget-user mt-2">
+                    <div class="card-header"><label class="mb-0" for="event_logo">{{ __('admin.logo') }} <span class="text-red">*</span></label><span class="float-right"><b>(Logo Dimension : 195 X 250)</b></span></div>
+                    <div class="card-body widget-user-header logo-image">
+                      <img src="/dist/img/no-banner.jpg" class="w-100 h-100 img-bordered" id="event_logo_preview">
+                    </div>
+                    <div class="card-footer pt-3 form-group">
+                      <div class="btn btn-sm btn-secondary upload-image-button"> {{ __('admin.browse_and_upload') }}
+                          <input type="file" class="custom-file-input" id="event_logo" name="event_logo">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 offset-md-2">
+                  <div class="card card-widget card-secondary card-outline widget-user mt-2">
+                    <div class="card-header"><label class="mb-0" for="featured_banner">{{ __('admin.featured') }} {{ __('admin.banner') }} <span class="text-red">*</span></label><span class="float-right"><b>(Banner Dimension : 1920 X 1080)</b></span></div>
+                    <div class="card-body widget-user-header banner-image">
+                      <img src="/dist/img/no-banner.jpg" class="w-100 h-100 img-bordered" id="featured_banner_preview">
+                    </div>
+                    <div class="card-footer pt-3 form-group">
+                      <div class="btn btn-sm btn-secondary upload-image-button"> {{ __('admin.browse_and_upload') }}
+                          <input type="file" class="custom-file-input" id="featured_banner" name="featured_banner">
+                      </div>
+                      <div class="custom-file mt-1 float-right">
+                        <div class="icheck-primary d-inline">
+                          <input type="checkbox" id="checkboxPrimary3" name="featured" value="1">
+                          <label for="checkboxPrimary3">
+                            {{ __('admin.make_featured') }}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card card-widget card-secondary card-outline widget-user mt-2">
+                    <div class="card-header"><label class="mb-0" for="event_banner">{{ __('admin.event') }} {{ __('admin.banner') }} <span class="text-red">*</span></label><span class="float-right"><b>(Banner Dimension : 1920 X 200)</b></span></div>
+                    <div class="card-body widget-user-header banner-image">
+                      <img src="/dist/img/no-banner.jpg" class="w-100 h-100 img-bordered" id="event_banner_preview">
+                    </div>
+                    <div class="card-footer pt-3 form-group">
+                      <div class="btn btn-sm btn-secondary upload-image-button"> {{ __('admin.browse_and_upload') }}
                         <input type="file" class="custom-file-input" id="event_banner" name="event_banner">
-                        <label class="custom-file-label" for="event_banner">Choose file</label>  
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-6">
-                  <div class="card card-widget widget-user mt-2">
-                    <div class="card-header">{{ __('admin.event') }} {{ __('admin.banner') }} {{ __('admin.preview') }}</div>
-                    <div class="widget-user-header text-white">
-                      <img src="/dist/img/no-banner.jpg" class="w-100 h-100" id="event_banner_preview">
-                    </div>
-                  </div>
-                </div>
-              </div><!-- /.row -->
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="event_logo">{{ __('admin.event') }} {{ __('admin.logo') }} <span class="text-red">*</span></label>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="event_logo" name="event_logo">
-                        <label class="custom-file-label" for="event_logo">Choose file</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="card card-widget widget-user mt-2">
-                    <div class="card-header">{{ __('admin.event') }} {{ __('admin.logo') }}  {{ __('admin.preview') }}</div>
-                    <div class="widget-user-header text-white img-square">
-                      <img src="/dist/img/no-banner.jpg" class="card-img-top w-100 h-100 img-bordered" id="event_logo_preview">  
-                    </div>
-                  </div>
-                </div>
+                
               </div><!-- /.row -->
             </div>
             <!-- /.card-body -->

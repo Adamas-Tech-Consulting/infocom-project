@@ -7,6 +7,11 @@
         </a>
       </li>
       <li class="nav-item">
+        <a href="{{ route('track', $event_id) }}" class="nav-link {{ Nav::isResource('manage-track') }}">
+          <i class="fas fa-road"></i> {{ __('admin.track_master') }}
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="{{ route('schedule', $event_id) }}" class="nav-link {{ Nav::isResource('manage-schedule') }}">
           <i class="fas fa-clock"></i> {{ __('admin.schedule') }}
         </a>
@@ -23,7 +28,12 @@
       </li>
       <li class="nav-item">
         <a href="{{ route('event_contact_information', $event_id) }}" class="nav-link {{ Nav::isResource('manage-event/contact-information') }}">
-          <i class="fa fa-user"></i> {{ __('admin.contact_information') }}
+          <i class="fa fa-address-book"></i> {{ __('admin.contact_information') }}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ route('registration_request', $event_id) }}" class="nav-link {{ Nav::isResource('manage-registration-request') }}">
+          <i class="fa fa-user"></i> {{ __('admin.registration_request') }}
         </a>
       </li>
     </ul>

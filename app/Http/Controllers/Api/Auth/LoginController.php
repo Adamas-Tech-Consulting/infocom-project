@@ -40,7 +40,7 @@ class LoginController extends BaseController
             ]);
             if($validator->fails()) 
             {
-                return $this->sendError('Invalid Input', [], 403);
+                return $this->sendError('Invalid Input', 403);
             } 
             else 
             {
@@ -50,7 +50,7 @@ class LoginController extends BaseController
                         $authUser = RegistrationRequest::where('mobile', $request->mobile)->first();
                         if(isset($authUser) && $authUser->published == 0)
                         {
-                            return $this->sendError('Blocked User', [], 401);
+                            return $this->sendError('Blocked User', 401);
                         } 
                         else 
                         {
@@ -59,17 +59,17 @@ class LoginController extends BaseController
                                 return $this->sendResponse($this->data, 'OTP Sent'); 
                             }
                             else{
-                                return $this->sendError('Invalid User', [], 401);
+                                return $this->sendError('Invalid User', 401);
                             }
                         }
                     }
                     else
                     {
-                        return $this->sendError('Invalid Client ID or Secret', [], 401);
+                        return $this->sendError('Invalid Client ID or Secret', 401);
                     }                        
                 }   
                 catch(Exception $e) {   
-                    return $this->sendError('Forbidden', [], 403);
+                    return $this->sendError('Forbidden', 403);
                 }
             }
         }
@@ -87,7 +87,7 @@ class LoginController extends BaseController
             ]);
             if($validator->fails()) 
             {
-                return $this->sendError('Invalid Input', [], 403);
+                return $this->sendError('Invalid Input', 403);
             } 
             else 
             {
@@ -97,12 +97,14 @@ class LoginController extends BaseController
                         $authUser = RegistrationRequest::where('mobile', $request->mobile)->first();
                         if(isset($authUser) && $authUser->published == 0)
                         {
-                            return $this->sendError('Blocked User', [], 401);
+                            return $this->sendError('Blocked User', 401);
                         }
                         else
                         {
                             if(isset($authUser))
                             {
+                                unset($authUser->id);
+                                $request->request->add(['user' => $authUser->toArray()]);
                                 $request->request->add(['email' => $authUser->email]);
                                 $request->request->add(['password' => $request->otp]);
                                 Token::where('user_id', $authUser->id)->delete();
@@ -112,33 +114,20 @@ class LoginController extends BaseController
                                 return $this->issueToken($request, 'password');
                             }
                             else{
-                                return $this->sendError('Invalid User login', [], 401);
+                                return $this->sendError('Invalid User login', 401);
                             }
                         }
                     }
                     else
                     {
-                        return $this->sendError('Invalid Client ID or Secret', [], 401);
+                        return $this->sendError('Invalid Client ID or Secret', 401);
                     }     
                 }   
                 catch(Exception $e) {
-                    return $this->sendError('Forbidden', [], 403);
+                    return $this->sendError('Forbidden', 403);
                 }
             }
         }    
-    }
-
-    public function getUser(Request $request)
-    {
-        if ($request->isMethod('get')) 
-        {
-            try {
-                return $this->sendResponse($request->user(),''); 
-            }   
-            catch(Exception $e) {
-                return $this->sendError('Forbidden', [], 403);
-            }
-        } 
     }
 
     public function refresh(Request $request){

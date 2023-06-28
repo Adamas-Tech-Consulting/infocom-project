@@ -30,6 +30,9 @@ $(function () {
       event_theme: {
         required: true,
       },
+      featured_banner: {
+        required: (action=='create') ? true : false,
+      },
       event_banner: {
         required: (action=='create') ? true : false,
       },
@@ -58,6 +61,9 @@ $(function () {
       },
       event_theme: {
         required: "Please enter event theme",
+      },
+      featured_banner: {
+        required: (action=='create') ? "Please choose featured banner" : "",
       },
       event_banner: {
         required: (action=='create') ? "Please choose event banner" : "",

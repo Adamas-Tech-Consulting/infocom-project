@@ -28,6 +28,7 @@ return [
     //B
     'banner' => 'Banner',
     'basic_information' => 'Basic Information',
+    'browse_and_upload' => 'Browse File & Upload',
 
     //C
     'category'=>'Category',
@@ -40,6 +41,7 @@ return [
     'contacts_group' => 'Contact Group',
     'color' => 'Color',
     'confirm_password' => 'Confirm Password',
+    'current' => 'Current',
 
     //D
     'day' => 'Day',
@@ -49,7 +51,8 @@ return [
     'dashboard' => 'Dashboard',
     'designation' => 'Designation',
     'details' => 'Details',
-    'download_csv' => 'Download CSV',
+    'dimension' => 'Dimension',
+    'download_csv' => 'Download Excel',
     
 
     //E
@@ -64,6 +67,7 @@ return [
     'events' => 'Events',
 
     //F
+    'featured' => 'Featured',
     'female' => 'Female',
     'fname'=> 'First Name',
     'for' => 'For',
@@ -103,6 +107,7 @@ return [
     'mail_body' => 'Mail Body',
     'mail_signature' => 'Mail Signature',
     'mail_subject' => 'Mail Subject',
+    'make_featured' => 'Make it featured',
     'male' => 'Male',
     'manage' => 'Manage',
     'master_setup' => 'Master Setup',
@@ -125,6 +130,7 @@ return [
     //P
     'paid' => 'Paid',
     'password'=> 'Password',
+    'past' => 'Past',
     'pickup_address' => 'Pickup Address',
     'preview'=> 'Preview',
     'previous_event'=> 'Previous Event',
@@ -147,8 +153,8 @@ return [
     'send_invitation' => 'Send Invitation',
     'sent' => 'Sent',
     'session_subject_line' => 'Session Subject Line',
-    'schedule' => 'Schedule',
-    'schedule_type' => 'Schedule Type',
+    'schedule' => 'Agenda',
+    'schedule_type' => 'Agenda Type',
     'source_group' => 'Source Group',
     'speaker' => 'Speaker',
     'speakers' => 'Speakers',
@@ -163,11 +169,14 @@ return [
     'title' => 'Title',
     'time' => 'Time',
     'to' => 'To',
+    'track' => 'Track',
+    'track_master' => 'Track Master',
     'type' => 'Type',
 
     //U
     'unassign' => 'Unassign',
     'unpublish' => 'Unpublish', 
+    'upcoming' => 'Upcoming',
     'update' => 'Update',
     'update_password' => 'Update Password',
     'users' => 'Users',

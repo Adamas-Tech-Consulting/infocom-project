@@ -10,6 +10,7 @@ use DB;
 
 //Model
 use App\Models\Event;
+use App\Models\Track;
 use App\Models\Schedule;
 use App\Models\ScheduleDetails;
 use App\Models\Sponsors;
@@ -58,6 +59,7 @@ class ScheduleController extends Controller
     public function create(Request $request, $event_id)
     {
         if ($request->isMethod('post')) {
+            //dd($request->toArray());
             $validator = Validator::make($request->all(), [
                 'schedule_day' => 'required',
                 'schedule_title' => 'required',
@@ -83,12 +85,13 @@ class ScheduleController extends Controller
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
+                        'track_ids' => !empty($request->track_ids) ? implode(',',$request->track_ids) : NULL,
                     ];
                     $data = Schedule::create($insert_data);
                     $data->save();
                     $id = $data->id;
                     DB::commit();
-                    return redirect()->route('schedule_speakers', [$event_id, $id])->with('success', trans('flash.AddedSuccessfully'));
+                    return redirect()->route('schedule_update', [$event_id, $id])->with('success', trans('flash.AddedSuccessfully'));
                 }   
                 catch(Exception $e) {
                     DB::rollback(); 
@@ -96,6 +99,7 @@ class ScheduleController extends Controller
                 }
             }
         } else {
+            $this->data['rows_track'] = Track::where('event_id', $event_id)->get();
             $this->data['rows_type'] = ScheduleType::where('published','1')->get();
             return view('schedule.create',$this->data);
         }
@@ -129,6 +133,7 @@ class ScheduleController extends Controller
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
+                        'track_id' => $request->track_id,
                     ];
                     $data = Schedule::findOrFail($id);
                     $data->update($update_data);
@@ -143,6 +148,7 @@ class ScheduleController extends Controller
         } else {
             $this->data['schedule_id'] = $id;
             $this->data['rows_type'] = ScheduleType::where('published','1')->get();
+            $this->data['rows_track'] = Track::where('event_id', $event_id)->get();
             $this->data['row'] = Schedule::find($id);
             return view('schedule.update',$this->data);
         }

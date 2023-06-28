@@ -6,13 +6,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-3">
-        <h4 class="m-0">{{ $row_schedule->schedule_title }} : {{ __('admin.speakers') }}</h4>
+        <h4 class="m-0">{{ __('admin.speakers') }}</h4>
+        <h6 class="mt-1">{{$parent_row->title}} - {{ $row_schedule->schedule_title }}</h6>
       </div><!-- /.col -->
       <div class="col-sm-9">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
-          <li class="breadcrumb-item"><a href="{{$parent_page_url}}">{{ __('admin.manage') }} {{ $parent_page_name }}</a></li>
-          <li class="breadcrumb-item"><a href="{{$parent_page_single_url}}">{{$parent_row->title}}</a></li>
           <li class="breadcrumb-item"><a href="{{route($page_update,[$parent_id,$row_schedule->id])}}">{{ $row_schedule->schedule_title }}</a></li>
           <li class="breadcrumb-item active">{{ __('admin.speakers') }}</li>
         </ol>
@@ -51,7 +50,7 @@
       </div>
       <!-- /.col -->
       <div class="col-md-9">
-        <div class="card">
+        <div class="card card-warning card-outline direct-chat-warning">
           <div class="card-header p-2">
             @include('layouts.schedule_topbar')
           </div>

@@ -5,14 +5,13 @@
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-4">
-        <h4 class="m-0">{{$parent_row->title}} : {{$row->schedule_title}}</h4>
+      <div class="col-sm-5">
+        <h4 class="m-0">{{$row->schedule_title}}</h4>
+        <h6 class="mt-1">{{$parent_row->title}} ({{ date('d M, Y',strtotime($parent_row->event_start_date))}} - {{ date('d M, Y',strtotime($parent_row->event_end_date))}})</h6>
       </div><!-- /.col -->
-      <div class="col-sm-8">
+      <div class="col-sm-7">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
-          <li class="breadcrumb-item"><a href="{{$parent_page_url}}">{{ __('admin.manage') }} {{ $parent_page_name }}</a></li>
-          <li class="breadcrumb-item"><a href="{{$parent_page_single_url}}">{{$parent_row->title}}</a></li>
           <li class="breadcrumb-item"><a href="{{$page_url}}">{{ __('admin.manage') }} {{ $page_name }}</a></li>
           <li class="breadcrumb-item active">{{ __('admin.edit') }} {{ $page_name }}</li>
         </ol>
@@ -27,6 +26,15 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
+        @if(Session::has('success'))
+          <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <i class="icon fas fa-check"></i> {{ $page_name }} {{ Session::get('success') }}
+              @php
+                  Session::forget('success');
+              @endphp
+          </div>
+        @endif
         @if ($errors->any())
           <div class="alert alert-danger">
               <strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -53,7 +61,7 @@
       </div>
       <!-- /.col -->
       <div class="col-md-9">
-        <div class="card">
+        <div class="card card-warning card-outline direct-chat-warning">
           <div class="card-header p-2">
             @include('layouts.schedule_topbar')
           </div>
@@ -101,6 +109,20 @@
                           <div class="form-group">
                             <label for="to_time">{{ __('admin.to') }} {{ __('admin.time') }} <span class="text-red">*</span></label>
                             <input type="time" class="form-control @error('to_time') is-invalid @enderror" name="to_time" value="{{$row->to_time}}" placeholder="{{ __('admin.to_time') }}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group">
+                            <label for="track_ids">{{ __('admin.track') }}</label>
+                            @php $row->track_ids = !empty($row->track_ids) ? explode(',',$row->track_ids) : array(); @endphp
+                            <select class="form-control select2bs4 @error('track_ids') is-invalid @enderror" name="track_ids[]" style="width: 100%;" multiple="multiple" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
+                              <option value="">{{ __('admin.select') }} {{ __('admin.track') }}</option>
+                              @foreach($rows_track as $track)
+                              <option value="{{$track->id}}" {{in_array($track->id, $row->track_ids)?'selected':''}}>{{$track->name}}</option>
+                              @endforeach
+                            </select>
                           </div>
                         </div>
                       </div><!-- /.row -->

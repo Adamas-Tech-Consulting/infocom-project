@@ -32,6 +32,11 @@
   background-color: #fff;
 }
 
+.nav-events .nav-link.active, .nav-events .show>.nav-link {
+  color: #1f2d3d;
+  background-color: #ffc107;
+}
+
 #vert-tabs-tab .nav-item.show .nav-link, #vert-tabs-tab .nav-link.active, #vert-tabs-tab .nav-link:hover, #vert-tabs-tab .nav-link:focus {
   color: #1f2d3d;
   border-color: #ffc107;
@@ -84,6 +89,11 @@
   font-size: 18px;
 }
 
+.content-header h6.mt-1 {
+  font-size: 15px;
+  color: #666;
+}
+
 .modal-title {
   font-size: 22px;
 }
@@ -100,4 +110,40 @@
   -ms-flex-align: center;
   align-items: center;
   padding: 0.375rem 0.24rem;
+}
+
+.custom-file {
+  width: auto;
+}
+
+.banner-image{
+  height: 172px !important;
+}
+
+.logo-image {
+  height: 250px !important;
+}
+
+.upload-image-button {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.upload-image-button input {
+  cursor: pointer;
+  position: absolute;
+  font-size: 50px;
+  opacity: 0;
+  right: 0;
+  top: 0;
+}
+
+.featured {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.featured.fas {
+  color: #ff6e07;
 }

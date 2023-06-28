@@ -75,8 +75,8 @@
             </p>
           </a>
         </li>
-        <li class="nav-item {{ Nav::hasSegment(['manage-event','manage-schedule'], 1, 'menu-is-opening menu-open') }}">
-          <a href="{{route('event')}}" class="nav-link {{ Nav::hasSegment(['manage-event','manage-schedule']) }}">
+        <li class="nav-item {{ Nav::hasSegment(['manage-event','manage-schedule','manage-registration-request'], 1, 'menu-is-opening menu-open') }}">
+          <a href="{{route('event')}}" class="nav-link {{ Nav::hasSegment(['manage-event','manage-schedule','manage-registration-request']) }}">
             <i class="nav-icon fas fa-calendar-plus"></i>
             <p>
               {{ __('admin.event') }}
@@ -92,22 +92,14 @@
             </p>
           </a>
         </li>
-        <li class="nav-item {{ Nav::hasSegment(['manage-invitation'], 1 ,'menu-is-opening menu-open') }}">
+        <!-- <li class="nav-item {{ Nav::hasSegment(['manage-invitation'], 1 ,'menu-is-opening menu-open') }}">
           <a href="{{route('invitation')}}" class="nav-link {{ Nav::hasSegment(['manage-invitation']) }}">
             <i class="nav-icon fas fa-envelope"></i>
             <p>
               {{ __('admin.invitation') }}
             </p>
           </a>
-        </li>
-        <li class="nav-item">
-          <a href="{{route('registration_request')}}" class="nav-link {{ Nav::isResource('manage-registration-request') }}">
-            <i class="nav-icon fas fa-user"></i>
-            <p>
-              {{ __('admin.registration_request') }}
-            </p>
-          </a>
-        </li>
+        </li> -->
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

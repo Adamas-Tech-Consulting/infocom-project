@@ -5,15 +5,15 @@
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-4">
-        <h4 class="m-0">{{$parent_row->title}} : {{ $page_name }}</h4>
+      <div class="col-sm-5">
+        <h4 class="m-0">{{ $page_name }}</h4>
+        <h6 class="mt-1">{{$parent_row->title}} ({{ date('d M, Y',strtotime($parent_row->event_start_date))}} - {{ date('d M, Y',strtotime($parent_row->event_end_date))}})</h6>
       </div><!-- /.col -->
-      <div class="col-sm-8">
+      <div class="col-sm-7">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li>
-          <li class="breadcrumb-item"><a href="{{$parent_page_url}}">{{ __('admin.manage') }} {{ $parent_page_name }}</a></li>
           <li class="breadcrumb-item"><a href="{{$parent_page_single_url}}">{{$parent_row->title}}</a></li>
-          <li class="breadcrumb-item active">{{ __('admin.manage') }} {{ $page_name }}</li>
+          <li class="breadcrumb-item active">{{ $page_name }}</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -34,7 +34,7 @@
                   Session::forget('success');
               @endphp
           </div>
-          @endif
+        @endif
       </div>
     </div>
   </div>

@@ -57,7 +57,6 @@
               <th>{{ __('admin.name') }}</th>
               <th>{{ __('admin.designation') }}</th>
               <th>{{ __('admin.company_name') }}</th>
-              <th>{{ __('admin.rank') }}</th>
               <th class="text-center">{{ __('admin.action') }}</th>
             </tr>
             </thead>
@@ -69,7 +68,6 @@
               <td>{{$row->name}}</td>
               <td>{{$row->designation}}</td>
               <td>{{$row->company_name}}</td>
-              <td>{{$row->rank}}</td>
               <td class="text-center">
                 <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
                 <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,$row->id)}}" method="post">
@@ -107,12 +105,11 @@
       "responsive": true,
       "columnDefs": [
         { "width": "5%", "targets": 0 },
-        { "width": "5%", "targets": 1 },
-        { "width": "15%", "targets": 2 },
-        { "width": "15%", "targets": 3 },
+        { "width": "10%", "targets": 1 },
+        { "width": "20%", "targets": 2 },
+        { "width": "20%", "targets": 3 },
         { "width": "20%", "targets": 4 },
-        { "width": "5%", "targets": 5 },
-        { "width": "15%", "targets": 6 },
+        { "width": "15%", "targets": 5 },
       ]
     });
   });

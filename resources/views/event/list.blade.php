@@ -43,6 +43,11 @@
   <div class="container-fluid">
   <div class="row">
     <div class="col-12">
+      <ul class="nav nav-pills nav-events mb-1 float-center">
+        <li class="nav-item"><a class="nav-link {{ Nav::isResource('manage-event') }}" href="#"><i class="fas fa-calendar"></i> {{ __('admin.current') }} {{ __('admin.event') }}</a></li>
+        <li class="nav-item"><a class="nav-link {{ Nav::isResource('manage-schedule/speakers') }}" href="#"><i class="fa fa-calendar"></i> {{ __('admin.upcoming') }} {{ __('admin.event') }}</a></li>
+        <li class="nav-item"><a class="nav-link {{ Nav::isResource('manage-schedule/contact-information') }}" href="#"><i class="fa fa-calendar"></i> {{ __('admin.past') }} {{ __('admin.event') }}</a></li>
+      </ul>
       <div class="card card-warning card-outline direct-chat-warning">
         <div class="card-header">
           <h3 class="card-title"><a href="{{route($page_add)}}" class="btn btn-block btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __('admin.add') }} {{ $page_name }}</a></h3>
@@ -57,6 +62,7 @@
               <th>{{ __('admin.event') }} {{ __('admin.name') }}</th>
               <th>{{ __('admin.details') }}</th>
               <th>{{ __('admin.logo') }}</th>
+              <th class="text-center">{{ __('admin.featured') }}</th>
               <th class="text-center">{{ __('admin.action') }}</th>
             </tr>
             </thead>
@@ -76,8 +82,9 @@
                 @endif
               </td>
               <td><img class="conference-logo img-bordered" src="{{config('constants.CDN_URL')}}/{{config('constants.EVENT_FOLDER')}}/{{ $row->event_logo}}"/></td>
+              <td class="text-center"><i class="featured {{($row->featured)?'fas':'far'}} fa-star mt-2 toggle-featured" data-id="{{$row->id}}" data-is-featured="{{($row->featured)}}"></i></td>
               <td class="text-center">
-                <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
+                <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.view') }}"><i class="fas fa-search"></i></a>
                 <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,$row->id)}}" method="post">
                   @csrf
                   <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
@@ -114,12 +121,41 @@
       "columnDefs": [
         { "width": "5%", "targets": 0 },
         { "width": "15%", "targets": 1 },
-        { "width": "30%", "targets": 2 },
+        { "width": "20%", "targets": 2 },
         { "width": "25%", "targets": 3 },
         { "width": "10%", "targets": 4 },
-        { "width": "15%", "targets": 5},
+        { "width": "10%", "targets": 5 },
+        { "width": "15%", "targets": 6 },
       ]
     });
+  });
+
+  $(function () {
+    $('.toggle-featured').on('click',function() {
+      var buttonObject = $(this);
+      var id = $(this).data('id');
+      var isfeatured = $(this).data('is-featured') ? 0 : 1;
+      $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type:"POST",
+        url: "{{route($page_featured)}}",
+        data:{'id':id,'featured':isfeatured},
+        success:function(data){
+          if(data.error) {
+            toastr.error(data.error)
+          } else {
+            toastr.success("{{ $page_name }} "+data.success)
+            $(buttonObject).data('is-featured',isfeatured)
+            $(buttonObject).toggleClass('far fas')
+          }
+        },  
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+        }
+      })
+    })
   });
 
   $(function () {

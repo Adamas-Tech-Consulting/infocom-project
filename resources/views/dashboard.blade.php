@@ -57,12 +57,12 @@
         <div class="small-box bg-warning">
           <div class="inner">
             <h3>2</h3>
-            <p>Registration Request</p>
+            <p>{{ __('admin.admin_contact') }}</p>
           </div>
           <div class="icon">
             <i class="fas fa-user"></i>
           </div>
-          <a href="{{route('registration_request')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{route('contact_information')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
       <!-- ./col -->

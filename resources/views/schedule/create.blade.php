@@ -5,10 +5,11 @@
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
-      <div class="col-sm-4">
-        <h4 class="m-0">{{$parent_row->title}} : {{ __('admin.add') }} {{ $page_name }}</h4>
+      <div class="col-sm-5">
+        <h4 class="m-0">{{ __('admin.add') }} {{ $page_name }}</h4>
+        <h6 class="mt-1">{{$parent_row->title}} ({{ date('d M, Y',strtotime($parent_row->event_start_date))}} - {{ date('d M, Y',strtotime($parent_row->event_end_date))}})</h6>
       </div><!-- /.col -->
-      <div class="col-sm-8">
+      <div class="col-sm-7">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{ __('admin.home') }}</a></li> 
           <li class="breadcrumb-item"><a href="{{$page_url}}">{{ __('admin.manage') }} {{ $page_name }}</a></li>
@@ -92,6 +93,18 @@
                   <div class="form-group">
                     <label for="to_time">{{ __('admin.to') }} {{ __('admin.time') }} <span class="text-red">*</span></label>
                     <input type="time" class="form-control @error('to_time') is-invalid @enderror" name="to_time" value="" placeholder="{{ __('admin.to_time') }}">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="track_ids">{{ __('admin.track') }}</label>
+                    <select class="form-control select2bs4 @error('track_ids') is-invalid @enderror" name="track_ids[]" style="width: 100%;" multiple="multiple" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
+                      @foreach($rows_track as $track)
+                      <option value="{{$track->id}}">{{$track->name}}</option>
+                      @endforeach
+                    </select>
                   </div>
                 </div>
               </div><!-- /.row -->

@@ -95,11 +95,20 @@ Route::middleware(['web'])->group(function () {
             Route::any('/update/{id}', [App\Http\Controllers\EventController::class, 'update'])->name('event_update');
             Route::any('/delete/{id}', [App\Http\Controllers\EventController::class, 'delete'])->name('event_delete');
             Route::post('/publish-unpublish', [App\Http\Controllers\EventController::class, 'publish_unpublish'])->name('event_publish_unpublish');
+            Route::post('/featured', [App\Http\Controllers\EventController::class, 'featured'])->name('event_featured');
             Route::any('/sponsors/{event_id}', [App\Http\Controllers\EventController::class, 'sponsors'])->name('event_sponsors');
             Route::any('/speakers/{event_id}', [App\Http\Controllers\EventController::class, 'speakers'])->name('event_speakers');
             Route::any('/schedule-speakers/{event_id}', [App\Http\Controllers\EventController::class, 'schedule_speakers'])->name('event_schedule_speakers');
             Route::any('/key-speakers', [App\Http\Controllers\EventController::class, 'key_speakers'])->name('event_key_speakers');
             Route::any('/contact-information/{event_id}', [App\Http\Controllers\EventController::class, 'contact_information'])->name('event_contact_information');
+        });
+
+        //Track Master
+        Route::prefix('manage-track')->group(function (){
+            Route::get('/{event_id}', [App\Http\Controllers\TrackController::class, 'index'])->name('track');
+            Route::any('/create/{event_id}', [App\Http\Controllers\TrackController::class, 'create'])->name('track_create');
+            Route::any('/update/{event_id}/{id}', [App\Http\Controllers\TrackController::class, 'update'])->name('track_update');
+            Route::any('/delete/{event_id}/{id}', [App\Http\Controllers\TrackController::class, 'delete'])->name('track_delete');
         });
 
         //Schedule
@@ -147,9 +156,8 @@ Route::middleware(['web'])->group(function () {
 
         //Registration Requests
         Route::prefix('manage-registration-request')->group(function (){
-            Route::get('/', [App\Http\Controllers\RegistrationRequestController::class, 'index'])->name('registration_request');
-            Route::get('/switch-event/{event_id}', [App\Http\Controllers\RegistrationRequestController::class, 'switch_event'])->name('switch_event');
-            Route::get('/csv-download', [App\Http\Controllers\RegistrationRequestController::class, 'csv_download'])->name('registration_request_csv_download');
+            Route::get('/{event_id}', [App\Http\Controllers\RegistrationRequestController::class, 'index'])->name('registration_request');
+            Route::get('/download/{event_id}', [App\Http\Controllers\RegistrationRequestController::class, 'download'])->name('registration_request_download');
         });
 
     });

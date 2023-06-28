@@ -34,6 +34,7 @@ class EventController extends Controller
             'page_update'           => 'event_update',
             'page_delete'           => 'event_delete',
             'page_publish_unpublish'=> 'event_publish_unpublish',
+            'page_featured'         => 'event_featured',
         ];
     }  
 
@@ -80,10 +81,20 @@ class EventController extends Controller
                         'event_theme' => $request->event_theme,
                         'overview_description' => $request->overview_description,
                         'event_description' => $request->event_description,
+                        'featured' => (isset($request->featured) ? 1 : 0),
                     ];
                     $data = Event::create($insert_data);
                     $data->save();
                     $id = $data->id;
+                    if($request->file('featured_banner')) {
+                        $file = $request->file('featured_banner');
+                        //Upload image
+                        $featured_banner = image_upload($file,config("constants.EVENT_FOLDER"),'featured',NULL);
+                        //Update DB Data
+                        $update_data = array('featured_banner' => $featured_banner);
+                        //Update Query
+                        Event::where('id', '=', $id)->update($update_data);
+                    }
                     if($request->file('event_banner')) {
                         $file = $request->file('event_banner');
                         //Upload image
@@ -149,9 +160,19 @@ class EventController extends Controller
                         'event_theme' => $request->event_theme,
                         'overview_description' => $request->overview_description,
                         'event_description' => $request->event_description,
+                        'featured' => (isset($request->featured) ? 1 : 0),
                     ];
                     $data = Event::findOrFail($id);
                     $data->update($update_data);
+                    if($request->file('featured_banner')) {
+                        $file = $request->file('featured_banner');
+                        //Upload image
+                        $featured_banner = image_upload($file,config("constants.EVENT_FOLDER"),'featured',$data->featured_banner);
+                        //Update DB Data
+                        $update_data = array('featured_banner' => $featured_banner);
+                        //Update Query
+                        Event::where('id', '=', $id)->update($update_data);
+                    }
                     if($request->file('event_banner')) {
                         $file = $request->file('event_banner');
                         //Upload image
@@ -231,6 +252,33 @@ class EventController extends Controller
         }
     }
 
+    public function featured(Request $request)
+    {
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+                'featured' => 'required',
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                DB::beginTransaction();
+                try {
+                    $data = Event::findOrFail($request->id);
+                    $data->featured = $request->featured;
+                    $data->save();
+                    DB::commit();
+                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
+                }   
+                catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        }
+    }
+
     public function sponsors(Request $request, $id)
     {
         if ($request->isMethod('post')) {
@@ -268,7 +316,7 @@ class EventController extends Controller
         } else {
             $this->data['event_id'] = $id;
             $this->data['row_event'] = Event::find($id);
-            $this->data['rows'] = Sponsors::leftJoin('event_sponsors',function($join) use($id) {
+            $this->data['rows'] = Sponsors::Join('event_sponsors',function($join) use($id) {
                                                     $join->on('event_sponsors.sponsors_id','sponsors.id')
                                                     ->where('event_sponsors.event_id',$id);
                                                 })
@@ -316,7 +364,7 @@ class EventController extends Controller
         } else {
             $this->data['event_id'] = $id;
             $this->data['row_event'] = Event::find($id);
-            $this->data['rows'] = Speakers::leftJoin('event_speakers',function($join) use($id) {
+            $this->data['rows'] = Speakers::Join('event_speakers',function($join) use($id) {
                                                     $join->on('event_speakers.speakers_id','speakers.id')
                                                     ->where('event_speakers.event_id',$id);
                                                 })
@@ -406,7 +454,7 @@ class EventController extends Controller
             }
         } else {
             $this->data['event_id'] = $id;
-            $this->data['row_conference'] = Event::find($id);
+            $this->data['row_event'] = Event::find($id);
             $this->data['rows'] = ContactInformation::leftJoin('event_contact_information',function($join) use($id) {
                                                     $join->on('event_contact_information.contact_information_id','contact_information.id')
                                                     ->where('event_contact_information.event_id',$id);
