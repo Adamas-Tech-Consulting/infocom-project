@@ -49,6 +49,10 @@ class RegistrationRequestController extends Controller
         } else {
             return redirect()->route('registration_request', $event_id);
         }
-        
+    }
+
+    public function registration_form(Request $request, $event_slug)
+    {
+        return view('registration_request.form',$this->data);
     }
 }

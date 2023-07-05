@@ -66,13 +66,9 @@
     @yield('body')
   </div>
   <!-- /.content-wrapper -->
-  <!-- <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.2.0
-    </div>
-  </footer> -->
+  <footer class="main-footer text-right">
+    <strong>Powered By <a href="https://adminlte.io"><img src="{{config('constants.powered_by_img')}}" alt="{{config('constants.powered_by')}}" class="powered-image"></a>.</strong>
+  </footer>
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
@@ -167,6 +163,7 @@ $(function () {
 
   $(".custom-file-input").on('change', function() {
     var input = this;
+    var filename = $(input).val().replace(/.*(\/|\\)/, '');
     var img = '#'+$(input).attr('id')+'_preview';
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -175,6 +172,8 @@ $(function () {
         }
         reader.readAsDataURL(input.files[0]);
     }
+    $(input).parent().parent().find('.tmpFile').remove();
+    $(input).parent().parent().append('<span class="tmpFile">'+filename+'</span>')
   })
 
 })

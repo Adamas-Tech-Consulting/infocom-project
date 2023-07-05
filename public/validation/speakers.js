@@ -12,6 +12,9 @@ $(function () {
       name: {
         required: true,
       },
+      speakers_category_id: {
+        required: true,
+      },
       designation: {
         required: true,
       },
@@ -22,6 +25,9 @@ $(function () {
     messages: {
       name: {
         required: "Please enter speaker name",
+      },
+      speakers_category_id: {
+        required: "Please select speaker category",
       },
       designation: {
         required: "Please enter speaker designation",

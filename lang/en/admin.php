@@ -23,15 +23,17 @@ return [
     'allow' => 'Allow',
     'assign' => 'Assign',
     'assign_or_remove' => 'Assign/Remove',
+    'attach_file' => 'Attach File',
     'auto_registration_date_limit' => 'Last Registration Date',
 
     //B
     'banner' => 'Banner',
     'basic_information' => 'Basic Information',
-    'browse_and_upload' => 'Browse File & Upload',
+    'browse_and_upload' => 'Browse File',
 
     //C
     'category'=>'Category',
+    'company' => 'Company',
     'company_name' => 'Company Name',
     'company_website' => 'Company Website',
     'conference' => 'Conference',
@@ -125,6 +127,7 @@ return [
     'one' => 'One',
     'organization' => 'Organization',
     'other' => 'Other',
+    'ordering' => 'Ordering',
     'overview_description' => 'Overview Description',
 
     //P
@@ -140,6 +143,7 @@ return [
 
     //R
     'rank' => 'Rank',
+    'registration_form' => 'Registration Form',
     'registration_method' => 'Registration Method',
     'registered_on' => 'Registered On',
     'registration_type' => 'Registration Type',
@@ -158,6 +162,7 @@ return [
     'source_group' => 'Source Group',
     'speaker' => 'Speaker',
     'speakers' => 'Speakers',
+    'speakers_category' => 'Speaker Category',
     'sponsors' => 'Sponsors',
     'sponsorship_type' => 'Sponsorship Type',
     'start_date' => 'Start Date',

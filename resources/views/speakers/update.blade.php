@@ -62,10 +62,21 @@
             <div class="row">
               <div class="col-7">
                 <div class="row">
-                  <div class="col-12">
+                  <div class="col-6">
                     <div class="form-group">
                       <label for="name">{{ __('admin.name') }} <span class="text-red">*</span></label>
                       <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="{{ __('admin.enter') }} {{ __('admin.speaker') }} {{ __('admin.name') }}" value="{{$row->name}}">
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="speakers_category_id">{{ __('admin.category') }} <span class="text-red">*</span></label>
+                      <select class="form-control select2bs4 @error('speakers_category_id') is-invalid @enderror" name="speakers_category_id" style="width: 100%;">
+                        <option value="">{{ __('admin.select') }} {{ __('admin.speakers_category') }}</option>
+                        @foreach($rows_category as $category)
+                        <option value="{{$category->id}}" {{($category->id == $row->speakers_category_id) ? 'selected' : ''}}>{{$category->name}}</option>
+                        @endforeach
+                      </select>
                     </div>
                   </div>
                   <div class="col-12">

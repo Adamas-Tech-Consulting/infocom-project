@@ -287,101 +287,6 @@ class EventController extends Controller
         }
     }
 
-    // public function sponsors(Request $request, $id)
-    // {
-    //     if ($request->isMethod('post')) {
-
-    //         $validator = Validator::make($request->all(), [
-    //             'sponsors_id' => 'required',
-    //         ]);
-    //         if($validator->fails()) {
-    //             return response()->json(['error' => trans('flash.UpdateError')]);
-    //         } else {
-    //             DB::beginTransaction();
-    //             try {
-    //                 if($request->id) {
-    //                     EventSponsors::where('id',$request->id)->delete();
-    //                     $event_sponsord_id=NULL;
-    //                     $success_message = trans('flash.RemovedSuccessfully');
-    //                 } else {
-    //                     $insert_data = [
-    //                         'event_id' => $id,
-    //                         'sponsors_id' => $request->sponsors_id,
-    //                     ];
-    //                     $data = EventSponsors::create($insert_data);
-    //                     $data->save();
-    //                     $event_sponsord_id=$data->id;
-    //                     $success_message = trans('flash.AssignedSuccessfully');
-    //                 }
-    //                 DB::commit();
-    //                 return response()->json(['success' => $success_message,'id' => $event_sponsord_id]);
-    //             }   
-    //             catch(Exception $e) {   
-    //                 DB::rollback(); 
-    //                 return back();
-    //             }
-    //         }
-    //     } else {
-    //         $this->data['event_id'] = $id;
-    //         $this->data['row_event'] = Event::find($id);
-    //         $this->data['rows'] = Sponsors::Join('event_sponsors',function($join) use($id) {
-    //                                                 $join->on('event_sponsors.sponsors_id','sponsors.id')
-    //                                                 ->where('event_sponsors.event_id',$id);
-    //                                             })
-    //                                             ->leftJoin('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
-    //                                             ->orderByRaw('CASE WHEN event_sponsors.id IS NULL THEN 1 ELSE 0 END ASC')
-    //                                             ->get(['sponsors.*','event_sponsors.id as event_sponsors_id','sponsorship_type.name as sponsorship_type_name']);
-    //         return view('event.list_sponsors',$this->data);
-    //     }
-    // }
-
-    public function speakers(Request $request, $id)
-    {
-        if ($request->isMethod('post')) {
-
-            $validator = Validator::make($request->all(), [
-                'speakers_id' => 'required',
-            ]);
-            if($validator->fails()) {
-                return response()->json(['error' => trans('flash.UpdateError')]);
-            } else {
-                DB::beginTransaction();
-                try {
-                    if($request->id) {
-                        EventSpeakers::where('id',$request->id)->delete();
-                        $event_speaker_id=NULL;
-                        $success_message = trans('flash.RemovedSuccessfully');
-                    } else {
-                        $insert_data = [
-                            'event_id' => $id,
-                            'speakers_id' => $request->speakers_id,
-                        ];
-                        $data = EventSpeakers::create($insert_data);
-                        $data->save();
-                        $event_speaker_id=$data->id;
-                        $success_message = trans('flash.AssignedSuccessfully');
-                    }
-                    DB::commit();
-                    return response()->json(['success' => $success_message,'id' => $event_speaker_id]);
-                }   
-                catch(Exception $e) {   
-                    DB::rollback(); 
-                    return back();
-                }
-            }
-        } else {
-            $this->data['event_id'] = $id;
-            $this->data['row_event'] = Event::find($id);
-            $this->data['rows'] = Speakers::Join('event_speakers',function($join) use($id) {
-                                                    $join->on('event_speakers.speakers_id','speakers.id')
-                                                    ->where('event_speakers.event_id',$id);
-                                                })
-                                                ->orderByRaw('CASE WHEN event_speakers.id IS NULL THEN 1 ELSE 0 END ASC')
-                                                ->get(['speakers.*','event_speakers.id as event_speakers_id','event_speakers.is_key_speaker']);
-            return view('event.list_speakers',$this->data);
-        }
-    }
-
     public function schedule_speakers(Request $request, $id)
     {
         if ($request->isMethod('post')) {
@@ -393,37 +298,10 @@ class EventController extends Controller
                                                 ->where('schedule_speakers.speakers_id',$speakers_id);
                                             })
                                             ->where('schedule.event_id','=',$id)
-                                            ->get(['schedule.*','schedule_type.name as schedule_type_name','schedule_speakers.id as schedule_speakers_id', 'schedule_speakers.is_key_speaker']);
+                                            ->get(['schedule.*','schedule_type.name as schedule_type_name','schedule_speakers.id as schedule_speakers_id']);
             echo view('event.list_schedules',$this->data);
         }
         
-    }
-
-    public function key_speakers(Request $request)
-    {
-        if ($request->isMethod('post')) {
-
-            $validator = Validator::make($request->all(), [
-                'id' => 'required',
-                'is_key_speaker' => 'required',
-            ]);
-            if($validator->fails()) {
-                return response()->json(['error' => trans('flash.UpdateError')]);
-            } else {
-                DB::beginTransaction();
-                try {
-                    $data = EventSpeakers::findOrFail($request->id);
-                    $data->is_key_speaker = $request->is_key_speaker;
-                    $data->save();
-                    DB::commit();
-                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
-                }   
-                catch(Exception $e) {   
-                    DB::rollback(); 
-                    return back();
-                }
-            }
-        }
     }
 
     public function contact_information(Request $request, $id)

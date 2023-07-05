@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\ContactsSampleExport;
+use App\Imports\ContactsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use DB;
+use DataTables;
 
 //Model
 use App\Models\Contacts;
@@ -34,8 +38,26 @@ class ContactsController extends Controller
 
     public function index(Request $request, $group_id)
     {
-        $this->data['rows'] = Contacts::where('contacts_group_id', $group_id)->get();
-        return view('contacts.list',$this->data);
+        if ($request->ajax()) {
+            $contacts = Contacts::where('contacts_group_id', $group_id)
+                                ->selectRaw("id, contacts_group_id, CONCAT(fname, ' ',lname, if(designation is null,'',' ('), IFNULL(designation, ''), if(designation is null,'',')')) as name, email, mobile, designation, company_name, published")
+                                ->get();
+            return DataTables::of($contacts)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+                        $btn = '<a href="'.route("contacts_update",[$row->contacts_group_id,$row->id]).'" class="btn btn-xs bg-gradient-primary mr-1" data-bs-toggle="tooltip" title="'.__("admin.edit").'"><i class="fas fa-edit"></i></a>';
+                        $btn = $btn.'<form class="d-inline-block mr-1" id="form_'.$row->id.'" action="'.route("contacts_delete",[$row->contacts_group_id,$row->id]).'" method="post">';
+                        $btn = $btn.csrf_field();
+                        $btn = $btn.'<button type="button" data-form="#form_'.$row->id.'" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="'.__("admin.delete").'"><i class="fas fa-trash"></i></button>';
+                        $btn = $btn.'</form>';
+                        $btn = $btn.'<button type="button" class="btn btn-xs bg-gradient-'.(($row->published)?"success":"warning").' toggle-published"  data-bs-toggle="tooltip" title="'.(($row->published) ? __("admin.inactive") : __("admin.active")).'" data-id="'.$row->id.'" data-is-published="'.$row->published.'"><i class="fas fa-'.(($row->published)?"check-circle":"ban").'"></i></button>';
+                        return $btn;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        } else {
+            return view('contacts.list',$this->data);
+        }
     }
 
     public function create(Request $request, $group_id)
@@ -137,6 +159,33 @@ class ContactsController extends Controller
                     return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
                 }   
                 catch(Exception $e) {   
+                    DB::rollback(); 
+                    return back();
+                }
+            }
+        }
+    }
+
+    public function download(Request $request, $group_id)
+    {
+        $filename = "sample-contacts.xlsx";
+        return Excel::download(new ContactsSampleExport, $filename); 
+    }
+
+    public function upload(Request $request, $group_id)
+    {
+        if ($request->isMethod('post')) {
+            $validator = Validator::make($request->all(), [
+                'contacts' => 'required|mimes:xlx,xls,xlsx|max:2048'
+            ]);
+            if($validator->fails()) {
+                return response()->json(['error' => trans('flash.UpdateError')]);
+            } else {
+                try {
+                    Excel::import(new ContactsImport($group_id), $request->file('contacts'));
+                    return response()->json(['success' => trans('flash.ImportedSuccessfully')]);
+                }   
+                catch(Exception $e) {
                     DB::rollback(); 
                     return back();
                 }

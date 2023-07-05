@@ -12,9 +12,7 @@ use DB;
 use App\Models\Event;
 use App\Models\Track;
 use App\Models\Schedule;
-use App\Models\ScheduleDetails;
-use App\Models\Sponsors;
-use App\Models\ScheduleSponsors;
+use App\Models\ScheduleTrack;
 use App\Models\Speakers;
 use App\Models\ScheduleSpeakers;
 use App\Models\ScheduleType;
@@ -85,11 +83,22 @@ class ScheduleController extends Controller
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
-                        'track_ids' => !empty($request->track_ids) ? implode(',',$request->track_ids) : NULL,
                     ];
                     $data = Schedule::create($insert_data);
                     $data->save();
                     $id = $data->id;
+                    if(!empty($request->track_ids))
+                    {
+                        foreach($request->track_ids as $track_id)
+                        {
+                            $insert_track_data = [
+                                'event_id' => $event_id,
+                                'schedule_id' => $id,
+                                'track_id' => $track_id,
+                            ];
+                            ScheduleTrack::create($insert_track_data);
+                        }
+                    }
                     DB::commit();
                     return redirect()->route('schedule_update', [$event_id, $id])->with('success', trans('flash.AddedSuccessfully'));
                 }   
@@ -133,10 +142,25 @@ class ScheduleController extends Controller
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
-                        'track_id' => $request->track_id,
                     ];
                     $data = Schedule::findOrFail($id);
                     $data->update($update_data);
+                    if(ScheduleTrack::where('event_id',$event_id)->where('schedule_id',$id)->exists())
+                    {
+                        ScheduleTrack::where('event_id',$event_id)->where('schedule_id',$id)->delete();
+                    }
+                    if(!empty($request->track_ids))
+                    {
+                        foreach($request->track_ids as $track_id)
+                        {
+                            $insert_track_data = [
+                                'event_id' => $event_id,
+                                'schedule_id' => $id,
+                                'track_id' => $track_id,
+                            ];
+                            ScheduleTrack::create($insert_track_data);
+                        }
+                    }
                     DB::commit();
                     return redirect()->route('schedule', $event_id)->with('success', trans('flash.UpdatedSuccessfully'));
                 }   
@@ -150,6 +174,12 @@ class ScheduleController extends Controller
             $this->data['rows_type'] = ScheduleType::where('published','1')->get();
             $this->data['rows_track'] = Track::where('event_id', $event_id)->get();
             $this->data['row'] = Schedule::find($id);
+            $this->data['track_ids'] = array();
+            $schedule_track = ScheduleTrack::where('event_id',$event_id)->where('schedule_id',$id)->get('track_id');
+            foreach($schedule_track as $track)
+            {
+                $this->data['track_ids'][] = $track->track_id;
+            }
             return view('schedule.update',$this->data);
         }
     }
@@ -199,55 +229,6 @@ class ScheduleController extends Controller
         }
     }
 
-    public function sponsors(Request $request, $event_id, $id)
-    {
-        if ($request->isMethod('post')) {
-
-            $validator = Validator::make($request->all(), [
-                'sponsors_id' => 'required',
-            ]);
-            if($validator->fails()) {
-                return response()->json(['error' => trans('flash.UpdateError')]);
-            } else {
-                DB::beginTransaction();
-                try {
-                    if($request->id) {
-                        ScheduleSponsors::where('id',$request->id)->delete();
-                        $schedule_sponsord_id=NULL;
-                        $success_message = trans('flash.RemovedSuccessfully');
-                    } else {
-                        $insert_data = [
-                            'event_id' => $event_id,
-                            'schedule_id' => $id,
-                            'sponsors_id' => $request->sponsors_id,
-                        ];
-                        $data = ScheduleSponsors::create($insert_data);
-                        $data->save();
-                        $schedule_sponsord_id=$data->id;
-                        $success_message = trans('flash.AssignedSuccessfully');
-                    }
-                    DB::commit();
-                    return response()->json(['success' => $success_message,'id' => $schedule_sponsord_id]);
-                }   
-                catch(Exception $e) {   
-                    DB::rollback(); 
-                    return back();
-                }
-            }
-        } else {
-            $this->data['row_schedule'] = Schedule::find($id);
-            $this->data['rows'] = Sponsors::leftJoin('schedule_sponsors',function($join) use($event_id,$id) {
-                                                    $join->on('schedule_sponsors.sponsors_id','sponsors.id')
-                                                    ->where('schedule_sponsors.event_id',$event_id)
-                                                    ->where('schedule_sponsors.schedule_id',$id);
-                                                })
-                                                ->leftJoin('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
-                                                ->orderByRaw('CASE WHEN schedule_sponsors.id IS NULL THEN 1 ELSE 0 END ASC')
-                                                ->get(['sponsors.*','schedule_sponsors.id as schedule_sponsors_id','sponsorship_type.name as sponsorship_type_name']);
-            return view('schedule.list_sponsors',$this->data);
-        }
-    }
-
     public function speakers(Request $request, $event_id, $id=NULL)
     {
         if ($request->isMethod('post')) {
@@ -286,41 +267,19 @@ class ScheduleController extends Controller
         } else {
             $this->data['schedule_id'] = $id;
             $this->data['row_schedule'] = Schedule::find($id);
-            $this->data['rows'] = Speakers::leftJoin('schedule_speakers',function($join) use($event_id,$id) {
+            $this->data['rows'] = Speakers::join('speakers_category','speakers_category.id','=','speakers.speakers_category_id')
+                                                ->Join('event_speakers',function($join) use($event_id) {
+                                                    $join->on('event_speakers.speakers_id','speakers.id')
+                                                    ->where('event_speakers.event_id',$event_id);
+                                                })
+                                                ->leftJoin('schedule_speakers',function($join) use($event_id,$id) {
                                                     $join->on('schedule_speakers.speakers_id','speakers.id')
                                                     ->where('schedule_speakers.event_id',$event_id)
                                                     ->where('schedule_speakers.schedule_id',$id);
                                                 })
-                                                ->orderByRaw('CASE WHEN schedule_speakers.id IS NULL THEN 1 ELSE 0 END ASC')
-                                                ->get(['speakers.*','schedule_speakers.id as schedule_speakers_id','schedule_speakers.is_key_speaker']);
+                                                ->orderByRaw('speakers_category.ordering asc, CASE WHEN schedule_speakers.id IS NULL THEN 1 ELSE 0 END ASC')
+                                                ->get(['speakers.*','schedule_speakers.id as schedule_speakers_id','speakers_category.name as speakers_category_name']);
             return view('schedule.list_speakers',$this->data);
-        }
-    }
-
-    public function key_speakers(Request $request, $event_id)
-    {
-        if ($request->isMethod('post')) {
-
-            $validator = Validator::make($request->all(), [
-                'id' => 'required',
-                'is_key_speaker' => 'required',
-            ]);
-            if($validator->fails()) {
-                return response()->json(['error' => trans('flash.UpdateError')]);
-            } else {
-                DB::beginTransaction();
-                try {
-                    $data = ScheduleSpeakers::findOrFail($request->id);
-                    $data->is_key_speaker = $request->is_key_speaker;
-                    $data->save();
-                    DB::commit();
-                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
-                }   
-                catch(Exception $e) {   
-                    DB::rollback(); 
-                    return back();
-                }
-            }
         }
     }
 

@@ -67,7 +67,7 @@
               <th>#</th>
               <th>{{ __('admin.image') }}</th>
               <th>{{ __('admin.name') }}</th>
-              <th>{{ __('admin.designation') }}</th>
+              <th>{{ __('admin.category') }}</th>
               <th>{{ __('admin.company_name') }}</th>
               <th class="text-center">{{ __('admin.action') }}</th>
             </tr>
@@ -77,8 +77,8 @@
             <tr>
               <td>{{$key+1}}</td>
               <td><img class="conference-logo img-circle img-bordered" src="{{config('constants.CDN_URL')}}/{{config('constants.SPEAKERS_FOLDER')}}/{{ $row->image}}"/></td>
-              <td>{{$row->name}}</td>
-              <td>{{$row->designation}}</td>
+              <td>{{$row->name}}({{$row->designation}})</td>
+              <td>{{$row->speakers_category_name}}</td>
               <td>{{$row->company_name}}</td>
               <td class="text-center">
                 <button type="button" class="btn btn-xs bg-gradient-info event-speaker-info"  data-bs-toggle="tooltip" title="{{ __('admin.info') }}" data-id="{{$row->event_speakers_id}}" data-conference-id="{{$row_event->id}}" data-speakers-id="{{($row->id)}}" data-speaker-name="{{$row->name}}"><i class="fa fa-info-circle"></i></button>
@@ -108,15 +108,15 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">
-          <span class="speaker-name">Atanu Pramanik</span>
-          <p><small>{{ __('admin.conference') }} {{ __('admin.name') }} : {{ $row_event->title }}</small></p>
+          <span class="speaker-name"></span>
+          <p><small>{{ $row_event->title }}</small></p>
         </h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <h6 class="mb-3">{{ __('admin.event') }} {{ __('admin.of') }} {{ $row_event->title }}</h6>
+        <h6 class="mb-3">{{ __('admin.event') }} {{ __('admin.schedule') }} : </h6>
         <div id="event_speakers"></div>
       </div>
     </div>
@@ -129,6 +129,7 @@
 @section('script')
 <script>
   $(function () {
+    var groupColumn = 3;
     $('#list_table').DataTable({
       "paging": true,
       "lengthChange": true,
@@ -141,10 +142,28 @@
         { "width": "5%", "targets": 0 },
         { "width": "10%", "targets": 1 },
         { "width": "20%", "targets": 2 },
-        { "width": "20%", "targets": 3 },
+        { "width": "20%", "targets": 3, "visible": false },
         { "width": "25%", "targets": 4 },
         { "width": "20%", "targets": 5 },
-      ]
+      ],
+      fnDrawCallback: function (settings) {
+        var api = this.api();
+        var rows = api.rows({ page: 'current' }).nodes();
+        var last = null;
+ 
+        api
+            .column(groupColumn, { page: 'current' })
+            .data()
+            .each(function (group, i) {
+                if (last !== group) {
+                    $(rows)
+                        .eq(i)
+                        .before('<tr class="group"><td colspan="6">' + group + '</td></tr>');
+ 
+                    last = group;
+                }
+            });
+      },
     });
   });
 

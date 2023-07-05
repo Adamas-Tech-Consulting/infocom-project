@@ -61,7 +61,7 @@
                 <th>#</th>
                 <th>{{ __('admin.image') }}</th>
                 <th>{{ __('admin.name') }}</th>
-                <th>{{ __('admin.designation') }}</th>
+                <th>{{ __('admin.category') }}</th>
                 <th>{{ __('admin.company_name') }}</th>
                 <th class="text-center">{{ __('admin.action') }}</th>
               </tr>
@@ -71,11 +71,10 @@
               <tr>
                 <td>{{$key+1}}</td>
                 <td><img class="conference-logo img-circle img-bordered" src="{{config('constants.CDN_URL')}}/{{config('constants.SPEAKERS_FOLDER')}}/{{ $row->image}}"/></td>
-                <td>{{$row->name}}</td>
-                <td>{{$row->designation}}</td>
+                <td>{{$row->name}}({{$row->designation}})</td>
+                <td>{{$row->speakers_category_name}}</td>
                 <td>{{$row->company_name}}</td>
                 <td class="text-center">
-                  <button type="button" class="btn btn-xs bg-gradient-{{$row->is_key_speaker==1 ? 'success' : 'secondary'}} {{($row->schedule_speakers_id)?'':'d-none'}} toggle-key-speaker"  data-bs-toggle="tooltip" title="{{$row->is_key_speaker==1 ? __('admin.key_speaker') : __('admin.non_key_speaker')}}" data-id="{{$row->schedule_speakers_id}}" data-conference-id="{{$parent_id}}" data-is-key-speaker="{{($row->is_key_speaker)}}"><i class="fa fa-key"></i></button>
                   <button type="button" class="btn btn-xs bg-gradient-{{($row->schedule_speakers_id)?'danger':'primary'}} toggle-assigned"  data-bs-toggle="tooltip" title="{{ ($row->schedule_speakers_id) ? __('admin.remove') : __('admin.assign') }}" data-id="{{$row->schedule_speakers_id}}" data-conference-id="{{$parent_id}}" data-event-id="{{ $row_schedule->schedule_title }}" data-speakers-id="{{($row->id)}}"><i class="fa fa-{{($row->schedule_speakers_id)?'minus-circle':'plus-circle'}}"></i></button>
                 </td>
               </tr>
@@ -95,6 +94,7 @@
 @section('script')
 <script>
   $(function () {
+    var groupColumn = 3;
     $('#list_table').DataTable({
       "paging": false,
       "lengthChange": false,
@@ -107,12 +107,27 @@
         { "width": "5%", "targets": 0 },
         { "width": "5%", "targets": 1 },
         { "width": "20%", "targets": 2 },
-        { "width": "20%", "targets": 3 },
+        { "width": "20%", "targets": 3, "visible": false },
         { "width": "20%", "targets": 4 },
         { "width": "10%", "targets": 5 },
       ],
       fnDrawCallback: function (oSettings) {
-        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('speakers_create',[$parent_id,$row_schedule->id])}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __("admin.add") }} & {{ __("admin.assign") }} {{ __("admin.speakers") }}</a>');
+        var api = this.api();
+        var rows = api.rows({ page: 'current' }).nodes();
+        var last = null;
+ 
+        api
+            .column(groupColumn, { page: 'current' })
+            .data()
+            .each(function (group, i) {
+                if (last !== group) {
+                    $(rows)
+                        .eq(i)
+                        .before('<tr class="group"><td colspan="6">' + group + '</td></tr>');
+ 
+                    last = group;
+                }
+            });
       }
     });
   });
@@ -139,36 +154,6 @@
             $(buttonObject).tooltip('hide').attr('data-original-title', data.id ? "{{ __('admin.remove') }} " : "{{ __('admin.assign') }} ").tooltip('show');
             $(buttonObject).find('i').toggleClass('fa-plus-circle fa-minus-circle')
             $(buttonObject).prev().data('id',data.id)
-            data.id?$(buttonObject).prev().removeClass("d-none"):$(buttonObject).prev().addClass("d-none").removeClass('bg-gradient-success').addClass('bg-gradient-secondary');
-          }
-        },  
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-        }
-      })
-    })
-  });
-
-  $(function () {
-    $('.toggle-key-speaker').on('click',function() {
-      var buttonObject = $(this);
-      var id = $(this).data('id');
-      var isKeySpeaker = $(this).data('is-key-speaker') ? 0 : 1;
-      $.ajax({
-        headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        type:"POST",
-        url: "{{route('schedule_key_speakers',$parent_id)}}",
-        data:{'id':id,'is_key_speaker':isKeySpeaker},
-        success:function(data){
-          if(data.error) {
-            toastr.error(data.error)
-          } else {
-            toastr.success("{{ __('admin.speakers') }} "+data.success)
-            $(buttonObject).data('is-key-speaker',isKeySpeaker)
-            $(buttonObject).toggleClass('bg-gradient-success bg-gradient-secondary')
-            $(buttonObject).tooltip('hide').attr('data-original-title', isKeySpeaker ? 'Key Speaker' : 'Non Key Speaker').tooltip('show');
           }
         },  
         error: function(XMLHttpRequest, textStatus, errorThrown) {

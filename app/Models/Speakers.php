@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class Speakers extends Model
 {
     protected $table = 'speakers';
-    protected $fillable = ['name','designation','company_name','rank','image'];
+    protected $fillable = ['name','speakers_category_id','designation','company_name','image'];
 }

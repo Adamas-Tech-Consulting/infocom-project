@@ -108,7 +108,7 @@
         { "width": "10%", "targets": 4 },
       ],
       fnDrawCallback: function (oSettings) {
-        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('contact_information_create',[$parent_id,$row_schedule->id])}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __("admin.add") }} & {{ __("admin.assign") }} {{ __("admin.contact_information") }}</a>');
+        $('#list_table_wrapper .row:first div:first').html('<a href="{{route('contact_information_create',[$parent_id,$row_schedule->id])}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __("admin.add") }} {{ __("admin.contact_information") }}</a>');
       }
     });
   });
@@ -134,35 +134,6 @@
             $(buttonObject).toggleClass('bg-gradient-primary bg-gradient-danger')
             $(buttonObject).tooltip('hide').attr('data-original-title', data.id ? "{{ __('admin.remove') }} " : "{{ __('admin.assign') }} ").tooltip('show');
             $(buttonObject).find('i').toggleClass('fa-plus-circle fa-minus-circle')
-          }
-        },  
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-        }
-      })
-    })
-  });
-
-  $(function () {
-    $('.toggle-key-speaker').on('click',function() {
-      var buttonObject = $(this);
-      var id = $(this).data('id');
-      var isKeySpeaker = $(this).data('is-key-speaker') ? 0 : 1;
-      $.ajax({
-        headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        type:"POST",
-        url: "{{route('schedule_key_speakers',$parent_id)}}",
-        data:{'id':id,'is_key_speaker':isKeySpeaker},
-        success:function(data){
-          if(data.error) {
-            toastr.error(data.error)
-          } else {
-            toastr.success("{{ __('admin.speakers') }} "+data.success)
-            $(buttonObject).data('is-key-speaker',isKeySpeaker)
-            $(buttonObject).toggleClass('bg-gradient-success bg-gradient-secondary')
-            $(buttonObject).tooltip('hide').attr('data-original-title', isKeySpeaker ? 'Key Speaker' : 'Non Key Speaker').tooltip('show');
           }
         },  
         error: function(XMLHttpRequest, textStatus, errorThrown) {

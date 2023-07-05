@@ -156,3 +156,12 @@
 .featured.fas {
   color: #ff6e07;
 }
+
+.powered-image {
+  height: 45px;
+  text-align: center;
+}
+
+.main-footer {
+  padding: 0.6rem;
+}

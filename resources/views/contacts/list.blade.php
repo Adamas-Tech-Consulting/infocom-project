@@ -26,14 +26,24 @@
     <div class="row">
       <div class="col-12">
         @if(Session::has('success'))
-          <div class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <i class="icon fas fa-check"></i> {{ $page_name }} {{ Session::get('success') }}
-              @php
-                  Session::forget('success');
-              @endphp
-          </div>
-          @endif
+        <div class="alert alert-success alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <i class="icon fas fa-check"></i> {{ $page_name }} {{ Session::get('success') }}
+            @php
+                Session::forget('success');
+            @endphp
+        </div>
+        @endif
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
       </div>
     </div>
   </div>
@@ -53,6 +63,7 @@
           <div class="card-header">
             <h3 class="card-title">
               <a href="{{route($page_add, $group_id)}}" class="btn btn-warning btn-sm"><i class="fas fa-plus"></i> {{ __('admin.add') }} {{ $page_name }}</a>
+              <a href="javascript:void(0);" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#importContactsModal"><i class="fas fa-upload"></i> {{ __('admin.import') }} {{ $page_name }}</a>
             </h3>
           </div>
           <!-- /.card-header -->
@@ -64,26 +75,11 @@
                 <th>{{ __('admin.name') }}</th>
                 <th>{{ __('admin.email') }}</th>
                 <th>{{ __('admin.mobile') }}</th>
+                <th>{{ __('admin.company') }}</th>
                 <th class="text-center">{{ __('admin.action') }}</th>
               </tr>
               </thead>
               <tbody>
-              @foreach($rows as $key => $row)
-              <tr>
-                <td>{{$key+1}}</td>
-                <td>{{$row->fname}} {{$row->lname}} @if($row->designation) ({{$row->designation}}) @endif</td>
-                <td>{{$row->email}}</td>
-                <td>{{$row->mobile}}</td>
-                <td class="text-center">
-                  <a href="{{route($page_update,[$group_id,$row->id])}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
-                  <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,[$group_id,$row->id])}}" method="post">
-                    @csrf
-                    <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
-                  </form>
-                  <button type="button" class="btn btn-xs bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.inactive') : __('admin.active') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
-                </td>
-              </tr>
-              @endforeach
               </tbody>
             </table>
           </div>
@@ -95,32 +91,102 @@
     </div>
   </div><!-- /.container-fluid -->
 </section>
+<div class="modal fade" id="importContactsModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">
+          <span class="speaker-name"></span>
+          <p><small>{{ $contact_group->name }}</small></p>
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12">
+          <form id="validation-form" action="{{route('contact_upload', $group_id)}}" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="timeline timeline-inverse">
+              <!-- timeline item -->
+              <div>
+                <i class="fas bg-primary">1</i>
+
+                <div class="timeline-item">
+                  <h3 class="timeline-header"><a href="javascript:void(0);">Download Sample Excel file</a></h3>
+                  <div class="timeline-body">
+                    Please download below link to download sample excel file, so you are aware of mandatory fields.
+                  </div>
+                  <div class="timeline-footer">
+                    <a href="{{route('contact_sample_download',$group_id)}}" class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Download</a>
+                  </div>
+                </div>
+              </div>
+              <!-- END timeline item -->
+              <!-- timeline item -->
+              <div>
+                <i class="fas bg-primary">2</i>
+
+                <div class="timeline-item">
+                  <h3 class="timeline-header"><a href="#">Copy all contacts data into Excel</a></h3>
+                  <div class="timeline-body">
+                    Please open excel file and remove one sample record and copy all valid contacts data as given format.
+                  </div>
+                </div>
+              </div>
+              <!-- END timeline item -->
+              <!-- timeline item -->
+              <div>
+                <i class="fas bg-primary">3</i>
+
+                <div class="timeline-item">
+                  <h3 class="timeline-header"><a href="#">File Attachment</a></h3>
+
+                  <div class="timeline-body">
+                    Browse the excel file that you have prepared for upload
+                  </div>
+                  <div class="timeline-footer">
+                    <div class="btn btn-sm btn-secondary upload-image-button"><i class="fas fa-link"></i> {{ __('admin.attach_file') }}
+                      <input type="file" class="custom-file-input" id="contacts" name="contacts">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- END timeline item -->
+              <div>
+                <i class="far fa-clock bg-gray"></i>
+                <div class="timeline-item border-0 bg-transparent">
+                  <div class="row">
+                    <div class="col-3"><button type="submit" class="btn btn-warning btn-sm float-left"><i class="fas fa-upload"></i> Import Contacts</button></div>
+                    <div class="col-9">
+                      <div class="progress progress-sm active mt-2">
+                        <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: 1%">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 <!-- /.content -->
 @endsection
 @section('script')
 <script>
+  var table;
   $(function () {
-    $('#list_table').DataTable({
-      "paging": true,
-      "lengthChange": true,
-      "searching": true,
-      "ordering": true,
-      "info": true,
-      "autoWidth": true,
-      "responsive": true,
-      "columnDefs": [
-        { "width": "5%", "targets": 0 },
-        { "width": "35%", "targets": 1 },
-        { "width": "30%", "targets": 2 },
-        { "width": "10%", "targets": 3 },
-        { "width": "20%", "targets": 4 },
-        { "width": "15%", "targets": 5 },
-      ]
-    });
+    loadContacts()
   });
 
   $(function () {
-    $('.toggle-published').on('click',function() {
+    $(document).on('click','.toggle-published',function() {
       var buttonObject = $(this);
       var id = $(this).data('id');
       var isPublished = $(this).data('is-published') ? 0 : 1;
@@ -150,7 +216,7 @@
   });
 
   $(function () {
-    $(".delete-btn").on('click', function(e) {
+    $(document).on('click',".delete-btn", function(e) {
       var form = $(this).data('form');
       Swal.fire({
         title: 'Are you sure?',
@@ -167,5 +233,64 @@
       })
     })
   })
+
+  $(function () {
+    $('#validation-form').on('submit',function(e) {
+      event.preventDefault();
+      let formData = new FormData(this);
+      $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type:"POST",
+        url: "{{route('contact_upload',$group_id)}}",
+        data: formData,
+        contentType: false,
+        processData: false,
+        destroy: true,
+        beforeSend: function(){
+          $('.progress-bar').animate({width: "30%"}, 100);
+        },
+        success:function(data){
+          if(data.error) {
+            $('.progress-bar').animate({width: "1%"}, 100);
+            toastr.error(data.error)
+          } else {
+            $('.progress-bar').animate({width: "100%"}, 100);
+            toastr.success("{{ $page_name }} "+data.success)
+            table.destroy();
+            loadContacts();
+          }
+          setTimeout(function(){ 
+            $('#validation-form')[0].reset(); 
+            $('.progress-bar').animate({width: "1%"}, 100);
+          }, 2000);
+        },  
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          setTimeout(function(){ 
+            $('#validation-form')[0].reset(); 
+            $('.progress-bar').animate({width: "1%"}, 100);
+          }, 2000);
+        }
+      })
+    })
+  });
+
+  function loadContacts()
+  {
+    table = $('#list_table').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: "{{ route('contacts', $group_id) }}",
+      columns: [
+          {data: 'DT_RowIndex', name: 'index', width: '5%', orderable: false, searchable: false},
+          {data: 'name', name: 'name', width: '15%'},
+          {data: 'email', name: 'email', width: '20%'},
+          {data: 'mobile', name: 'mobile', width: '10%'},
+          {data: 'company_name', name: 'company_name', width: '20%'},
+          {data: 'action', name: 'action', width: '15%', orderable: false, searchable: false, className: "text-center",},
+      ],
+    });
+  }
 </script>
 @endsection

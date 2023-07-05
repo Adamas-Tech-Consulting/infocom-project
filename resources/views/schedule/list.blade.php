@@ -76,14 +76,12 @@
                 <td>{{date('H:i A',strtotime($row->from_time))}} - {{date('H:i A',strtotime($row->to_time))}}</td>
                 <td>{{$row->schedule_venue}}</td>
                 <td class="text-center">
-                  <a href="{{route($page_update,[$parent_id,$row->id])}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
+                  <a href="{{route($page_update,[$parent_id,$row->id])}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.view') }}"><i class="fas fa-search"></i></a>
                   <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,[$parent_id,$row->id])}}" method="post">
                     @csrf
                     <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
                   </form>
                   <button type="button" class="btn btn-xs bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.unpublish') : __('admin.publish') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
-                  <!-- <a href="{{route('schedule_sponsors',[$parent_id,$row->id])}}" class="btn btn-sm bg-gradient-secondary" data-bs-toggle="tooltip" title="{{ __('admin.sponsors') }}"><i class="fas fa-handshake"></i></a>
-                  <a href="{{route('schedule_speakers',[$parent_id,$row->id])}}" class="btn btn-sm bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.speakers') }}"><i class="fas fa-volume-up"></i></a> -->
                 </td>
               </tr>
               @endforeach

@@ -11,6 +11,7 @@ use DB;
 //Model
 use App\Models\Event;
 use App\Models\Speakers;
+use App\Models\SpeakersCategory;
 use App\Models\EventSpeakers;
 
 class SpeakersController extends Controller
@@ -45,7 +46,7 @@ class SpeakersController extends Controller
                 ->where('event_speakers.event_id',$event_id);
             });
         }
-        $rows = $rows->get(['speakers.*','speakers_category.name as speakers_category_name']);
+        $rows = $rows->orderBy('speakers_category.ordering','asc')->get(['speakers.*','speakers_category.name as speakers_category_name']);
         $this->data['rows'] = $rows;
         return view('speakers.list',$this->data);
     }
@@ -56,6 +57,7 @@ class SpeakersController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'designation' => 'required',
+                'speakers_category_id' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -66,6 +68,7 @@ class SpeakersController extends Controller
                         'name' => $request->name,
                         'designation' => $request->designation,
                         'company_name' => $request->company_name,
+                        'speakers_category_id' => $request->speakers_category_id,
                     ];
                     $data = Speakers::create($insert_data);
                     $data->save();
@@ -96,6 +99,7 @@ class SpeakersController extends Controller
                 }
             }
         } else {
+            $this->data['rows_category'] = SpeakersCategory::where('published','1')->get();
             return view('speakers.create',$this->data);
         }
     }
@@ -106,6 +110,7 @@ class SpeakersController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'designation' => 'required',
+                'speakers_category_id' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -116,6 +121,7 @@ class SpeakersController extends Controller
                         'name' => $request->name,
                         'designation' => $request->designation,
                         'company_name' => $request->company_name,
+                        'speakers_category_id' => $request->speakers_category_id,
                     ];
                     $data = Speakers::findOrFail($id);
                     $data->update($update_data);
@@ -137,6 +143,7 @@ class SpeakersController extends Controller
                 }
             }
         } else {
+            $this->data['rows_category'] = SpeakersCategory::where('published','1')->get();
             $this->data['row'] = Speakers::find($id);
             return view('speakers.update',$this->data);
         }

@@ -19,6 +19,6 @@ Route::post('infocom/auth/login', [App\Http\Controllers\Api\Auth\LoginController
    
 Route::middleware('oauth:api')->group( function () {
     Route::get('infocom/get-event',[App\Http\Controllers\Api\HomeController::class, 'getEvent']);
-    Route::get('infocom/get-schedule/{id}',[App\Http\Controllers\Api\HomeController::class, 'getSchedule']);
+    Route::get('infocom/get-agenda/{id}',[App\Http\Controllers\Api\HomeController::class, 'getAgenda']);
 });
 

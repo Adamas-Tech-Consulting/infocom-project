@@ -19,15 +19,15 @@
             </p>
           </a>
         </li>
-        <li class="nav-item {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-contact-information'], 1 ,'menu-is-opening menu-open') }}">
-          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-contact-information']) }}">
+        <li class="nav-item {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-speakers-category','manage-contact-information'], 1 ,'menu-is-opening menu-open') }}">
+          <a href="#" class="nav-link {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-speakers-category','manage-contact-information']) }}">
             <i class="nav-icon fas fa-cogs"></i>
             <p>
               {{ __('admin.master_setup') }}
               <i class="fas fa-angle-right right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-contact-information']) }}">
+          <ul class="nav nav-treeview {{ Nav::hasSegment(['manage-event-category','manage-schedule-type','manage-sponsorship-type','manage-speakers-category','manage-contact-information']) }}">
             <li class="nav-item">
               <a href="{{route('event_category')}}" class="nav-link {{ Nav::hasSegment('manage-event-category') }}">
                 <i class="fas fa-cubes nav-icon"></i>
@@ -44,6 +44,12 @@
               <a href="{{route('sponsorship_type')}}" class="nav-link {{ Nav::hasSegment('manage-sponsorship-type') }}">
                 <i class="fas fa-cubes nav-icon"></i>
                 <p>{{ __('admin.sponsorship_type') }}</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{route('speakers_category')}}" class="nav-link {{ Nav::hasSegment('manage-speakers-category') }}">
+                <i class="fas fa-cubes nav-icon"></i>
+                <p>{{ __('admin.speakers_category') }}</p>
               </a>
             </li>
             <li class="nav-item">

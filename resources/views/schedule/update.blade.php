@@ -116,11 +116,10 @@
                         <div class="col-12">
                           <div class="form-group">
                             <label for="track_ids">{{ __('admin.track') }}</label>
-                            @php $row->track_ids = !empty($row->track_ids) ? explode(',',$row->track_ids) : array(); @endphp
                             <select class="form-control select2bs4 @error('track_ids') is-invalid @enderror" name="track_ids[]" style="width: 100%;" multiple="multiple" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
                               <option value="">{{ __('admin.select') }} {{ __('admin.track') }}</option>
                               @foreach($rows_track as $track)
-                              <option value="{{$track->id}}" {{in_array($track->id, $row->track_ids)?'selected':''}}>{{$track->name}}</option>
+                              <option value="{{$track->id}}" {{in_array($track->id, $track_ids)?'selected':''}}>{{$track->name}}</option>
                               @endforeach
                             </select>
                           </div>
