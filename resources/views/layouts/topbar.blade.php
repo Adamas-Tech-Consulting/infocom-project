@@ -28,7 +28,7 @@
             @if(Auth::User()['user_img'] != null && Auth::User()['user_img'] !='' && @file_get_contents('images/user_img/'.Auth::user()['user_img']))
             <img src="{{ asset('images/user_img/'.Auth::User()['user_img'])}}" class="img-circle" alt="User Image">
           @else
-            <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="">
+            <img src="{{ asset('dist/img/user2-160x160.jpg')}}" class="img-circle" alt="">
           @endif
           </br>
           <p>
