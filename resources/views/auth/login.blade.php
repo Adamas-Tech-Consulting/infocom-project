@@ -57,7 +57,7 @@
 <div class="card">
     <div class="card-header">
         <div class="login-logo">
-            <img src="{{ site_settings('site_logo') }}">
+            <img src="{{ asset(site_settings('site_logo')) }}">
         </div>
     </div>
     <div class="card-body login-card-body">
