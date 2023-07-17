@@ -38,7 +38,7 @@ class TrackController extends Controller
     public function index(Request $request, $event_id)
     {
         $this->data['rows'] = Track::where('event_id',$event_id)->get();
-        return view('Track.list',$this->data);
+        return view('track.list',$this->data);
     }
 
     public function create(Request $request, $event_id)
@@ -65,7 +65,7 @@ class TrackController extends Controller
                 }
             }
         } else {
-            return view('Track.create',$this->data);
+            return view('track.create',$this->data);
         }
     }
 
@@ -93,7 +93,7 @@ class TrackController extends Controller
             }
         } else {
             $this->data['row'] = Track::find($id);
-            return view('Track.update',$this->data);
+            return view('track.update',$this->data);
         }
     }
 
