@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/dist/css/custom.css?v=1.0">
     <style>
        body {
             font-family: "Abel", sans-serif;

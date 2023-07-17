@@ -1,9 +1,8 @@
 @extends('layouts.frontend')
 @section('title', $page_name)
-
 @section('content')
 <section>
-  <div class="container py-4 h-100">
+  <div class="container py_4 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-xl-10">
         <div class="card" style="border-radius: 1rem;">
@@ -15,7 +14,7 @@
             </div>
             <div class="col-md-6 col-lg-7 d-flex align-items-center">
               <div class="card-body p-1 p-lg-4 text-black">
-                <form>
+                <form id="validation-form" action="" method="post" enctype="multipart/form-data">
                   <h5 class="fw-normal mb-1 pb-1" style="letter-spacing: 1px;">
                     Please fill up all information 
                     <p class="small text-muted mt-1 text-red">* Marked fields are mandatory</p>
@@ -24,13 +23,13 @@
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-label" for="form2Example17">First Name <span class="text-red">*</span></label>
-                        <input type="email" id="form2Example17" class="form-control form-control-md"  />
+                        <input type="text" id="form2Example17" class="form-control form-control-md" name="fname" />
                       </div>
                     </div>
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-label" for="form2Example17">Last Name <span class="text-red">*</span></label>
-                        <input type="email" id="form2Example17" class="form-control form-control-md"  />
+                        <input type="text" id="form2Example17" class="form-control form-control-md" name="lname"  />
                       </div>
                     </div>
                   </div>
@@ -38,13 +37,13 @@
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-label" for="form2Example17">Email Id <span class="text-red">*</span></label>
-                        <input type="email" id="form2Example17" class="form-control form-control-md"  />
+                        <input type="email" id="form2Example17" class="form-control form-control-md" name="email" />
                       </div>
                     </div>
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-label" for="form2Example17">Mobile Number <span class="text-red">*</span></label>
-                        <input type="email" id="form2Example17" class="form-control form-control-md"  />
+                        <input type="text" id="form2Example17" class="form-control form-control-md" name="mobile"  />
                       </div>
                     </div>
                   </div>
@@ -53,20 +52,20 @@
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-label" for="form2Example17">Designation <span class="text-red">*</span></label>
-                        <input type="email" id="form2Example17" class="form-control form-control-md"  />
+                        <input type="text" id="form2Example17" class="form-control form-control-md" name="designation"  />
                       </div>
                     </div>
                     <div class="col-6">
                       <div class="form-group">
                         <label class="form-label" for="form2Example17">Organization <span class="text-red">*</span></label>
-                        <input type="email" id="form2Example17" class="form-control form-control-md"  />
+                        <input type="text" id="form2Example17" class="form-control form-control-md" name="organization" />
                       </div>
                     </div>
                   </div>
 
                   <div class="form-group">
                     <label class="form-label" for="form2Example27">Car Pick Up Address <span class="text-red">*</span></label>
-                    <textarea class="form-control form-control-md"></textarea>
+                    <textarea class="form-control form-control-md" name="pickup_address"></textarea>
                   </div>
 
                   <div class="form-group"> 
@@ -84,7 +83,7 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <button type="submit" class="btn btn-dark btn-block btn-md" disabled="disabled"><i class="fa fa-paper-plane"></i> SUBMIT</button>
+                      <button type="submit" class="btn btn-dark btn-block btn-sm" disabled="disabled"><i class="fa fa-paper-plane"></i> SUBMIT</button>
                     </div>
                   </div>
                 </form>
