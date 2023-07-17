@@ -1,7 +1,7 @@
 <aside class="main-sidebar sidebar-dark-warning elevation-4">
   <!-- Brand Logo -->
   <a href="{{route('home')}}" class="brand-link">
-    <img src="{{ site_settings('site_favicon') }}" alt="{{ site_settings('site_name') }}" class="brand-image"> <!--Extra class : img-circle elevation-3 -->
+    <img src="{{ asset(site_settings('site_favicon')) }}" alt="{{ site_settings('site_name') }}" class="brand-image"> <!--Extra class : img-circle elevation-3 -->
     <span class="brand-text font-weight-light">{{ site_settings('site_name') }}</span>
   </a>
   <!-- Sidebar -->

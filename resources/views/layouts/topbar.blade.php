@@ -19,7 +19,7 @@
         @if(Auth::User()['user_img'] != null && Auth::User()['user_img'] !='' && @file_get_contents('images/user_img/'.Auth::user()['user_img']))
           <img src="{{ asset('images/user_img/'.Auth::User()['user_img'])}}" class="user-image" alt="">
         @else
-          <img src="/dist/img/user2-160x160.jpg" class="user-image" alt="">
+          <img src="{{ asset('dist/img/user2-160x160.jpg')}}" class="user-image" alt="">
         @endif
       </a>
       <ul class="dropdown-menu">
