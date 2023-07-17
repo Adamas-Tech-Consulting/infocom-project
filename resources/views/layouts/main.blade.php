@@ -8,7 +8,7 @@
   <meta name="keywords" content="">
   <meta name="author" content="Codedthemes" />
 	<!-- Favicon icon -->
-  <link rel="icon" href="{{ site_settings('site_favicon') }}" type="image/x-icon">
+  <link rel="icon" href="{{ asset(site_settings('site_favicon')) }}" type="image/x-icon">
 
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -52,7 +52,7 @@
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="{{ site_settings('site_favicon') }}" alt="AdminLTELogo" height="60" width="60">
+    <img class="animation__shake" src="{{ asset(site_settings('site_favicon')) }}" alt="AdminLTELogo" height="60" width="60">
   </div>
 
   <!-- Topbar Container -->
