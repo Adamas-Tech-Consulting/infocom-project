@@ -103,7 +103,6 @@ class LoginController extends BaseController
                         {
                             if(isset($authUser))
                             {
-                                unset($authUser->id);
                                 $request->request->add(['user' => $authUser->toArray()]);
                                 $request->request->add(['email' => $authUser->email]);
                                 $request->request->add(['password' => $request->otp]);
