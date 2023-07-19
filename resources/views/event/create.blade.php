@@ -163,7 +163,7 @@
                   <div class="card card-widget card-secondary card-outline widget-user mt-2">
                     <div class="card-header"><label class="mb-0" for="event_logo">{{ __('admin.logo') }} <span class="text-red">*</span></label><span class="float-right"><b>(Logo Dimension : 195 X 250)</b></span></div>
                     <div class="card-body widget-user-header logo-image">
-                      <img src="/dist/img/no-banner.jpg" class="w-100 h-100 img-bordered" id="event_logo_preview">
+                      <img src="{{ asset('dist/img/no-banner.jpg') }}" class="w-100 h-100 img-bordered" id="event_logo_preview">
                     </div>
                     <div class="card-footer pt-3 form-group">
                       <div class="btn btn-sm btn-secondary upload-image-button"> {{ __('admin.browse_and_upload') }}
@@ -176,7 +176,7 @@
                   <div class="card card-widget card-secondary card-outline widget-user mt-2">
                     <div class="card-header"><label class="mb-0" for="featured_banner">{{ __('admin.featured') }} {{ __('admin.banner') }} <span class="text-red">*</span></label><span class="float-right"><b>(Banner Dimension : 1920 X 1080)</b></span></div>
                     <div class="card-body widget-user-header banner-image">
-                      <img src="/dist/img/no-banner.jpg" class="w-100 h-100 img-bordered" id="featured_banner_preview">
+                      <img src="{{ asset('dist/img/no-banner.jpg') }}" class="w-100 h-100 img-bordered" id="featured_banner_preview">
                     </div>
                     <div class="card-footer pt-3 form-group">
                       <div class="btn btn-sm btn-secondary upload-image-button"> {{ __('admin.browse_and_upload') }}
@@ -195,7 +195,7 @@
                   <div class="card card-widget card-secondary card-outline widget-user mt-2">
                     <div class="card-header"><label class="mb-0" for="event_banner">{{ __('admin.event') }} {{ __('admin.banner') }} <span class="text-red">*</span></label><span class="float-right"><b>(Banner Dimension : 1920 X 200)</b></span></div>
                     <div class="card-body widget-user-header banner-image">
-                      <img src="/dist/img/no-banner.jpg" class="w-100 h-100 img-bordered" id="event_banner_preview">
+                      <img src="{{ asset('dist/img/no-banner.jpg') }}" class="w-100 h-100 img-bordered" id="event_banner_preview">
                     </div>
                     <div class="card-footer pt-3 form-group">
                       <div class="btn btn-sm btn-secondary upload-image-button"> {{ __('admin.browse_and_upload') }}

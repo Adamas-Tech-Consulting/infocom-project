@@ -100,7 +100,7 @@
                   <div class="card card-widget widget-user mt-2">
                     <div class="card-header"><label class="mb-0" for="image">{{ __('admin.speaker') }} {{ __('admin.image') }} <span class="text-red">*</span></label><span class="float-right"><b>(Dimension : 150 X 150)</b></span></div>
                     <div class="card-body widget-user-header logo-image">
-                      <img src="/dist/img/no-banner.jpg" class="w-100 h-100 img-bordered" id="image_preview">
+                      <img src="{{ asset('dist/img/no-banner.jpg') }}" class="w-100 h-100 img-bordered" id="image_preview">
                     </div>
                     <div class="card-footer pt-3 form-group">
                       <div class="btn btn-sm btn-secondary upload-image-button"> {{ __('admin.browse_and_upload') }}
