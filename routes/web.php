@@ -104,7 +104,7 @@ Route::middleware(['web'])->group(function () {
         
         //Event
         Route::prefix('manage-event')->group(function (){
-            Route::get('/{mode?}', [App\Http\Controllers\EventController::class, 'index'])->name('event');
+            Route::get('/{mode?}', [App\Http\Controllers\EventController::class, 'index'])->name('event')->whereIn('mode', ['current', 'upcoming', 'past']);
             Route::any('/create', [App\Http\Controllers\EventController::class, 'create'])->name('event_create');
             Route::any('/update/{id}', [App\Http\Controllers\EventController::class, 'update'])->name('event_update');
             Route::any('/delete/{id}', [App\Http\Controllers\EventController::class, 'delete'])->name('event_delete');
