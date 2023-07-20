@@ -22,7 +22,7 @@ trait IssueTokenTrait {
 		$data = (array)json_decode($response->getContent());
 		if(array_key_exists('error', $data))
 		{
-			return $this->sendError('Invalid Input', 401);
+			return $this->sendError('Invalid OTP', 401);
 		}
 		else
 		{

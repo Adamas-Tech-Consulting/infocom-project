@@ -39,7 +39,7 @@ class BaseController extends Controller
         $response = [
             'status'  => $code,
             'message' => $error,
-            'data'    => []
+            'data'    => (object)[]
         ];
         return response()->json($response, $code);
     }
