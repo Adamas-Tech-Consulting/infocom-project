@@ -1,6 +1,7 @@
 <?php 
 
 namespace App\Http\Controllers\Api\Auth;
+use App\Http\Controllers\Api\BaseController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,9 +19,16 @@ trait IssueTokenTrait {
 		$request->request->add($params);
 		$proxy = Request::create('oauth/token', 'POST');
 		$response =  Route::dispatch($proxy);
-		$json = (array)json_decode($response->getContent());
-		$json['user_details'] = $request->user;
-		$response->setContent(json_encode($json));
-		return $response;
+		$data = (array)json_decode($response->getContent());
+		if(array_key_exists('error', $data))
+		{
+			return $this->sendError('Invalid Input', 401);
+		}
+		else
+		{
+			$response = $data;
+			$response['user_details'] = $request->user; 
+			return $this->sendResponse($response,'');
+		}
 	}
 }

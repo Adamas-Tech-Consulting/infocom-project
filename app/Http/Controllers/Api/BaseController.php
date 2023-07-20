@@ -19,7 +19,7 @@ class BaseController extends Controller
     {
         $response = [
             'status'  => 200,
-            'message' => $message,
+            'message' => $message ? $message : 'successful',
             'data'    => ($result) ? $result : []
         ];
         return response()->json($response, 200);
