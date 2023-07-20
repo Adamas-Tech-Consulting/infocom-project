@@ -33,8 +33,8 @@ class OauthAuthenticate extends Middleware
      */
     protected function unauthenticated($request, array $guards)
     {
-         throw new AuthenticationException(
-            'Invalid Token', $guards, $this->redirectTo($request)
+        throw new AuthenticationException(
+            'Unauthenticated', $guards, $this->redirectTo($request)
         );
     }
 }
