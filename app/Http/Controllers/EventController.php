@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\Http;
 
 use DB;
 
@@ -35,6 +36,7 @@ class EventController extends Controller
             'page_delete'           => 'event_delete',
             'page_publish_unpublish'=> 'event_publish_unpublish',
             'page_featured'         => 'event_featured',
+            'page_sync'             => 'event_sync'
         ];
     }  
 

@@ -31,6 +31,10 @@ return [
   'UPDATE_SPONSORSHIP_TYPE' => 'update-sponsorship-type',
   'DELETE_SPONSORSHIP_TYPE' => 'delete-sponsorship-type',
 
+  'CREATE_EVENT' => 'create-event',
+  'UPDATE_EVENT' => 'update-event',
+  'DELETE_EVENT' => 'delete-event',
+
 ];
 
 ?>

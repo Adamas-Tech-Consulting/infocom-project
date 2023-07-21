@@ -46,12 +46,12 @@
                 <p>{{ __('admin.sponsorship_type') }}</p>
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="{{route('speakers_category')}}" class="nav-link {{ Nav::hasSegment('manage-speakers-category') }}">
                 <i class="fas fa-cubes nav-icon"></i>
                 <p>{{ __('admin.speakers_category') }}</p>
               </a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a href="{{route('contact_information')}}" class="nav-link {{ Nav::hasSegment('manage-contact-information') }}">
                 <i class="fas fa-cubes nav-icon"></i>
