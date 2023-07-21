@@ -19,6 +19,7 @@ return [
     'administrator' => 'Administrator',
     'admin_contact' => 'Admin Contact',
     'address' => 'Address',
+    'ajax_error' => 'Error occured.please try again',
     'all' => 'All',
     'allow' => 'Allow',
     'assign' => 'Assign',
@@ -167,6 +168,7 @@ return [
     'sponsorship_type' => 'Sponsorship Type',
     'start_date' => 'Start Date',
     'submit' => 'Submit',
+    'sync'  => 'Sync to Frontend',
 
     //T
     'template_name' => 'Template Name',

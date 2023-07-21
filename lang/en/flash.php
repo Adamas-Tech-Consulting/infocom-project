@@ -25,5 +25,8 @@ return [
     'RemovedSuccessfully' => 'Removed Successfully',
     'ImportedSuccessfully' => 'Imported Successfully',
     'AddedAndAssignedSuccessfully' => 'Added & Assigned Successfully',
-    'SpeakerCategoryAlreadyAssigned' => 'Category `:name` has been already assigned to a speaker'
+    'SpeakerCategoryAlreadyAssigned' => 'Category `:name` has been already assigned to a speaker',
+    'EventCategoryAlreadyAssigned' => '`:name` has been already assigned to atleast one event',
+    'SponsorshipCategoryAlreadyAssigned' => '`:name` has been already assigned to a sponsor',
+    'SyncSuccessfully' => 'Sync Successfully',
 ];

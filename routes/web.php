@@ -34,7 +34,7 @@ Route::middleware(['web'])->group(function () {
             Route::any('/create', [App\Http\Controllers\EventCategoryController::class, 'create'])->name('event_category_create');
             Route::any('/update/{id}', [App\Http\Controllers\EventCategoryController::class, 'update'])->name('event_category_update');
             Route::any('/delete/{id}', [App\Http\Controllers\EventCategoryController::class, 'delete'])->name('event_category_delete');
-            Route::post('/publish-unpublish', [App\Http\Controllers\EventCategoryController::class, 'publish_unpublish'])->name('event_category_publish_unpublish');
+            Route::any('/wp-sync', [App\Http\Controllers\EventCategoryController::class, 'wp_sync'])->name('event_category_sync');
         });
 
         //Schedule Type
@@ -52,7 +52,7 @@ Route::middleware(['web'])->group(function () {
             Route::any('/create', [App\Http\Controllers\SponsorshipTypeController::class, 'create'])->name('sponsorship_type_create');
             Route::any('/update/{id}', [App\Http\Controllers\SponsorshipTypeController::class, 'update'])->name('sponsorship_type_update');
             Route::any('/delete/{id}', [App\Http\Controllers\SponsorshipTypeController::class, 'delete'])->name('sponsorship_type_delete');
-            Route::post('/publish-unpublish', [App\Http\Controllers\SponsorshipTypeController::class, 'publish_unpublish'])->name('sponsorship_type_publish_unpublish');
+            Route::any('/wp-sync', [App\Http\Controllers\SponsorshipTypeController::class, 'wp_sync'])->name('sponsorship_type_sync');
         });
 
         //Sponsors

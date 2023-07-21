@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\Http;
 
 use DB;
 
 //Model
 use App\Models\SponsorshipType;
+use App\Models\Sponsors;
 
 class SponsorshipTypeController extends Controller
 {
@@ -24,7 +26,7 @@ class SponsorshipTypeController extends Controller
             'page_add'              => 'sponsorship_type_create',
             'page_update'           => 'sponsorship_type_update',
             'page_delete'           => 'sponsorship_type_delete',
-            'page_publish_unpublish'=> 'sponsorship_type_publish_unpublish',
+            'page_sync'             => 'sponsorship_type_sync'
         ];
     }  
 
@@ -96,6 +98,13 @@ class SponsorshipTypeController extends Controller
             DB::beginTransaction();
             try {
                 $data = SponsorshipType::findOrFail($id);
+                if(Sponsors::where('sponsorship_type_id',$id)->exists())
+                {
+                    return redirect()->route('sponsorship_type')->with('error', trans('flash.SponsorshipCategoryAlreadyAssigned',['name'=>$data->name]));
+                }
+                if($data->wp_term_id) {
+                    $response = Http::post(config("constants.SITE_URL").config("constants.DELETE_SPONSORSHIP_TYPE").'/'.$data->wp_term_id,[]);
+                }
                 $data->delete();
                 DB::commit();
                 return redirect()->route('sponsorship_type')->with('success', trans('flash.DeletedSuccessfully'));
@@ -107,29 +116,31 @@ class SponsorshipTypeController extends Controller
         }
     }
 
-    public function publish_unpublish(Request $request)
+    public function wp_sync(Request $request)
     {
         if ($request->isMethod('post')) {
-
-            $validator = Validator::make($request->all(), [
-                'id' => 'required',
-                'published' => 'required',
-            ]);
-            if($validator->fails()) {
-                return response()->json(['error' => trans('flash.UpdateError')]);
-            } else {
-                DB::beginTransaction();
-                try {
-                    $data = SponsorshipType::findOrFail($request->id);
-                    $data->published = $request->published;
-                    $data->save();
-                    DB::commit();
-                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
-                }   
-                catch(Exception $e) {   
-                    DB::rollback(); 
-                    return back();
+            try {
+                $data = SponsorshipType::find($request->id);
+                $post_data = [
+                    'name'          => $data->name,
+                    'slug'          => Str::slug($data->name,'-'),
+                    'description'   => $data->name
+                ];
+                if($data->wp_term_id) {
+                    $request_url = config("constants.UPDATE_SPONSORSHIP_TYPE").'/'.$data->wp_term_id;
+                } else {
+                    $request_url = config("constants.CREATE_SPONSORSHIP_TYPE");
                 }
+                $response = Http::post(config("constants.SITE_URL").$request_url,$post_data);
+                $response_object = json_decode($response->getBody()->getContents());
+                if(isset($response_object->term_id)) {
+                    $data->update(array('wp_term_id' => $response_object->term_id));
+                }
+                return response()->json(['success' => trans('flash.SyncSuccessfully')]);
+            }   
+            catch(Exception $e) {   
+                DB::rollback(); 
+                return back();
             }
         }
     }

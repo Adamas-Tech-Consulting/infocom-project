@@ -25,14 +25,23 @@
     <div class="row">
       <div class="col-12">
         @if(Session::has('success'))
-          <div class="alert alert-success alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <i class="icon fas fa-check"></i> {{ $page_name }} {{ Session::get('success') }}
-              @php
-                  Session::forget('success');
-              @endphp
-          </div>
-          @endif
+        <div class="alert alert-success alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <i class="icon fas fa-check"></i> {{ $page_name }} {{ Session::get('success') }}
+            @php
+                Session::forget('success');
+            @endphp
+        </div>
+        @endif
+        @if(Session::has('error'))
+        <div class="alert alert-danger alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <i class="icon fas fa-check"></i>{{ Session::get('error') }}
+            @php
+                Session::forget('error');
+            @endphp
+        </div>
+        @endif
       </div>
     </div>
   </div>
@@ -70,7 +79,7 @@
                   @csrf
                   <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
                 </form>
-                <button type="button" class="btn btn-xs bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.unpublish') : __('admin.publish') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
+                <button type="button" class="btn btn-xs bg-gradient-secondary wp-sync"  data-bs-toggle="tooltip" title="{{ __('admin.sync') }}" data-id="{{$row->id}}"><i class="fas fa-sync"></i></button>
               </td>
             </tr>
             @endforeach
@@ -103,31 +112,33 @@
   });
 
   $(function () {
-    $('.toggle-published').on('click',function() {
+    $('.wp-sync').on('click',function() {
       var buttonObject = $(this);
       var id = $(this).data('id');
-      var isPublished = $(this).data('is-published') ? 0 : 1;
       $.ajax({
         headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         type:"POST",
-        url: "{{route($page_publish_unpublish)}}",
-        data:{'id':id,'published':isPublished},
+        url: "{{route($page_sync)}}",
+        data:{'id':id},
+        beforeSend: function() {
+          $(buttonObject).find('i').addClass('fa-spin');
+        },
         success:function(data){
           if(data.error) {
             toastr.error(data.error)
           } else {
             toastr.success("{{ $page_name }} "+data.success)
-            $(buttonObject).data('is-published',isPublished)
-            $(buttonObject).toggleClass('bg-gradient-success bg-gradient-warning')
-            $(buttonObject).tooltip('hide').attr('data-original-title', isPublished ? 'Unpublish' : 'Publish').tooltip('show');
-            $(buttonObject).find('i').toggleClass('fa-check-circle fa-ban')
           }
         },  
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-        }
+          toastr.error("{{ __('admin.ajax_error') }}")
+        },
+        complete: function() {
+          $(buttonObject).find('i').removeClass('fa-spin');
+          $(buttonObject).tooltip('hide');
+        },
       })
     })
   });

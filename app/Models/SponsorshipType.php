@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SponsorshipType extends Model
 {
     protected $table = 'sponsorship_type';
-    protected $fillable = ['name'];
+    protected $fillable = ['name','wp_term_id'];
 
     public function setNameAttribute($value)
     {

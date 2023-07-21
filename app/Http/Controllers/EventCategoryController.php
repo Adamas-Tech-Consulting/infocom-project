@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\Http;
 
 use DB;
 
 //Model
 use App\Models\EventCategory;
+use App\Models\Event;
 
 class EventCategoryController extends Controller
 {
@@ -24,7 +26,7 @@ class EventCategoryController extends Controller
             'page_add'              => 'event_category_create',
             'page_update'           => 'event_category_update',
             'page_delete'           => 'event_category_delete',
-            'page_publish_unpublish'=> 'event_category_publish_unpublish',
+            'page_sync'             => 'event_category_sync'
         ];
     }  
 
@@ -37,7 +39,6 @@ class EventCategoryController extends Controller
     public function create(Request $request)
     {
         if ($request->isMethod('post')) {
-
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'color' => 'required',
@@ -98,6 +99,13 @@ class EventCategoryController extends Controller
             DB::beginTransaction();
             try {
                 $data = EventCategory::findOrFail($id);
+                if(Event::where('event_category_id',$id)->exists())
+                {
+                    return redirect()->route('event_category')->with('error', trans('flash.EventCategoryAlreadyAssigned',['name'=>$data->name]));
+                }
+                if($data->wp_term_id) {
+                    $response = Http::post(config("constants.SITE_URL").config("constants.DELETE_EVENT_CATEGORY").'/'.$data->wp_term_id,[]);
+                }
                 $data->delete();
                 DB::commit();
                 return redirect()->route('event_category')->with('success', trans('flash.DeletedSuccessfully'));
@@ -109,29 +117,31 @@ class EventCategoryController extends Controller
         }
     }
 
-    public function publish_unpublish(Request $request)
+    public function wp_sync(Request $request)
     {
         if ($request->isMethod('post')) {
-
-            $validator = Validator::make($request->all(), [
-                'id' => 'required',
-                'published' => 'required',
-            ]);
-            if($validator->fails()) {
-                return response()->json(['error' => trans('flash.UpdateError')]);
-            } else {
-                DB::beginTransaction();
-                try {
-                    $data = EventCategory::findOrFail($request->id);
-                    $data->published = $request->published;
-                    $data->save();
-                    DB::commit();
-                    return response()->json(['success' => trans('flash.UpdatedSuccessfully')]);
-                }   
-                catch(Exception $e) {   
-                    DB::rollback(); 
-                    return back();
+            try {
+                $data = EventCategory::find($request->id);
+                $post_data = [
+                    'name'          => $data->name,
+                    'slug'          => Str::slug($data->name,'-'),
+                    'description'   => $data->name
+                ];
+                if($data->wp_term_id) {
+                    $request_url = config("constants.UPDATE_EVENT_CATEGORY").'/'.$data->wp_term_id;
+                } else {
+                    $request_url = config("constants.CREATE_EVENT_CATEGORY");
                 }
+                $response = Http::post(config("constants.SITE_URL").$request_url,$post_data);
+                $response_object = json_decode($response->getBody()->getContents());
+                if(isset($response_object->term_id)) {
+                    $data->update(array('wp_term_id' => $response_object->term_id));
+                }
+                return response()->json(['success' => trans('flash.SyncSuccessfully')]);
+            }   
+            catch(Exception $e) {   
+                DB::rollback(); 
+                return back();
             }
         }
     }

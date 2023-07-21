@@ -21,6 +21,16 @@ return [
   'SPONSORS_FOLDER' => 'sponsors',
   'SPEAKERS_FOLDER' => 'speakers',
 
+  'SITE_URL'  => 'http://localhost/infocom/wp-json/abp/v1/',
+
+  'CREATE_EVENT_CATEGORY' => 'create-event-category',
+  'UPDATE_EVENT_CATEGORY' => 'update-event-category',
+  'DELETE_EVENT_CATEGORY' => 'delete-event-category',
+
+  'CREATE_SPONSORSHIP_TYPE' => 'create-sponsorship-type',
+  'UPDATE_SPONSORSHIP_TYPE' => 'update-sponsorship-type',
+  'DELETE_SPONSORSHIP_TYPE' => 'delete-sponsorship-type',
+
 ];
 
 ?>
