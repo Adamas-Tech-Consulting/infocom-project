@@ -352,4 +352,81 @@ class EventController extends Controller
             return view('event.list_contact_information',$this->data);
         }
     }
+
+    public function wp_sync(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            try {
+                $event_id = $request->id;
+                $data = Event::join('event_category','event_category.id','=','event.event_category_id')
+                             ->where('event.id', $event_id)
+                             ->get(['event.*','event_category.wp_term_id as category'])->first();
+
+                $data_speakers = Speakers::join('speakers_category','speakers_category.id','=','speakers.speakers_category_id')
+                                         ->Join('event_speakers',function($join) use($event_id) {
+                                            $join->on('event_speakers.speakers_id','speakers.id')
+                                            ->where('event_speakers.event_id',$event_id);
+                                         })->get(['speakers.*','speakers_category.key_name as speakers_category']);
+
+                $data_sponsors = Sponsors::join('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
+                                         ->Join('event_sponsors',function($join) use($event_id) {
+                                            $join->on('event_sponsors.sponsors_id','sponsors.id')
+                                            ->where('event_sponsors.event_id',$event_id);
+                                         })->get(['sponsors.*','sponsorship_type.wp_term_id as sponsorship_type_id']);            
+
+                $post_data = [
+                    'category'              => $data->category,
+                    'title'                 => $data->title,
+                    'event_start_date'      => $data->event_start_date,
+                    'event_venue'           => $data->event_venue,
+                    'event_theme'           => $data->event_theme,
+                    'overview_description'  => $data->overview_description,
+                    'event_description'     => $data->event_description,
+                    'event_banner'          => config('constants.CDN_URL').'/'.config('constants.EVENT_FOLDER').'/'.$data->featured_banner,
+                    'event_logo'            => config('constants.CDN_URL').'/'.config('constants.EVENT_FOLDER').'/'.$data->event_logo,
+                    'featured_banner'       => config('constants.CDN_URL').'/'.config('constants.EVENT_FOLDER').'/'.$data->featured_banner,
+                    'featured'              => $data->featured,
+                    'published'             => $data->published,
+                    'registration_link'     => env('APP_URL').'/registration/'.$data->slug,
+                ];
+
+                $post_data['event_speakers'] = [];
+                foreach($data_speakers as $speaker)
+                {
+                    $post_data['event_speakers'][] = array(
+                        'name'              =>  $speaker->name,
+                        'company_name'      =>  $speaker->company_name,
+                        'designation'       =>  $speaker->designation,
+                        'speakers_category' =>  $speaker->speakers_category,
+                        'image'             =>  config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$speaker->image,
+                    );
+                }
+                $post_data['event_sponsors'] = [];
+                foreach($data_sponsors as $sponsor)
+                {
+                    $post_data['event_sponsors'][] = array(
+                        'sponsorship_type_id'   =>  $sponsor->sponsorship_type_id,
+                        'sponsor_name'          =>  $sponsor->sponsor_name,
+                        'website_link'          =>  $sponsor->website_link,
+                        'sponsor_logo'          =>  config('constants.CDN_URL').'/'.config('constants.SPONSORS_FOLDER').'/'.$sponsor->sponsor_logo,
+                    );
+                }
+                if($data->wp_post_id) {
+                    $request_url = config("constants.UPDATE_EVENT").'/'.$data->wp_post_id;
+                } else {
+                    $request_url = config("constants.CREATE_EVENT");
+                }
+                $response = Http::post(config("constants.SITE_URL").$request_url,$post_data);
+                $response_object = json_decode($response->getBody()->getContents());
+                if(isset($response_object->post_id)) {
+                    $data->update(array('wp_post_id' => $response_object->post_id));
+                }
+                return response()->json(['success' => trans('flash.SyncSuccessfully')]);
+            }   
+            catch(Exception $e) {   
+                DB::rollback(); 
+                return back();
+            }
+        }
+    }
 }

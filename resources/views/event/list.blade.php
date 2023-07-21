@@ -90,6 +90,7 @@
                   <button type="button" data-form="#form_{{$row->id}}" class="btn btn-xs bg-gradient-danger delete-btn" data-bs-toggle="tooltip" title="{{ __('admin.delete') }}"><i class="fas fa-trash"></i></button>
                 </form>
                 <button type="button" class="btn btn-xs bg-gradient-{{($row->published)?'success':'warning'}} toggle-published"  data-bs-toggle="tooltip" title="{{ ($row->published) ? __('admin.unpublish') : __('admin.publish') }}" data-id="{{$row->id}}" data-is-published="{{($row->published)}}"><i class="fas fa-{{($row->published)?'check-circle':'ban'}}"></i></button>
+                <button type="button" class="btn btn-xs bg-gradient-secondary wp-sync"  data-bs-toggle="tooltip" title="{{ __('admin.sync') }}" data-id="{{$row->id}}"><i class="fas fa-sync"></i></button>
               </td>
             </tr>
             @endforeach
@@ -205,6 +206,38 @@
         }
       })
     })
-  })
+  });
+
+  $(function () {
+    $('.wp-sync').on('click',function() {
+      var buttonObject = $(this);
+      var id = $(this).data('id');
+      $.ajax({
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type:"POST",
+        url: "{{route($page_sync)}}",
+        data:{'id':id},
+        beforeSend: function() {
+          $(buttonObject).find('i').addClass('fa-spin');
+        },
+        success:function(data){
+          if(data.error) {
+            toastr.error(data.error)
+          } else {
+            toastr.success("{{ $page_name }} "+data.success)
+          }
+        },  
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          toastr.error("{{ __('admin.ajax_error') }}")
+        },
+        complete: function() {
+          $(buttonObject).find('i').removeClass('fa-spin');
+          $(buttonObject).tooltip('hide');
+        },
+      })
+    })
+  });
 </script>
 @endsection

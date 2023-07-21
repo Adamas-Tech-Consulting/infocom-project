@@ -112,6 +112,7 @@ Route::middleware(['web'])->group(function () {
             Route::post('/featured', [App\Http\Controllers\EventController::class, 'featured'])->name('event_featured');
             Route::any('/schedule-speakers/{event_id}', [App\Http\Controllers\EventController::class, 'schedule_speakers'])->name('event_schedule_speakers');
             Route::any('/contact-information/{event_id}', [App\Http\Controllers\EventController::class, 'contact_information'])->name('event_contact_information');
+            Route::any('/wp-sync', [App\Http\Controllers\EventController::class, 'wp_sync'])->name('event_sync');
         });
 
         //Track Master
