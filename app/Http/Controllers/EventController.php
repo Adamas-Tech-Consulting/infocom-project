@@ -382,7 +382,7 @@ class EventController extends Controller
                     'event_theme'           => $data->event_theme,
                     'overview_description'  => $data->overview_description,
                     'event_description'     => $data->event_description,
-                    'event_banner'          => config('constants.CDN_URL').'/'.config('constants.EVENT_FOLDER').'/'.$data->featured_banner,
+                    'event_banner'          => config('constants.CDN_URL').'/'.config('constants.EVENT_FOLDER').'/'.$data->event_banner,
                     'event_logo'            => config('constants.CDN_URL').'/'.config('constants.EVENT_FOLDER').'/'.$data->event_logo,
                     'featured_banner'       => config('constants.CDN_URL').'/'.config('constants.EVENT_FOLDER').'/'.$data->featured_banner,
                     'featured'              => $data->featured,
