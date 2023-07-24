@@ -382,6 +382,7 @@ class EventController extends Controller
                 foreach($agenda as $agkey => $agnda) {
                    $data_agenda[$agkey]['agenda_date'] = $agnda->schedule_date;
                    $data_agenda[$agkey]['agenda_details'] = [];
+                   $index = 1;
                    foreach($agenda_details as $agdkey => $agenda_detail)
                    {
                         if($agnda->schedule_day == $agenda_detail->schedule_day)
@@ -393,17 +394,21 @@ class EventController extends Controller
                                     ->where('schedule_speakers.event_id',$event_id);
                                 })->first(['speakers.*']);
                             $data_agenda[$agkey]['agenda_details'][] = array(
-                                'add_start_time' => $agenda_detail->from_time,
-                                'add_end_time' => $agenda_detail->to_time,
+                                'add_start_time' => date('h:i A',strtotime($agenda_detail->from_time)),
+                                'add_end_time' => date('h:i A',strtotime($agenda_detail->to_time)),
                                 'add_subject_details' => $agenda_detail->schedule_title,
                                 'add_short_description' => $agenda_detail->schedule_details,
                                 'add_session_type' => $agenda_detail->session_type,
+                                'add_hall_number' => $agenda_detail->hall_number,
                                 'add_track' => $agenda_detail->track_name,
                                 'add_speaker_name'  => !empty($agenda_speaker) ? $agenda_speaker->name : NULL,
                                 'add_speaker_designation'  => !empty($agenda_speaker) ? $agenda_speaker->designation : NULL,
                                 'add_speaker_image'  => !empty($agenda_speaker) ? config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$agenda_speaker->image : NULL,
+                                'row_id' => $index,
                             );
+                            $index++;
                         }
+                        
                    }
                 }                                             
 

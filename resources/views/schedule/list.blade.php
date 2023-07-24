@@ -73,7 +73,7 @@
                 <td>{{$key+1}}</td>
                 <td>{{$row->schedule_title}}</td>
                 <td>{{$row->schedule_date}} ({{ __('admin.day') }} {{$row->schedule_day}})</td>
-                <td>{{date('H:i A',strtotime($row->from_time))}} - {{date('H:i A',strtotime($row->to_time))}}</td>
+                <td>{{date('h:i A',strtotime($row->from_time))}} - {{date('h:i A',strtotime($row->to_time))}}</td>
                 <td>{{$row->schedule_venue}}</td>
                 <td class="text-center">
                   <a href="{{route($page_update,[$parent_id,$row->id])}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.view') }}"><i class="fas fa-search"></i></a>

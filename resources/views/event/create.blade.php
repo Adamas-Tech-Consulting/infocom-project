@@ -145,6 +145,7 @@
               <div class="row">
                 <div class="col-12">
                   <div class="form-group">
+                    <textarea id="eid" name="eid" hidden></textarea>
                     <label for="title">{{ __('admin.overview_description') }}</label>
                     <textarea id="overview_description" name="overview_description" class="summernote @error('overview_description') is-invalid @enderror"></textarea>
                   </div>

@@ -83,6 +83,7 @@ class ScheduleController extends Controller
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
+                        'hall_number' => $request->hall_number,
                         'track_id' => $request->track_id,
                         'session_type' => $request->session_type,
                     ];
@@ -132,6 +133,7 @@ class ScheduleController extends Controller
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
+                        'hall_number' => $request->hall_number,
                         'track_id' => $request->track_id,
                         'session_type' => $request->session_type,
                     ];

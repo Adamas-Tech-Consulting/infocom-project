@@ -165,6 +165,10 @@ Route::middleware(['web'])->group(function () {
             Route::post('/upload/{group_id}', [App\Http\Controllers\ContactsController::class, 'upload'])->name('contact_upload');
         });
         
+        //Registration Form
+        Route::prefix('manage-registration-form')->group(function (){
+            Route::get('/{event_id}', [App\Http\Controllers\RegistrationFormController::class, 'index'])->name('registration_form_builder');
+        });
 
         //Registration Requests
         Route::prefix('manage-registration-request')->group(function (){

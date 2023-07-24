@@ -119,6 +119,8 @@
 <script src="{{ asset('dist/js/adminlte.js') }}"></script>
 <!-- Summernote -->
 <script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
+<!-- ckeditor -->
+<script src="{{ asset('plugins/ckeditor/ckeditor.js') }}"></script>
 <!--Custom Script -->
 <script>
 $(function () {
@@ -150,15 +152,21 @@ $(function () {
 
   //Initialize Date picker
   if( $('.summernote').length > 0) {
-    $('.summernote').summernote({
-      height: 200
+    $('.summernote').each(function() {
+      initCkeditor($(this).attr('id'),200);
     });
+    // $('.summernote').summernote({
+    //   height: 200
+    // });
   }
 
   if( $('.summernote-large').length > 0) {
-    $('.summernote-large').summernote({
-      height: 400
+    $('.summernote-large').each(function() {
+      initCkeditor($(this).attr('id'),400);
     });
+    // $('.summernote-large').summernote({
+    //   height: 400
+    // });
   }
 
   $(".custom-file-input").on('change', function() {
@@ -175,8 +183,48 @@ $(function () {
     $(input).parent().parent().find('.tmpFile').remove();
     $(input).parent().parent().append('<span class="tmpFile">'+filename+'</span>')
   })
-
 })
+
+/* Init Ckeditor Editor */
+function initCkeditor(editor,height)
+  {
+    CKEDITOR.replace(editor, {
+      height: (typeof(height) != "undefined" && height !== null) ? height : 150,
+      toolbarGroups: [
+        { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+        { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+        { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
+        { name: 'forms' },
+        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+        { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align'] },
+        { name: 'links' },
+        { name: 'insert' },
+        '/',
+        { name: 'styles' },
+        { name: 'colors' },
+        { name: 'tools' },
+        { name: 'others' },
+      ],
+      // removeButtons: 'PasteFromWord',
+      removeDialogTabs: 'image:Link;image:advanced',
+      image_previewText:CKEDITOR.tools.repeat(' ',1),
+      on :
+      {
+          instanceReady : function( ev )
+          {
+              this.focus();
+          }
+      }
+    });
+    CKEDITOR.config.coreStyles_subscript = {
+        element: 'span',
+        attributes: { 'class': 'Subscript' },
+        overrides: 'sub'
+    }
+    if (CKEDITOR.env.ie && CKEDITOR.env.version == 8) {
+      document.getElementById('ie8-warning').className = 'tip alert';
+    }
+  }
 </script>
 @yield('script')
 </body>

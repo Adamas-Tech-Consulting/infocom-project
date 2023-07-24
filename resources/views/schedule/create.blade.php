@@ -97,7 +97,13 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-6">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="hall_number">{{ __('admin.hall_number') }}</label>
+                    <input type="text" class="form-control @error('hall_number') is-invalid @enderror" id="hall_number" name="hall_number" placeholder="{{ __('admin.enter') }} {{ __('admin.hall_number') }}" value="">
+                  </div>
+                </div>
+                <div class="col-4">
                   <div class="form-group">
                     <label for="session_type">{{ __('admin.session_type') }}</label>
                     <select class="form-control select2bs4 @error('session_type') is-invalid @enderror" name="session_type" style="width: 100%;" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
@@ -106,7 +112,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
                     <label for="track_ids">{{ __('admin.track') }}</label>
                     <select class="form-control select2bs4 @error('track_ids') is-invalid @enderror" name="track_id" style="width: 100%;" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">

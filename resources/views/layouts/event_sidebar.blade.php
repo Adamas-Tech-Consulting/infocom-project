@@ -32,6 +32,11 @@
         </a>
       </li>
       <li class="nav-item">
+        <a href="{{ route('registration_form_builder', $event_id) }}" class="nav-link {{ Nav::isResource('manage-registration-form') }}">
+          <i class="fa fa-check-square"></i> {{ __('admin.registration_form') }}
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="{{ route('registration_request', $event_id) }}" class="nav-link {{ Nav::isResource('manage-registration-request') }}">
           <i class="fa fa-user"></i> {{ __('admin.registration_request') }}
         </a>

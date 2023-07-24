@@ -93,6 +93,8 @@ return [
     'info' => 'Info',
     'invitee' => 'Invitee',
     'invitation' => 'Invitation',
+    'is_mandatory' => 'Is Mandatory',
+    'is_visible' => 'Is Visible',
 
     //J
 
@@ -100,6 +102,7 @@ return [
     'key_speaker' => 'Key Speaker',
 
     //L
+    'lebel' => 'Label',
     'list' => 'List',
     'lname' => 'Last Name',
     'login_btn' => 'Login',
