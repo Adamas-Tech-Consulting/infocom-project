@@ -372,7 +372,40 @@ class EventController extends Controller
                                          ->Join('event_sponsors',function($join) use($event_id) {
                                             $join->on('event_sponsors.sponsors_id','sponsors.id')
                                             ->where('event_sponsors.event_id',$event_id);
-                                         })->get(['sponsors.*','sponsorship_type.wp_term_id as sponsorship_type_id']);            
+                                         })->get(['sponsors.*','sponsorship_type.wp_term_id as sponsorship_type_id']);
+
+                $agenda = Schedule::where('event_id','=',$event_id)->orderBy('schedule_day')->groupBy('schedule_day','schedule_date')->get(['schedule_day','schedule_date']);
+                $agenda_details = Schedule::leftJoin('track','track.id','=','schedule.track_id')
+                                          ->where('schedule.event_id','=',$event_id)->orderBy('schedule_day')->get(['schedule.*','track.name as track_name']);
+
+                $data_agenda = [];
+                foreach($agenda as $agkey => $agnda) {
+                   $data_agenda[$agkey]['agenda_date'] = $agnda->schedule_date;
+                   $data_agenda[$agkey]['agenda_details'] = [];
+                   foreach($agenda_details as $agdkey => $agenda_detail)
+                   {
+                        if($agnda->schedule_day == $agenda_detail->schedule_day)
+                        {
+                            $agenda_id = $agenda_detail->id;
+                            $agenda_speaker = Speakers::Join('schedule_speakers',function($join) use($event_id,$agenda_id) {
+                                $join->on('schedule_speakers.speakers_id','speakers.id')
+                                    ->where('schedule_speakers.schedule_id',$agenda_id)
+                                    ->where('schedule_speakers.event_id',$event_id);
+                                })->first(['speakers.*']);
+                            $data_agenda[$agkey]['agenda_details'][] = array(
+                                'add_start_time' => $agenda_detail->from_time,
+                                'add_end_time' => $agenda_detail->to_time,
+                                'add_subject_details' => $agenda_detail->schedule_title,
+                                'add_short_description' => $agenda_detail->schedule_details,
+                                'add_session_type' => $agenda_detail->session_type,
+                                'add_track' => $agenda_detail->track_name,
+                                'add_speaker_name'  => !empty($agenda_speaker) ? $agenda_speaker->name : NULL,
+                                'add_speaker_designation'  => !empty($agenda_speaker) ? $agenda_speaker->designation : NULL,
+                                'add_speaker_image'  => !empty($agenda_speaker) ? config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$agenda_speaker->image : NULL,
+                            );
+                        }
+                   }
+                }                                             
 
                 $post_data = [
                     'category'              => $data->category,
@@ -411,6 +444,8 @@ class EventController extends Controller
                         'sponsor_logo'          =>  config('constants.CDN_URL').'/'.config('constants.SPONSORS_FOLDER').'/'.$sponsor->sponsor_logo,
                     );
                 }
+                $post_data['event_agenda'] = $data_agenda;
+                //dd($post_data['event_agenda']);
                 if($data->wp_post_id) {
                     $request_url = config("constants.UPDATE_EVENT").'/'.$data->wp_post_id;
                 } else {

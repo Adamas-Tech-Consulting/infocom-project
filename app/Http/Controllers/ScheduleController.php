@@ -83,22 +83,12 @@ class ScheduleController extends Controller
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
+                        'track_id' => $request->track_id,
+                        'session_type' => $request->session_type,
                     ];
                     $data = Schedule::create($insert_data);
                     $data->save();
                     $id = $data->id;
-                    if(!empty($request->track_ids))
-                    {
-                        foreach($request->track_ids as $track_id)
-                        {
-                            $insert_track_data = [
-                                'event_id' => $event_id,
-                                'schedule_id' => $id,
-                                'track_id' => $track_id,
-                            ];
-                            ScheduleTrack::create($insert_track_data);
-                        }
-                    }
                     DB::commit();
                     return redirect()->route('schedule_update', [$event_id, $id])->with('success', trans('flash.AddedSuccessfully'));
                 }   
@@ -142,25 +132,11 @@ class ScheduleController extends Controller
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
+                        'track_id' => $request->track_id,
+                        'session_type' => $request->session_type,
                     ];
                     $data = Schedule::findOrFail($id);
                     $data->update($update_data);
-                    if(ScheduleTrack::where('event_id',$event_id)->where('schedule_id',$id)->exists())
-                    {
-                        ScheduleTrack::where('event_id',$event_id)->where('schedule_id',$id)->delete();
-                    }
-                    if(!empty($request->track_ids))
-                    {
-                        foreach($request->track_ids as $track_id)
-                        {
-                            $insert_track_data = [
-                                'event_id' => $event_id,
-                                'schedule_id' => $id,
-                                'track_id' => $track_id,
-                            ];
-                            ScheduleTrack::create($insert_track_data);
-                        }
-                    }
                     DB::commit();
                     return redirect()->route('schedule', $event_id)->with('success', trans('flash.UpdatedSuccessfully'));
                 }   

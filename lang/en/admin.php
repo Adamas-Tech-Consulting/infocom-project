@@ -135,6 +135,7 @@ return [
     'paid' => 'Paid',
     'password'=> 'Password',
     'past' => 'Past',
+    'physical' => 'Physical',
     'pickup_address' => 'Pickup Address',
     'preview'=> 'Preview',
     'previous_event'=> 'Previous Event',
@@ -157,6 +158,7 @@ return [
     'select' => 'Select',
     'send_invitation' => 'Send Invitation',
     'sent' => 'Sent',
+    'session_type' => 'Session Type',
     'session_subject_line' => 'Session Subject Line',
     'schedule' => 'Agenda',
     'schedule_type' => 'Agenda Type',
@@ -191,6 +193,7 @@ return [
     //V
     'video_gallery' => 'Video Gallery',
     'view' => 'View',
+    'virtual' => 'Virtual',
     'venue' => 'Venue',
 
     //W

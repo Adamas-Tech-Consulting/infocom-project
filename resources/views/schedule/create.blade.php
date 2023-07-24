@@ -97,10 +97,19 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-12">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="session_type">{{ __('admin.session_type') }}</label>
+                    <select class="form-control select2bs4 @error('session_type') is-invalid @enderror" name="session_type" style="width: 100%;" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
+                      <option value="{{ __('admin.physical') }}">{{ __('admin.physical') }}</option>
+                      <option value="{{ __('admin.virtual') }}">{{ __('admin.virtual') }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
                   <div class="form-group">
                     <label for="track_ids">{{ __('admin.track') }}</label>
-                    <select class="form-control select2bs4 @error('track_ids') is-invalid @enderror" name="track_ids[]" style="width: 100%;" multiple="multiple" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
+                    <select class="form-control select2bs4 @error('track_ids') is-invalid @enderror" name="track_id" style="width: 100%;" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
                       @foreach($rows_track as $track)
                       <option value="{{$track->id}}">{{$track->name}}</option>
                       @endforeach
