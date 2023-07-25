@@ -73,7 +73,6 @@ class HomeController extends BaseController
 					try {
 						$id = $request->event_id;
 						$registration_request_id = $request->user()->id;
-
 							$schedules = Schedule::join('schedule_type','schedule_type.id','=','schedule.schedule_type_id')
 																			->join('event',function($join) use($registration_request_id) {
 																					$join->on('schedule.event_id','event.id')
