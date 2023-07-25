@@ -158,6 +158,7 @@ return [
     'role' => 'Role',
 
     //S
+    'save' => 'Save',
     'select' => 'Select',
     'send_invitation' => 'Send Invitation',
     'sent' => 'Sent',

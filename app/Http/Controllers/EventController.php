@@ -75,6 +75,16 @@ class EventController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
+                    $form_fields = array(
+                        array('label' => 'First Name', 'name' => 'first_name', 'type' => 'text', 'class' => 'col-6', 'is_visible' => true, 'is_mandatory' => true, 'is_disabled' => true),
+                        array('label' => 'Last Name', 'name' => 'last_name',  'type' => 'text', 'class' => 'col-6', 'is_visible' => true, 'is_mandatory' => true, 'is_disabled' => true),
+                        array('label' => 'Email Id', 'name' => 'email',  'type' => 'email', 'class' => 'col-6', 'is_visible' => true, 'is_mandatory' => true, 'is_disabled' => true),
+                        array('label' => 'Mobile Number', 'name' => 'mobile',  'type' => 'text', 'class' => 'col-6', 'is_visible' => true, 'is_mandatory' => true, 'is_disabled' => true),
+                        array('label' => 'Designation', 'name' => 'designation',  'type' => 'text', 'class' => 'col-6', 'is_visible' => true, 'is_mandatory' => true, 'is_disabled' => false),
+                        array('label' => 'Organization', 'name' => 'organization',  'type' => 'text', 'class' => 'col-6', 'is_visible' => true, 'is_mandatory' => true, 'is_disabled' => false),
+                        array('label' => 'Car Pickup and Drop Required ?', 'name' => 'is_pickup',  'type' => 'radio', 'class' => 'col-12', 'is_visible' => true, 'is_mandatory' => false, 'is_disabled' => false),
+                        array('label' => 'Car Pick Up Address', 'name' => 'pickup_address', 'type' => 'textarea', 'class' => 'col-12', 'is_visible' => true, 'is_mandatory' => true, 'is_disabled' => false),
+                    );
                     $diff = strtotime($request->event_end_date) - strtotime($request->event_start_date);
                     $event_days = abs(round($diff / 86400));
                     $insert_data = [
@@ -92,6 +102,7 @@ class EventController extends Controller
                         'overview_description' => $request->overview_description,
                         'event_description' => $request->event_description,
                         'featured' => (isset($request->featured) ? 1 : 0),
+                        'form_fields' => json_encode($form_fields),
                     ];
                     $data = Event::create($insert_data);
                     $data->save();

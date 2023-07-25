@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 //Model
 use App\Models\Event;
-use App\Models\EventRegistrationRequest;
+use App\Models\RegistrationRequest;
 use App\Models\Schedule;
 use App\Models\Sponsors;
 use App\Models\Speakers;
@@ -32,8 +32,8 @@ class HomeController extends BaseController
 							$events = Event::join('event_category','event_category.id','=','event.event_category_id')
 															->join('event_method','event_method.id','=','event.event_method_id')
 															->where('event.published','1')
-															->whereIn('event.id', EventRegistrationRequest::select(['event_id'])
-																	->where('registration_request_id', $registration_request_id)
+															->whereIn('event.id', RegistrationRequest::select(['event_id'])
+																	->where('id', $registration_request_id)
 															)
 							->selectRaw("
 								event.id as event_id,
@@ -66,19 +66,20 @@ class HomeController extends BaseController
 			}  
 	}
 
-	public function getAgenda(Request $request, $id)
+	public function getAgenda(Request $request)
 	{
-			if ($request->isMethod('get')) 
+			if ($request->isMethod('post')) 
 			{
 					try {
-			$registration_request_id = $request->user()->id;
+						$id = $request->event_id;
+						$registration_request_id = $request->user()->id;
 
 							$schedules = Schedule::join('schedule_type','schedule_type.id','=','schedule.schedule_type_id')
 																			->join('event',function($join) use($registration_request_id) {
 																					$join->on('schedule.event_id','event.id')
 																					->where('event.published','1')
-										->whereIn('event.id', EventRegistrationRequest::select(['event_id'])
-											->where('registration_request_id', $registration_request_id)
+										->whereIn('event.id', RegistrationRequest::select(['event_id'])
+											->where('id', $registration_request_id)
 										);
 																			})
 																			->where('schedule.event_id',$id)
@@ -116,9 +117,9 @@ class HomeController extends BaseController
 								->join('event_sponsors','event_sponsors.sponsors_id','=','sponsors.id')
 								->join('event','event_sponsors.event_id','=','event.id')
 								->where('event.published','1')
-								->whereIn('event.id', EventRegistrationRequest::select(['event_id'])
-                                    ->where('registration_request_id', $registration_request_id)
-                                )
+								->whereIn('event.id', RegistrationRequest::select(['event_id'])
+														->where('id', $registration_request_id)
+												)
 								->selectRaw("
 									event_id,
 									sponsor_name,
@@ -151,8 +152,8 @@ class HomeController extends BaseController
 			$speakers = Speakers::join('event_speakers','event_speakers.speakers_id','=','speakers.id')
                                     ->join('event','event_speakers.event_id','=','event.id')
                                     ->where('event.published','1')
-									->whereIn('event.id', EventRegistrationRequest::select(['event_id'])
-										->where('registration_request_id', $registration_request_id)
+									->whereIn('event.id', RegistrationRequest::select(['event_id'])
+										->where('id', $registration_request_id)
 									)
 									->selectRaw("
 										event_id,
@@ -187,8 +188,8 @@ class HomeController extends BaseController
                                     ->join('event',function($join) use($registration_request_id) {
                                         $join->on('schedule_speakers.event_id','event.id')
 										->where('event.published','1')
-										->whereIn('event.id', EventRegistrationRequest::select(['event_id'])
-											->where('registration_request_id', $registration_request_id)
+										->whereIn('event.id', RegistrationRequest::select(['event_id'])
+											->where('id', $registration_request_id)
 										);
                                      })
 									 ->where('schedule_speakers.event_id',$event_id)

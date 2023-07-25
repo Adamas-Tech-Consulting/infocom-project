@@ -76,7 +76,7 @@
               @foreach($rows as $key => $row)
               <tr>
                 <td>{{$key+1}}</td>
-                <td>{{$row->fname}} {{$row->lname}}</td>
+                <td>{{$row->first_name}} {{$row->last_name}}</td>
                 <td>{{$row->designation}}</td>
                 <td>{{$row->organization}}</td>
                 <td>{{$row->email}}</td>

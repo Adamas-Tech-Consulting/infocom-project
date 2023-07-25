@@ -21,6 +21,8 @@ return [
   'SPONSORS_FOLDER' => 'sponsors',
   'SPEAKERS_FOLDER' => 'speakers',
 
+  'WP_SITE'  => 'http://localhost/infocom/',
+
   'SITE_URL'  => 'http://localhost/infocom/wp-json/abp/v1/',
 
   'CREATE_EVENT_CATEGORY' => 'create-event-category',

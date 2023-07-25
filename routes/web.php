@@ -18,7 +18,9 @@ Route::middleware(['web'])->group(function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     //Frontend
-    Route::get('/registration/{event_slug}', [App\Http\Controllers\FrontendController::class, 'registration_form'])->name('registration_form');
+    Route::any('/registration/{event_slug}', [App\Http\Controllers\FrontendController::class, 'registration_form'])->name('registration_form');
+    Route::any('/thank_you', [App\Http\Controllers\FrontendController::class, 'thank_you'])->name('thank_you');
+    Route::get('/reload-captcha', [App\Http\Controllers\FrontendController::class, 'reload_captcha'])->name('reload_captcha');
 
     //Authendication
     Route::middleware(['auth'])->group(function () {    
@@ -167,7 +169,7 @@ Route::middleware(['web'])->group(function () {
         
         //Registration Form
         Route::prefix('manage-registration-form')->group(function (){
-            Route::get('/{event_id}', [App\Http\Controllers\RegistrationFormController::class, 'index'])->name('registration_form_builder');
+            Route::any('/{event_id}', [App\Http\Controllers\RegistrationFormController::class, 'index'])->name('registration_form_builder');
         });
 
         //Registration Requests

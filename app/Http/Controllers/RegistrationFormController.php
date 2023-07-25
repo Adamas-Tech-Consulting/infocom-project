@@ -31,27 +31,23 @@ class RegistrationFormController extends Controller
 
     public function index(Request $request, $event_id)
     {
+        if ($request->isMethod('post')) {
+            $inputs = $request->form_fields;
+            $form_fields = Event::find($event_id)->form_fields;
+            foreach($form_fields as $key => $form_field)
+            {
+                if(isset($inputs[$key]) && $key>3)
+                {
+                    $form_fields[$key]['is_visible'] = isset($inputs[$key]['is_visible']) ? true : false;
+                    $form_fields[$key]['is_mandatory'] = isset($inputs[$key]['is_mandatory']) ? true : false;
+                }
+            }
+            $update_data = ['form_fields' => json_encode($form_fields)];
+            Event::where('id', '=', $event_id)->update($update_data);
+            return redirect()->route('registration_form_builder', $event_id)->with('success', trans('flash.UpdatedSuccessfully'));
+        }
         $this->data['event_id'] = $event_id;
         $this->data['row'] = Event::find($event_id);
-        $this->data['rows'] = RegistrationRequest::join('event_registration_request','event_registration_request.registration_request_id','registration_request.id')
-                                                ->where('event_registration_request.event_id',$event_id)
-                                                ->get('registration_request.*');
-        return view('registration_form.list',$this->data);
-    }
-
-    public function download(Request $request, $event_id)
-    {
-        if ($event_id) {
-            $event = Event::find($event_id);
-            $filename = $event->slug.".xlsx";
-            return Excel::download(new RegistrationRequestExport($event_id), $filename);
-        } else {
-            return redirect()->route('registration_request', $event_id);
-        }
-    }
-
-    public function registration_form(Request $request, $event_slug)
-    {
-        return view('registration_request.form',$this->data);
+        return view('registration_request.form_fields',$this->data);
     }
 }

@@ -67,30 +67,30 @@
                 </tr>
                 </thead>
                 <tbody>
+                @if($row->form_fields)
+                @foreach($row->form_fields as $key => $form_fields)
                 <tr>
-                  <td>First Name</td>
                   <td>
-                    <input type="checkbox" id="first_name_visible" checked disabled="">
+                    {{$form_fields['label']}}
+                    <input type="hidden" name="form_fields[{{$key}}][name]" value="{{$form_fields['name']}}">
                   </td>
                   <td>
-                    <input type="checkbox" id="first_name_mandatory" checked disabled="">
+                    <input type="checkbox" id="{{$form_fields['name']}}_visible" name="form_fields[{{$key}}][is_visible]" {{($form_fields['is_visible']) ?'checked':''}} {{($form_fields['is_disabled']) ?'disabled':''}}>
+                  </td>
+                  <td>
+                    @if($form_fields['name'] != 'is_pickup')
+                    <input type="checkbox" id="{{$form_fields['name']}}_mandatory" name="form_fields[{{$key}}][is_mandatory]" {{($form_fields['is_mandatory']) ?'checked':''}}  {{($form_fields['is_disabled']) ?'disabled':''}}>
+                    @endif
                   </td>
                 </tr>
-                <tr>
-                  <td>Last Name</td>
-                  <td>
-                    <input type="checkbox" id="last_name_visible" checked disabled="">
-                  </td>
-                  <td>
-                    <input type="checkbox" id="last_name_mandatory" checked disabled="">
-                  </td>
-                </tr>
+                @endforeach
+                @endif
                 </tbody>
               </table>
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-              <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.submit') }}</button>
+              <button type="submit" class="btn btn-warning btn-sm">{{ __('admin.save') }}</button>
             </div>
           </form>
         </div>

@@ -16,11 +16,11 @@ class RegistrationRequest extends Authenticatable
     protected $table = 'registration_request';
 
     protected $fillable = [
-        'fname',
-        'lname',
+        'event_id',
+        'first_name',
+        'last_name',
         'email',
         'mobile',
-        'gender',
         'designation',
         'organization',
         'is_pickup',

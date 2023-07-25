@@ -166,6 +166,11 @@
   padding: 0.6rem;
 }
 
+.py_2 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 .py_4 {
   padding-top: 3rem;
   padding-bottom: 2.4rem;

@@ -34,9 +34,7 @@ class RegistrationRequestController extends Controller
     {
         $this->data['event_id'] = $event_id;
         $this->data['row'] = Event::find($event_id);
-        $this->data['rows'] = RegistrationRequest::join('event_registration_request','event_registration_request.registration_request_id','registration_request.id')
-                                                ->where('event_registration_request.event_id',$event_id)
-                                                ->get('registration_request.*');
+        $this->data['rows'] = RegistrationRequest::where('event_id',$event_id)->get();
         return view('registration_request.list',$this->data);
     }
 
@@ -49,10 +47,5 @@ class RegistrationRequestController extends Controller
         } else {
             return redirect()->route('registration_request', $event_id);
         }
-    }
-
-    public function registration_form(Request $request, $event_slug)
-    {
-        return view('registration_request.form',$this->data);
     }
 }
