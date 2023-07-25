@@ -91,6 +91,7 @@ class EventController extends Controller
                         'event_category_id' => $request->event_category_id,
                         'title' => $request->title,
                         'slug' => Str::slug($request->title,'-'),
+                        'sub_title' => $request->sub_title,
                         'event_method_id' => $request->event_method_id,
                         'registration_type' => $request->registration_type,
                         'last_registration_date' => $request->last_registration_date ? date('Y-m-d',strtotime($request->last_registration_date)) : NULL,
@@ -171,6 +172,7 @@ class EventController extends Controller
                         'event_category_id' => $request->event_category_id,
                         'title' => $request->title,
                         'slug' => Str::slug($request->title,'-'),
+                        'sub_title' => $request->sub_title,
                         'event_method_id' => $request->event_method_id,
                         'registration_type' => $request->registration_type,
                         'last_registration_date' => $request->last_registration_date ? date('Y-m-d',strtotime($request->last_registration_date)) : NULL,
@@ -426,6 +428,7 @@ class EventController extends Controller
                 $post_data = [
                     'category'              => $data->category,
                     'title'                 => $data->title,
+                    'sub_title'             => $data->sub_title,
                     'event_start_date'      => $data->event_start_date,
                     'event_venue'           => $data->event_venue,
                     'event_theme'           => $data->event_theme,

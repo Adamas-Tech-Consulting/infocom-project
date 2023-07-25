@@ -7,7 +7,7 @@
     <div class="row mb-2">
       <div class="col-sm-5">
         <h4 class="m-0">{{ $page_name }}</h4>
-        <h6 class="mt-1">{{$row->title}} ({{ date('d M, Y',strtotime($row->event_start_date))}} - {{ date('d M, Y',strtotime($row->event_end_date))}})</h6>
+        <h6 class="mt-1">{{$row->full_title}} ({{ date('d M, Y',strtotime($row->event_start_date))}} - {{ date('d M, Y',strtotime($row->event_end_date))}})</h6>
       </div><!-- /.col -->
       <div class="col-sm-7">
         <ol class="breadcrumb float-sm-right">

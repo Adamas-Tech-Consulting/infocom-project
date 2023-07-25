@@ -72,7 +72,7 @@
               <td>{{$key+1}}</td>
               <td><span style="color:{{$row->event_category_color}}">{{$row->event_category_name}}</span></td>
               <td>
-                {{$row->title}} 
+                {{$row->full_title}}
                 <div>(<b>{{$row->event_method_name}} - {{($row->registration_type=='F') ? __('admin.free') : __('admin.paid')}}</b>)<div>
               </td>
               <td>

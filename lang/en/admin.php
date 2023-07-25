@@ -174,6 +174,7 @@ return [
     'sponsorship_type' => 'Sponsorship Type',
     'start_date' => 'Start Date',
     'submit' => 'Submit',
+    'sub_title' => 'Subtitle',
     'sync'  => 'Sync to Frontend',
 
     //T

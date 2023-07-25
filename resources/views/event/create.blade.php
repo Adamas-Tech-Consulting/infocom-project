@@ -51,7 +51,7 @@
             @csrf
             <div class="card-body">
               <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
                     <label for="event_category_id">{{ __('admin.event_category') }} <span class="text-red">*</span></label>
                     <select class="form-control select2bs4 @error('event_category_id') is-invalid @enderror" name="event_category_id" style="width: 100%;">
@@ -62,10 +62,16 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-group">
-                    <label for="title">{{ __('admin.event') }} {{ __('admin.name') }} <span class="text-red">*</span></label>
-                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="{{ __('admin.enter') }} {{ __('admin.event') }} {{ __('admin.name') }}">
+                    <label for="title">{{ __('admin.event') }} {{ __('admin.title') }} <span class="text-red">*</span></label>
+                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="{{ __('admin.enter') }} {{ __('admin.event') }} {{ __('admin.title') }}">
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="title">{{ __('admin.event') }} {{ __('admin.sub_title') }} <span class="text-red">*</span></label>
+                    <input type="text" class="form-control @error('sub_title') is-invalid @enderror" id="sub_title" name="sub_title" placeholder="{{ __('admin.enter') }} {{ __('admin.event') }} {{ __('admin.sub_title') }}">
                   </div>
                 </div>
               </div><!-- /.row -->

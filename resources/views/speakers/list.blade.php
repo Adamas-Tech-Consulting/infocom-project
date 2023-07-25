@@ -8,7 +8,7 @@
       <div class="col-sm-6">
         <h4 class="m-0">{{ __('admin.manage') }} {{ $page_name }}</h4>
         @if(!empty($row_event))
-        <h6 class="mt-1">{{$row_event->title}} ({{ date('d M, Y',strtotime($row_event->event_start_date))}} - {{ date('d M, Y',strtotime($row_event->event_end_date))}})</h6>
+        <h6 class="mt-1">{{$row_event->full_title}} ({{ date('d M, Y',strtotime($row_event->event_start_date))}} - {{ date('d M, Y',strtotime($row_event->event_end_date))}})</h6>
         @endif
       </div><!-- /.col -->
       <div class="col-sm-6">
