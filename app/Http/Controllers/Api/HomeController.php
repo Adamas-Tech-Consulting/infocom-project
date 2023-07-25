@@ -23,89 +23,120 @@ class HomeController extends BaseController
 	}  
 	public function getEvent(Request $request)
 	{
-			if ($request->isMethod('get')) 
-			{
-					try {
-							
-							$registration_request_id = $request->user()->id;
+		if ($request->isMethod('get')) 
+		{
+			try {
+					
+					$registration_request_id = $request->user()->id;
 
-							$events = Event::join('event_category','event_category.id','=','event.event_category_id')
-															->join('event_method','event_method.id','=','event.event_method_id')
-															->where('event.published','1')
-															->whereIn('event.id', RegistrationRequest::select(['event_id'])
-																	->where('id', $registration_request_id)
-															)
-							->selectRaw("
-								event.id as event_id,
-								title,
-								event_category.name as event_category,
-								event_method.name as event_method,
-								case registration_type when 'P' then 'Paid' ELSE 'Free' END as registration_type,
-								last_registration_date,
-								event_start_date,
-								event_end_date,
-								event_venue,
-								event_theme,
-								overview_description,
-								event_description,
-								concat('".config('constants.CDN_URL')."', '/', '".config('constants.EVENT_FOLDER')."', '/', event_banner) AS event_banner,
-								concat('".config('constants.CDN_URL')."', '/', '".config('constants.EVENT_FOLDER')."', '/', event_logo) AS event_logo
-							")
-															->get()->toArray();
+					$events = Event::join('event_category','event_category.id','=','event.event_category_id')
+													->join('event_method','event_method.id','=','event.event_method_id')
+													->where('event.published','1')
+													->whereIn('event.id', RegistrationRequest::select(['event_id'])
+															->where('id', $registration_request_id)
+													)
+					->selectRaw("
+						event.id as event_id,
+						title,
+						event_category.name as event_category,
+						event_method.name as event_method,
+						case registration_type when 'P' then 'Paid' ELSE 'Free' END as registration_type,
+						last_registration_date,
+						event_start_date,
+						event_end_date,
+						event_venue,
+						event_theme,
+						overview_description,
+						event_description,
+						concat('".config('constants.CDN_URL')."', '/', '".config('constants.EVENT_FOLDER')."', '/', event_banner) AS event_banner,
+						concat('".config('constants.CDN_URL')."', '/', '".config('constants.EVENT_FOLDER')."', '/', event_logo) AS event_logo
+					")
+													->get()->toArray();
 
-			$events = $this->getEventSponsors($registration_request_id, $events);
+					$events = $this->getEventSponsors($registration_request_id, $events);
 
-			$events = $this->getEventSpeakers($registration_request_id, $events);
+					$events = $this->getEventSpeakers($registration_request_id, $events);
 
-							$this->data = $events;
-							return $this->sendResponse($this->data,'');
-					}   
-					catch(Exception $e) {   
-							return response()->json('Forbidden', 403);
-					}
-			}  
+					$this->data = $events;
+					return $this->sendResponse($this->data,'');
+			}   
+			catch(Exception $e) {   
+					return response()->json('Forbidden', 403);
+			}
+		}  
 	}
 
 	public function getAgenda(Request $request)
 	{
-			if ($request->isMethod('post')) 
-			{
-					try {
-						$id = $request->event_id;
-						$registration_request_id = $request->user()->id;
-							$schedules = Schedule::join('schedule_type','schedule_type.id','=','schedule.schedule_type_id')
-																			->join('event',function($join) use($registration_request_id) {
-																					$join->on('schedule.event_id','event.id')
-																					->where('event.published','1')
-										->whereIn('event.id', RegistrationRequest::select(['event_id'])
-											->where('id', $registration_request_id)
-										);
-																			})
-																			->where('schedule.event_id',$id)
-																			->where('schedule.published','1')
-																			->get(
-																					[
-																							'schedule.id as schedule_id',
-																							'schedule_title',
-																							'schedule_date',
-																							'schedule_day',
-																							'from_time',
-																							'to_time',
-																							'schedule_venue',
-																					]
-																			)->toArray();
+		if ($request->isMethod('post')) 
+		{
+			try {
+				$id = $request->event_id;
+				$registration_request_id = $request->user()->id;
+				$agenda = Schedule::join('event',function($join) use($registration_request_id) {
+																	$join->on('schedule.event_id','event.id')
+																	->where('event.published','1')
+																	->whereIn('event.id', RegistrationRequest::select(['event_id'])
+																		->where('id', $registration_request_id)
+																	);
+															})->orderBy('schedule_day')->groupBy('schedule_day','schedule_date')
+															->get(
+																[
+																	'schedule_day',
+																	'schedule_date'
+																]
+															)->toArray();
+				$agenda_details = Schedule::leftJoin('track','track.id','=','schedule.track_id')
+																	->join('event',function($join) use($registration_request_id) {
+																			$join->on('schedule.event_id','event.id')
+																			->where('event.published','1')
+																			->whereIn('event.id', RegistrationRequest::select(['event_id'])
+																				->where('id', $registration_request_id)
+																			);
+																	})
+																	->where('schedule.event_id',$id)
+																	->where('schedule.published','1')
+																	->get(
+																			[
+																					'schedule.id as schedule_id',
+																					'schedule_title',
+																					'schedule_day',
+																					'from_time',
+																					'to_time',
+																					'hall_number',
+																					'session_type',
+																					'schedule_venue',
+																					'track.name as track_name'
+																			]
+																	)->toArray();
 
-			$schedules = $this->getEventAgendaSpeakers($registration_request_id, $id, $schedules);
-							
-							
-							$this->data = $schedules;
-							return $this->sendResponse($this->data,'');
-					}   
-					catch(Exception $e) {   
-							return response()->json('Forbidden', 403);
+				foreach($agenda_details as $agdkey => $agd)
+				{
+					$agenda_details[$agdkey]['from_time'] = date('h:i A',strtotime($agd['from_time']));
+					$agenda_details[$agdkey]['to_time'] = date('h:i A',strtotime($agd['to_time']));
+				}
+
+				$agenda_details = $this->getEventAgendaSpeakers($registration_request_id, $id, $agenda_details);
+
+				foreach($agenda as $agkey => $ag)
+				{
+					$agenda[$agkey]['agenda'] = array();
+					foreach($agenda_details as $agdkey => $agd)
+					{
+						if($ag['schedule_day'] == $agd['schedule_day'])
+						{
+							$agenda[$agkey]['agenda'][] = $agd;
+						}
 					}
+				}
+		
+				$this->data = $agenda;
+				return $this->sendResponse($this->data,'');
+			}   
+			catch(Exception $e) {   
+					return response()->json('Forbidden', 403);
 			}
-				
+		}		
 	}
 
 	protected function getEventSponsors($registration_request_id, $events)
