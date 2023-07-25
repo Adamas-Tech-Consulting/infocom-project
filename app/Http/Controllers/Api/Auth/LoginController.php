@@ -56,6 +56,8 @@ class LoginController extends BaseController
                         {
                             if(isset($authUser))
                             {
+                                $password = Hash::make('2023');
+                                RegistrationRequest::where('id', $authUser->id)->update(['password' => $password]);
                                 return $this->sendResponse($this->data, 'OTP Sent'); 
                             }
                             else{

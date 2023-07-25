@@ -31,7 +31,7 @@
                       <div class="form-group">
                         <label class="form-label" for="{{$form_fields['name']}}">{{$form_fields['label']}} @if($form_fields['is_mandatory']) <span class="text-red">*</span> @endif</label>
                         @if($form_fields['type'] == 'textarea')
-                          <textarea class="form-control form-control-md @error($form_fields['name']) is-invalid @enderror" name="{{$form_fields['name']}}" placeholder="{{ __('admin.enter') }} {{$form_fields['label']}}"></textarea>
+                          <textarea class="form-control form-control-md @error($form_fields['name']) is-invalid @enderror" name="{{$form_fields['name']}}" placeholder="{{ __('admin.enter') }} {{$form_fields['label']}}">{{ old($form_fields['name']) }}</textarea>
                           @error($form_fields['name'])<strong class="error invalid-feedback">{{ $message }}</strong>@enderror
                         @elseif($form_fields['type'] == 'radio')
                           <div class="icheck-primary d-inline">
@@ -43,7 +43,7 @@
                             <label for="{{ __('admin.no') }}">{{ __('admin.no') }}</label>
                           </div>
                         @else
-                          <input type="{{$form_fields['type']}}" id="{{$form_fields['name']}}" class="form-control form-control-md @error($form_fields['name']) is-invalid @enderror" name="{{$form_fields['name']}}" placeholder="{{ __('admin.enter') }} {{$form_fields['label']}}" />
+                          <input type="{{$form_fields['type']}}" id="{{$form_fields['name']}}" class="form-control form-control-md @error($form_fields['name']) is-invalid @enderror" name="{{$form_fields['name']}}" value="{{ old($form_fields['name']) }}" @if($form_fields['name']=='mobile') min="10" max="10" @endif placeholder="{{ __('admin.enter') }} {{$form_fields['label']}}" @if($form_fields['is_mandatory']) required @endif />
                           @error($form_fields['name'])<strong class="error invalid-feedback">{{ $message }}</strong>@enderror
                         @endif
                       </div>

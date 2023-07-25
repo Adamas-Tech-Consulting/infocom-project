@@ -33,11 +33,15 @@ class FrontendController extends Controller
             $validation = [];
             foreach($row_event->form_fields as $form_field)
             {
-                if($form_field['is_mandatory'])
+                if($form_field['is_visible'] && $form_field['is_mandatory'])
                 {
                     if($form_field['name']=='email') {
                         $validation[$form_field['name']] ='required|email';
-                    } else {
+                    }
+                    else if($form_field['name']=='mobile') {
+                        $validation[$form_field['name']] ='required|digits:10|numeric';
+                    }
+                    else {
                         $validation[$form_field['name']] ='required';
                     } 
                 }
@@ -58,7 +62,6 @@ class FrontendController extends Controller
                     'organization' => isset($request->organization) ? $request->organization : NULL,
                     'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
                     'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
-                    'password' => '1234'
                 ];
                 $data = RegistrationRequest::create($insert_data);
                 $data->save();
