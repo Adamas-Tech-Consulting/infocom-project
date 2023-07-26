@@ -87,5 +87,5 @@
 <!-- /.content -->
 @endsection
 @section('script')
-<script src="/validation/{{ $page_slug }}.js"></script>
+<script src='{{ asset("validation/$page_slug.js") }}'></script>
 @endsection

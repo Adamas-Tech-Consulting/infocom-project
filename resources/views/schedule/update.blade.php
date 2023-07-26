@@ -115,7 +115,7 @@
                       <div class="row">
                         <div class="col-4">
                           <div class="form-group">
-                            <label for="hall_number">{{ __('admin.hall_number') }}</label>
+                            <label for="hall_number">{{ __('admin.hall_number') }} <span class="text-red">*</span></label>
                             <input type="text" class="form-control @error('hall_number') is-invalid @enderror" id="hall_number" name="hall_number" placeholder="{{ __('admin.enter') }} {{ __('admin.hall_number') }}" value="{{$row->hall_number}}">
                           </div>
                         </div>
@@ -167,5 +167,5 @@
 <!-- /.content -->
 @endsection
 @section('script')
-<script src="/validation/{{ $page_slug }}.js"></script>
+<script src='{{ asset("validation/$page_slug.js") }}'></script>
 @endsection

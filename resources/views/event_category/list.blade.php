@@ -71,7 +71,7 @@
             @foreach($rows as $key => $row)
             <tr>
               <td>{{$key+1}}</td>
-              <td><span style="color:{{$row->color}}">{{$row->name}}</span></td>
+              <td>{{$row->name}}</td>
               <td>{{$row->is_sponsors? __('admin.yes') : __('admin.no')}}</td>
               <td class="text-center">
                 <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>

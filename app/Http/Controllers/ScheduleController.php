@@ -63,6 +63,7 @@ class ScheduleController extends Controller
                 'schedule_title' => 'required',
                 'schedule_type_id' => 'required',
                 'schedule_details' => 'required',
+                'hall_number' => 'required',
                 'from_time' => 'required',
                 'to_time' => 'required',
             ]);
@@ -113,6 +114,7 @@ class ScheduleController extends Controller
                 'schedule_title' => 'required',
                 'schedule_type_id' => 'required',
                 'schedule_details' => 'required',
+                'hall_number' => 'required',
                 'from_time' => 'required',
                 'to_time' => 'required',
             ]);

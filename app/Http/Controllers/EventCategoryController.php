@@ -41,7 +41,6 @@ class EventCategoryController extends Controller
         if ($request->isMethod('post')) {
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
-                'color' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -69,7 +68,6 @@ class EventCategoryController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
-                'color' => 'required',
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();

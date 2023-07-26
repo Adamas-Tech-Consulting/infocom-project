@@ -45,28 +45,22 @@
 <section class="content">
   <div class="container-fluid">
   <div class="row">
-    <div class="col-12">
+    <div class="col-8">
       <div class="card card-warning card-outline direct-chat-warning">
         <form id="validation-form" action="" method="post">
           @csrf
           <div class="card-body">
             <div class="row">
-              <div class="col-6">
+              <div class="col-12">
                 <div class="form-group">
                   <label for="name">{{ __('admin.category') }} {{ __('admin.name') }}</label>
                   <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{$row->name}}"  placeholder="{{ __('admin.enter') }} {{ __('admin.category') }} {{ __('admin.name') }}">
                 </div>
               </div>
-              <div class="col-3">
-                <div class="form-group">
-                  <label for="color">{{ __('admin.category') }} {{ __('admin.color') }}</label>
-                  <input type="color" class="form-control @error('color') is-invalid @enderror" id="color" name="color" value="{{$row->color}}">
-                </div>
-              </div>
             </div>
             <!-- /.row -->
             <div class="row">
-              <div class="col-6">
+              <div class="col-12">
                 <label for="name">{{ __('admin.allow') }} {{ __('admin.sponsors') }}</label>
                 <div class="form-group clearfix">
                   <div class="icheck-primary d-inline mr-3">
@@ -98,5 +92,5 @@
 <!-- /.content -->
 @endsection
 @section('script')
-<script src="/validation/{{ $page_slug }}.js"></script>
+<script src='{{ asset("validation/$page_slug.js") }}'></script>
 @endsection
