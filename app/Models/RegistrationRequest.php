@@ -16,15 +16,9 @@ class RegistrationRequest extends Authenticatable
     protected $table = 'registration_request';
 
     protected $fillable = [
-        'event_id',
         'first_name',
         'last_name',
-        'email',
         'mobile',
-        'designation',
-        'organization',
-        'is_pickup',
-        'pickup_address',
     ];
 
     /**
@@ -35,4 +29,8 @@ class RegistrationRequest extends Authenticatable
     protected $hidden = [
         'password',
     ];
+
+    public function findForPassport($username) {
+        return $this->where('mobile', $username)->first();
+    }
 }

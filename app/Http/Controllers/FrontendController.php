@@ -11,8 +11,8 @@ use DB;
 
 //Model
 use App\Models\RegistrationRequest;
-use App\Models\EventRegistrationRequest;
 use App\Models\Event;
+use App\Models\EventRegistrationRequest;
 
 class FrontendController extends Controller
 {
@@ -52,22 +52,57 @@ class FrontendController extends Controller
                 return back()->withErrors($validator)->withInput();
             } else {
                 DB::beginTransaction();
-                $insert_data = [
-                    'event_id' => $row_event->id,
-                    'first_name' => $request->first_name,
-                    'last_name' => $request->last_name,
-                    'mobile' => $request->mobile,
-                    'email' => $request->email,
-                    'designation' => isset($request->designation) ? $request->designation : NULL,
-                    'organization' => isset($request->organization) ? $request->organization : NULL,
-                    'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
-                    'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
-                ];
-                $data = RegistrationRequest::create($insert_data);
-                $data->save();
-                echo $data->id;
+                if(RegistrationRequest::where('mobile', $request->mobile)->exists())
+                {
+                    $registration_request = RegistrationRequest::where('mobile', $request->mobile)->first();
+                    if(EventRegistrationRequest::where('event_id', $row_event->id)->where('registration_request_id', $registration_request->id)->exists())
+                    {
+                        return redirect()->route('registration_form',$event_slug)->with('error', trans('flash.AlreadyRegistered')); 
+                    }
+                    else
+                    {
+                        $insert_rel_data = [
+                            'event_id' => $row_event->id,
+                            'registration_request_id' => $registration_request->id,
+                            'first_name' => $request->first_name,
+                            'last_name' => $request->last_name,
+                            'email' => $request->email,
+                            'designation' => isset($request->designation) ? $request->designation : NULL,
+                            'organization' => isset($request->organization) ? $request->organization : NULL,
+                            'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
+                            'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
+                        ];
+                        $rel_data = EventRegistrationRequest::create($insert_rel_data);
+                        $rel_data->save();
+                    }
+                }
+                else
+                {
+                    $insert_data = [
+                        'first_name' => $request->first_name,
+                        'last_name' => $request->last_name,
+                        'mobile' => $request->mobile,
+                    ];
+                    $data = RegistrationRequest::create($insert_data);
+                    $data->save();
+                    $registration_request_id = $data->id;
+
+                    $insert_rel_data = [
+                        'event_id' => $row_event->id,
+                        'registration_request_id' => $registration_request_id,
+                        'first_name' => $request->first_name,
+                        'last_name' => $request->last_name,
+                        'email' => $request->email,
+                        'designation' => isset($request->designation) ? $request->designation : NULL,
+                        'organization' => isset($request->organization) ? $request->organization : NULL,
+                        'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
+                        'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
+                    ];
+                    $rel_data = EventRegistrationRequest::create($insert_rel_data);
+                    $rel_data->save();
+                }
                 DB::commit();
-                return redirect()->route('registration_form',$row_event->id)->with('success', trans('flash.AddedSuccessfully'));
+                return redirect()->route('registration_form',$event_slug)->with('success', trans('flash.RegistrationSuccessfully'));
             }
         }
         else
@@ -86,6 +121,6 @@ class FrontendController extends Controller
 
     public function thank_you()
     {
-
+        
     }
 }

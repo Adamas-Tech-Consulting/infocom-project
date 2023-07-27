@@ -29,4 +29,6 @@ return [
     'EventCategoryAlreadyAssigned' => '`:name` has been already assigned to atleast one event',
     'SponsorshipCategoryAlreadyAssigned' => '`:name` has been already assigned to a sponsor',
     'SyncSuccessfully' => 'Sync Successfully',
+    'AlreadyRegistered' => 'You have already registered',
+    'RegistrationSuccessfully' => 'Thank you for your registration. We will get back to you soon',
 ];

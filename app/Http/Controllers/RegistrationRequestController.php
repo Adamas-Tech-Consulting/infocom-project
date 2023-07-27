@@ -14,6 +14,7 @@ use DB;
 //Model
 use App\Models\RegistrationRequest;
 use App\Models\Event;
+use App\Models\EventRegistrationRequest;
 
 class RegistrationRequestController extends Controller
 {
@@ -34,7 +35,8 @@ class RegistrationRequestController extends Controller
     {
         $this->data['event_id'] = $event_id;
         $this->data['row'] = Event::find($event_id);
-        $this->data['rows'] = RegistrationRequest::where('event_id',$event_id)->get();
+        $this->data['rows'] = RegistrationRequest::join('event_registration_request','registration_request.id','=','event_registration_request.registration_request_id')
+                                                 ->where('event_registration_request.event_id',$event_id)->get(['registration_request.id','event_registration_request.first_name','event_registration_request.last_name','designation','organization','mobile','email','pickup_address']);
         return view('registration_request.list',$this->data);
     }
 

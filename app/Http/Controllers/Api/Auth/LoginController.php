@@ -96,7 +96,7 @@ class LoginController extends BaseController
                 try {
                     if($this->client->id == $request->client_id && $this->client->secret == $request->client_secret)
                     {
-                        $authUser = RegistrationRequest::where('mobile', $request->mobile)->first();
+                        $authUser = RegistrationRequest::where('mobile', $request->mobile)->first(['id','first_name','last_name','mobile', 'published']);
                         if(isset($authUser) && $authUser->published == 0)
                         {
                             return $this->sendError('Blocked User', 401);
@@ -106,7 +106,6 @@ class LoginController extends BaseController
                             if(isset($authUser))
                             {
                                 $request->request->add(['user' => $authUser->toArray()]);
-                                $request->request->add(['email' => $authUser->email]);
                                 $request->request->add(['password' => $request->otp]);
                                 Token::where('user_id', $authUser->id)->delete();
                                 RefreshToken::whereNotIn('access_token_id',function($query) {

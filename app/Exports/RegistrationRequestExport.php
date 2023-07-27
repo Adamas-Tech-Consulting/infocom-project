@@ -20,8 +20,9 @@ class RegistrationRequestExport implements FromCollection, WithHeadings
     */
     public function collection()
     {
-        return RegistrationRequest::where('event_id', $this->event_id)
-                            ->get(['first_name','last_name','designation','organization','mobile','email','pickup_address']);
+        return RegistrationRequest::join('event_registration_request','registration_request.id','=','event_registration_request.registration_request_id')
+        ->where('event_registration_request.event_id',$this->event_id)->get(['event_registration_request.first_name','event_registration_request.last_name','designation','organization','mobile','email','pickup_address']);
+        
 
         //return RegistrationRequest::all();
     }

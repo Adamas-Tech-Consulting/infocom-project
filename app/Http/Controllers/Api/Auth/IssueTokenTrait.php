@@ -13,7 +13,7 @@ trait IssueTokenTrait {
 			'grant_type' => $grantType,
 			'client_id' => $this->client->id,
 			'client_secret' => $this->client->secret, 
-			'username' => $request->email, 		
+			'username' => $request->mobile, 		
 			'scope' => $scope
 		];
 		$request->request->add($params);

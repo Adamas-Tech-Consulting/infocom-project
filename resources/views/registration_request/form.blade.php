@@ -8,6 +8,24 @@
   <div class="container @if($row_event->form_fields && $row_event->form_fields[6]['is_visible']) py_2 @else py_4 @endif h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-xl-10">
+        @if(Session::has('success'))
+          <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <i class="icon fas fa-check"></i>{{ Session::get('success') }}
+              @php
+                  Session::forget('success');
+              @endphp
+          </div>
+        @endif
+        @if(Session::has('error'))
+          <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <i class="icon fas fa-exclamation"></i>{{ Session::get('error') }}
+              @php
+                  Session::forget('error');
+              @endphp
+          </div>
+        @endif
         <div class="card" style="border-radius: 1rem; margin-bottom:0">
           <div class="row g-0">
             <div class="col-md-6 col-lg-5 d-none d-md-block" style="padding: 1rem;">
