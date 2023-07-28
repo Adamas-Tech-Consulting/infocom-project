@@ -20,7 +20,7 @@ class BaseController extends Controller
         $response = [
             'status'  => (string)200,
             'message' => $message ? $message : 'successful',
-            'data'    => ($result) ? $result : []
+            'data'    => ($result) ? $result : (object)[]
         ];
         return response()->json($response, 200);
     }
@@ -34,10 +34,10 @@ class BaseController extends Controller
      *
      * @return JsonResponse
      */
-    public function sendError($error, $code = '200')
+    public function sendError($error, $status=200, $code = 200)
     {
         $response = [
-            'status'  => (string)$code,
+            'status'  => (string)$status,
             'message' => $error,
             'data'    => (object)[]
         ];

@@ -55,8 +55,8 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'status' => (string)401,
                 'message' => $exception->getMessage(),
-                'data'    => [],
-            ], 401);
+                'data'    => (object)[],
+            ], 200);
         }
         return redirect()->guest($exception->redirectTo() ?? route('login'));
     }

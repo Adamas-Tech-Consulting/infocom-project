@@ -49,7 +49,8 @@ class HomeController extends BaseController
 														overview_description,
 														event_description,
 														concat('".config('constants.CDN_URL')."', '/', '".config('constants.EVENT_FOLDER')."', '/', event_banner) AS event_banner,
-														concat('".config('constants.CDN_URL')."', '/', '".config('constants.EVENT_FOLDER')."', '/', event_logo) AS event_logo
+														concat('".config('constants.CDN_URL')."', '/', '".config('constants.EVENT_FOLDER')."', '/', event_logo) AS event_logo,
+														pickup_address
 													")->get()->toArray();
 
 					$events = $this->getEventSponsors($registration_request_id, $events);
