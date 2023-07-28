@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
     {
         if ($request->expectsJson()) {
             return response()->json([
-                'status' => 401,
+                'status' => (string)401,
                 'message' => $exception->getMessage(),
                 'data'    => [],
             ], 401);
