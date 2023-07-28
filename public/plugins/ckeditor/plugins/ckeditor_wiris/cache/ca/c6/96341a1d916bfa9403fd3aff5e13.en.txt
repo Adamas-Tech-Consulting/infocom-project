@@ -1,0 +1,1 @@
+{"result":{"text":"fraction numerator d over denominator d h end fraction cos b"},"status":"ok"}

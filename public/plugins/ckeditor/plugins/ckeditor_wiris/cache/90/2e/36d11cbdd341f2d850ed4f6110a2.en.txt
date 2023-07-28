@@ -1,0 +1,1 @@
+{"result":{"text":"fraction numerator d over denominator d x end fraction sin 30 to the power of 0"},"status":"ok"}
