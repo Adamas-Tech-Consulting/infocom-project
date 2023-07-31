@@ -52,10 +52,16 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
+            $response_segment = last($request->segments());
+            $response_type = 'obj';
+            if($response_segment == 'get-event' || $response_segment == 'get-agenda')
+            {
+                $response_type = 'arr';
+            }
             return response()->json([
                 'status' => (string)401,
                 'message' => $exception->getMessage(),
-                'data'    => (object)[],
+                'data'    => $response_type=='obj' ? (object)[] : [],
             ], 200);
         }
         return redirect()->guest($exception->redirectTo() ?? route('login'));

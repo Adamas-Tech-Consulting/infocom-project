@@ -102,7 +102,6 @@ class HomeController extends BaseController
 																					'schedule.id as schedule_id',
 																					'schedule_title',
 																					'schedule_day',
-																					'schedule_date',
 																					'from_time',
 																					'to_time',
 																					'hall_number',
