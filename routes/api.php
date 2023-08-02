@@ -16,9 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('infocom/auth/otp-request', [App\Http\Controllers\Api\Auth\LoginController::class, 'otp_request']);
 Route::post('infocom/auth/login', [App\Http\Controllers\Api\Auth\LoginController::class, 'login']);
+Route::post('infocom/guest/get-event',[App\Http\Controllers\Api\HomeController::class, 'getEvent']);
+Route::post('infocom/guest/get-agenda',[App\Http\Controllers\Api\HomeController::class, 'getAgenda']);
    
 Route::middleware('oauth:api')->group( function () {
-    Route::get('infocom/get-event',[App\Http\Controllers\Api\HomeController::class, 'getEvent']);
+    Route::post('infocom/get-event',[App\Http\Controllers\Api\HomeController::class, 'getEvent']);
     Route::post('infocom/get-agenda',[App\Http\Controllers\Api\HomeController::class, 'getAgenda']);
 });
 

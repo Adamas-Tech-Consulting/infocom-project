@@ -15,12 +15,13 @@ class BaseController extends Controller
      *
      * @return JsonResponse
      */
-    public function sendResponse($result, $message)
+    public function sendResponse($result, $message, $return_type='object')
     {
+        $return_type = ($return_type=='array') ? [] : (object)[];
         $response = [
             'status'  => (string)200,
             'message' => $message ? $message : 'successful',
-            'data'    => ($result) ? $result : (object)[]
+            'data'    => ($result) ? $result : $return_type
         ];
         return response()->json($response, 200);
     }
