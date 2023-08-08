@@ -69,6 +69,7 @@ class SpeakersController extends Controller
                         'designation' => $request->designation,
                         'company_name' => $request->company_name,
                         'speakers_category_id' => $request->speakers_category_id,
+                        'linkedin_url'  => $request->linkedin_url
                     ];
                     $data = Speakers::create($insert_data);
                     $data->save();
@@ -122,6 +123,7 @@ class SpeakersController extends Controller
                         'designation' => $request->designation,
                         'company_name' => $request->company_name,
                         'speakers_category_id' => $request->speakers_category_id,
+                        'linkedin_url'  => $request->linkedin_url
                     ];
                     $data = Speakers::findOrFail($id);
                     $data->update($update_data);

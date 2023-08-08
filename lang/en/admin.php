@@ -104,6 +104,7 @@ return [
     //L
     'lebel' => 'Label',
     'list' => 'List',
+    'linkedin_url' => 'Linkedin URL',
     'lname' => 'Last Name',
     'login_btn' => 'Login',
     'login_msg'=> 'Sign in to start your session',

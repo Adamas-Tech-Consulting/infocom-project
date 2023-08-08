@@ -79,21 +79,28 @@
                       </select>
                     </div>
                   </div>
-                  <div class="col-12">
+                </div>
+                <div class="row">
+                  <div class="col-6">
                     <div class="form-group">
                       <label for="designation">{{ __('admin.designation') }} <span class="text-red">*</span></label>
                       <input type="text" class="form-control @error('designation') is-invalid @enderror" id="designation" name="designation" placeholder="{{ __('admin.enter') }} {{ __('admin.designation') }}" value="{{$row->designation}}">
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="company_name">{{ __('admin.company_name') }}</label>
+                      <input type="text" class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" placeholder="{{ __('admin.enter') }} {{ __('admin.company_name') }}" value="{{$row->company_name}}">
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-12">
                     <div class="form-group">
-                      <label for="company_name">{{ __('admin.company_name') }}</label>
-                      <input type="text" class="form-control @error('company_name') is-invalid @enderror" id="company_name" name="company_name" placeholder="{{ __('admin.enter') }} {{ __('admin.company_name') }}" value="{{$row->company_name}}">
+                      <label for="linkedin_url">{{ __('admin.linkedin_url') }}</label>
+                      <input type="text" class="form-control @error('linkedin_url') is-invalid @enderror" id="linkedin_url" name="linkedin_url" placeholder="{{ __('admin.enter') }} {{ __('admin.linkedin_url') }}" value="{{$row->linkedin_url}}">
                     </div>
                   </div>
-                  
                 </div>
               </div>
               <div class="col-5">
