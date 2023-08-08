@@ -215,6 +215,7 @@ class HomeController extends BaseController
 														speakers.name as speakers_name,
 														speakers.designation,
 														speakers.company_name,
+														speakers.linkedin_url,
 														concat('".config('constants.CDN_URL')."', '/', '".config('constants.SPEAKERS_FOLDER')."', '/', speakers.image) AS speaker_logo
 													")->get();
 
@@ -250,6 +251,7 @@ class HomeController extends BaseController
 														speakers.name as speakers_name,
 														designation,
 														company_name,
+														linkedin_url,
 														concat('".config('constants.CDN_URL')."', '/', '".config('constants.SPEAKERS_FOLDER')."', '/', image) AS speaker_logo
 													")
 													->get();
