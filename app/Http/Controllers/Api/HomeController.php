@@ -59,6 +59,8 @@ class HomeController extends BaseController
 														event_start_date,
 														event_end_date,
 														event_venue,
+														latitude,
+														longitude,
 														event_theme,
 														overview_description,
 														event_description,

@@ -135,23 +135,36 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-4">
+                <div class="col-8">
                   <div class="form-group">
                     <label for="title">{{ __('admin.event') }} {{ __('admin.venue') }} <span class="text-red">*</span></label>
                     <input type="text" class="form-control @error('event_venue') is-invalid @enderror" id="event_venue" name="event_venue" placeholder="{{ __('admin.enter') }} {{ __('admin.event') }} {{ __('admin.venue') }}">
                   </div>
                 </div>
+              </div><!-- /.row -->
+              <div class="row">
                 <div class="col-4">
                   <div class="form-group">
                     <label for="title">{{ __('admin.event') }} {{ __('admin.theme') }} <span class="text-red">*</span></label>
                     <input type="text" class="form-control @error('event_theme') is-invalid @enderror" id="event_theme" name="event_theme" placeholder="{{ __('admin.enter') }} {{ __('admin.event') }} {{ __('admin.theme') }}">
                   </div>
                 </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="latitude">{{ __('admin.latitude') }}</label>
+                    <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="latitude" name="latitude" placeholder="{{ __('admin.enter') }} {{ __('admin.latitude') }}">
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="longitude">{{ __('admin.longitude') }}</label>
+                    <input type="text" class="form-control @error('longitude') is-invalid @enderror" id="longitude" name="longitude" placeholder="{{ __('admin.enter') }} {{ __('admin.longitude') }}">
+                  </div>
+                </div>
               </div><!-- /.row -->
               <div class="row">
                 <div class="col-12">
                   <div class="form-group">
-                    <textarea id="eid" name="eid" hidden></textarea>
                     <label for="title">{{ __('admin.overview_description') }}</label>
                     <textarea id="overview_description" name="overview_description" class="summernote @error('overview_description') is-invalid @enderror"></textarea>
                   </div>

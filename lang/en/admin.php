@@ -102,6 +102,8 @@ return [
     'key_speaker' => 'Key Speaker',
 
     //L
+    'latitude' => 'Latitude',
+    'longitude' => 'Longitude',
     'lebel' => 'Label',
     'list' => 'List',
     'linkedin_url' => 'Linkedin URL',
