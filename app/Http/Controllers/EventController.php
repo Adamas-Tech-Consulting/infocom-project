@@ -474,7 +474,7 @@ class EventController extends Controller
                 } else {
                     $request_url = config("constants.CREATE_EVENT");
                 }
-                $response = Http::post(config("constants.SITE_URL").$request_url,$post_data);
+                $response = Http::post(site_settings('site_api_url').$request_url,$post_data);
                 $response_object = json_decode($response->getBody()->getContents());
                 if(isset($response_object->post_id)) {
                     $data->update(array('wp_post_id' => $response_object->post_id));

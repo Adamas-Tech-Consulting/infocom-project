@@ -103,7 +103,7 @@ class SponsorshipTypeController extends Controller
                     return redirect()->route('sponsorship_type')->with('error', trans('flash.SponsorshipCategoryAlreadyAssigned',['name'=>$data->name]));
                 }
                 if($data->wp_term_id) {
-                    $response = Http::post(config("constants.SITE_URL").config("constants.DELETE_SPONSORSHIP_TYPE").'/'.$data->wp_term_id,[]);
+                    $response = Http::post(site_settings('site_api_url').config("constants.DELETE_SPONSORSHIP_TYPE").'/'.$data->wp_term_id,[]);
                 }
                 $data->delete();
                 DB::commit();
@@ -131,7 +131,7 @@ class SponsorshipTypeController extends Controller
                 } else {
                     $request_url = config("constants.CREATE_SPONSORSHIP_TYPE");
                 }
-                $response = Http::post(config("constants.SITE_URL").$request_url,$post_data);
+                $response = Http::post(site_settings('site_api_url').$request_url,$post_data);
                 $response_object = json_decode($response->getBody()->getContents());
                 if(isset($response_object->term_id)) {
                     $data->update(array('wp_term_id' => $response_object->term_id));
