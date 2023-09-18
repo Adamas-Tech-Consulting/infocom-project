@@ -413,6 +413,7 @@ class EventController extends Controller
                             $data_agenda[$agkey]['agenda_details'][] = array(
                                 'add_start_time' => date('h:i A',strtotime($agenda_detail->from_time)),
                                 'add_end_time' => date('h:i A',strtotime($agenda_detail->to_time)),
+                                'add_subtitle' => $agenda_detail->schedule_group,
                                 'add_subject_details' => $agenda_detail->schedule_title,
                                 'add_short_description' => $agenda_detail->schedule_details,
                                 'add_session_type' => $agenda_detail->session_type,
