@@ -62,8 +62,6 @@ class ScheduleController extends Controller
                 'schedule_day' => 'required',
                 'schedule_title' => 'required',
                 'schedule_type_id' => 'required',
-                'schedule_details' => 'required',
-                'hall_number' => 'required',
                 'from_time' => 'required',
                 'to_time' => 'required',
             ]);
@@ -79,14 +77,15 @@ class ScheduleController extends Controller
                         'schedule_date' => date('Y-m-d', strtotime($event->event_start_date . " +$day day")),
                         'schedule_day' => $request->schedule_day,
                         'schedule_title' => $request->schedule_title,
+                        'schedule_group' => $request->schedule_group,
                         'schedule_venue' => $request->schedule_venue,
                         'schedule_type_id' => 1, //$request->schedule_type_id,
                         'schedule_details' => $request->schedule_details,
                         'from_time' => $request->from_time,
                         'to_time' => $request->to_time,
                         'hall_number' => $request->hall_number,
-                        'track_id' => $request->track_id,
-                        'session_type' => $request->session_type,
+                        'track_id' => (($request->track_id==0) ? NULL : $request->track_id),
+                        'session_type' => (($request->session_type==0) ? NULL : $request->session_type),
                     ];
                     $data = Schedule::create($insert_data);
                     $data->save();
@@ -113,8 +112,6 @@ class ScheduleController extends Controller
                 'schedule_day' => 'required',
                 'schedule_title' => 'required',
                 'schedule_type_id' => 'required',
-                'schedule_details' => 'required',
-                'hall_number' => 'required',
                 'from_time' => 'required',
                 'to_time' => 'required',
             ]);
@@ -130,6 +127,7 @@ class ScheduleController extends Controller
                         'schedule_date' => date('Y-m-d', strtotime($event->event_start_date . " +$day day")),
                         'schedule_day' => $request->schedule_day,
                         'schedule_title' => $request->schedule_title,
+                        'schedule_group' => $request->schedule_group,
                         'schedule_venue' => $request->schedule_venue,
                         'schedule_type_id' => 1, //$request->schedule_type_id,
                         'schedule_details' => $request->schedule_details,

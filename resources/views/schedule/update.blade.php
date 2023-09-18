@@ -73,13 +73,19 @@
                   <div class="tab-content" id="vert-tabs-tabContent">
                     <div class="tab-pane fade active show" id="vert-tabs-home" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
                       <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                           <div class="form-group">
                             <label for="schedule_title">{{ __('admin.schedule') }} {{ __('admin.title') }} <span class="text-red">*</span></label>
                             <input type="text" class="form-control @error('schedule_title') is-invalid @enderror" id="schedule_title" name="schedule_title" placeholder="{{ __('admin.enter') }} {{ __('admin.schedule') }} {{ __('admin.title') }}" value="{{$row->schedule_title}}">
                           </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
+                          <div class="form-group">
+                            <label for="schedule_title">{{ __('admin.schedule') }} {{ __('admin.group') }} </label>
+                            <input type="text" class="form-control @error('schedule_group') is-invalid @enderror" id="schedule_group" name="schedule_group" placeholder="{{ __('admin.enter') }} {{ __('admin.schedule') }} {{ __('admin.group') }}" value="{{$row->schedule_group}}">
+                          </div>
+                        </div>
+                        <div class="col-4">
                           <div class="form-group">
                             <label for="schedule_venue">{{ __('admin.schedule') }} {{ __('admin.venue') }}</label>
                             <input type="text" class="form-control @error('schedule_venue') is-invalid @enderror" id="schedule_venue" name="schedule_venue" placeholder="{{ __('admin.enter') }} {{ __('admin.schedule') }} {{ __('admin.venue') }}" value="{{$row->schedule_venue}}">
@@ -114,14 +120,15 @@
                       <div class="row">
                         <div class="col-4">
                           <div class="form-group">
-                            <label for="hall_number">{{ __('admin.hall_number') }} <span class="text-red">*</span></label>
+                            <label for="hall_number">{{ __('admin.hall_number') }}</label>
                             <input type="text" class="form-control @error('hall_number') is-invalid @enderror" id="hall_number" name="hall_number" placeholder="{{ __('admin.enter') }} {{ __('admin.hall_number') }}" value="{{$row->hall_number}}">
                           </div>
                         </div>
                         <div class="col-4">
                           <div class="form-group">
                             <label for="session_type">{{ __('admin.session_type') }}</label>
-                            <select class="form-control select2bs4 @error('session_type') is-invalid @enderror" name="session_type" style="width: 100%;" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
+                            <select class="form-control select2bs4 @error('session_type') is-invalid @enderror" name="session_type" style="width: 100%;" data-placeholder="{{ __('admin.select') }} {{ __('admin.session_type') }}">
+                              <option value="0">{{ __('admin.select') }} {{ __('admin.session_type') }}</option>
                               <option value="{{ __('admin.physical') }}" {{($row->session_type == __('admin.physical'))?'selected':''}}>{{ __('admin.physical') }}</option>
                               <option value="{{ __('admin.virtual') }}" {{($row->session_type == __('admin.virtual'))?'selected':''}}>{{ __('admin.virtual') }}</option>
                             </select>
@@ -131,7 +138,7 @@
                           <div class="form-group">
                             <label for="track_ids">{{ __('admin.track') }}</label>
                             <select class="form-control select2bs4 @error('track_ids') is-invalid @enderror" name="track_id" style="width: 100%;" data-placeholder="{{ __('admin.select') }} {{ __('admin.track') }}">
-                              <option value="">{{ __('admin.select') }} {{ __('admin.track') }}</option>
+                              <option value="0">{{ __('admin.select') }} {{ __('admin.track') }}</option>
                               @foreach($rows_track as $track)
                               <option value="{{$track->id}}" {{($row->track_id == $track->id)?'selected':''}}>{{$track->name}}</option>
                               @endforeach
@@ -142,7 +149,7 @@
                       <div class="row">
                         <div class="col-12">
                           <div class="form-group">
-                            <label for="schedule_details">{{ __('admin.schedule') }} {{ __('admin.details') }} <span class="text-red">*</span></label>
+                            <label for="schedule_details">{{ __('admin.schedule') }} {{ __('admin.details') }}</label>
                             <textarea id="schedule_details" name="schedule_details" class="form-control @error('schedule_details') is-invalid @enderror" placeholder="{{ __('admin.enter') }} {{ __('admin.schedule') }} {{ __('admin.details') }}">{{$row->schedule_details}}</textarea>
                           </div>
                         </div>

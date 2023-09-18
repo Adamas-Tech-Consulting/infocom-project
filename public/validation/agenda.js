@@ -21,12 +21,6 @@ $(function () {
       to_time: {
         required: true,
       },
-      hall_number: {
-        required: true,
-      },
-      schedule_details: {
-        required: true,
-      },
     },
     messages: {
       schedule_title: {
@@ -40,12 +34,6 @@ $(function () {
       },
       to_time: {
         required: "Choose end time",
-      },
-      hall_number: {
-        required: "Please enter hall number",
-      },
-      schedule_details: {
-        required: "Please enter agenda details",
       },
     },
     errorElement: 'span',
