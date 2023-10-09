@@ -34,6 +34,7 @@ return [
 
     //C
     'category'=>'Category',
+    'cio_ciso' => 'CIO/CISO',
     'company' => 'Company',
     'company_name' => 'Company Name',
     'company_website' => 'Company Website',
@@ -145,6 +146,7 @@ return [
     'pickup_address' => 'Pickup Address',
     'preview'=> 'Preview',
     'previous_event'=> 'Previous Event',
+    'profile' => 'Profile',
     'publish' => 'Publish',
 
     //Q
@@ -154,6 +156,7 @@ return [
     'registration_form' => 'Registration Form',
     'registration_method' => 'Registration Method',
     'registered_on' => 'Registered On',
+    'registered_user' => 'Registered User',
     'registration_type' => 'Registration Type',
     'registration_request' => 'Registration Request',
     'remember_me' => 'Remember Me',

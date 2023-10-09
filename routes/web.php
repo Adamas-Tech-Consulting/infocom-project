@@ -84,6 +84,15 @@ Route::middleware(['web'])->group(function () {
             Route::post('/publish-unpublish', [App\Http\Controllers\SpeakersController::class, 'publish_unpublish'])->name('speakers_publish_unpublish');
         });
 
+        //CIO/CISO
+        Route::prefix('manage-cio')->group(function (){
+            Route::get('/{event_id?}', [App\Http\Controllers\CioController::class, 'index'])->name('cio')->where('event_id', '[0-9]+');
+            Route::any('/create/{event_id?}', [App\Http\Controllers\CioController::class, 'create'])->name('cio_create');
+            Route::any('/update/{id}/{event_id?}', [App\Http\Controllers\CioController::class, 'update'])->name('cio_update');
+            Route::any('/delete/{id}/{event_id?}', [App\Http\Controllers\CioController::class, 'delete'])->name('cio_delete');
+            Route::post('/publish-unpublish', [App\Http\Controllers\CioController::class, 'publish_unpublish'])->name('cio_publish_unpublish');
+        });
+
         //Contact Information
         Route::prefix('manage-contact-information')->group(function (){
             Route::get('/', [App\Http\Controllers\ContactInformationController::class, 'index'])->name('contact_information');
@@ -176,6 +185,7 @@ Route::middleware(['web'])->group(function () {
         Route::prefix('manage-registration-request')->group(function (){
             Route::get('/{event_id}', [App\Http\Controllers\RegistrationRequestController::class, 'index'])->name('registration_request');
             Route::get('/download/{event_id}', [App\Http\Controllers\RegistrationRequestController::class, 'download'])->name('registration_request_download');
+            Route::get('/fetch-users/{event_id}', [App\Http\Controllers\RegistrationRequestController::class, 'fetch_registered_users'])->name('registration_request_fetch_users');
         });
 
     });

@@ -17,12 +17,12 @@ return [
 	'CDN_PATH' => public_path('images'),
   'CDN_URL' => env('APP_URL').'/images',
 
+  'CIO_FOLDER' => 'cio',
   'EVENT_FOLDER' => 'event',
   'SPONSORS_FOLDER' => 'sponsors',
   'SPEAKERS_FOLDER' => 'speakers',
 
   'WP_SITE'  => 'http://3.108.240.107/infocom_wp/',
-
   'SITE_URL'  => 'http://3.108.240.107/infocom_wp/wp-json/abp/v1/',
 
   'CREATE_EVENT_CATEGORY' => 'create-event-category',

@@ -27,6 +27,11 @@
         </a>
       </li>
       <li class="nav-item">
+        <a href="{{ route('cio', $event_id) }}" class="nav-link {{ Nav::isResource('manage-cio') }}">
+          <i class="fa fa-volume-up"></i> {{ __('admin.cio_ciso') }}
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="{{ route('event_contact_information', $event_id) }}" class="nav-link {{ Nav::isResource('manage-event/contact-information') }}">
           <i class="fa fa-address-book"></i> {{ __('admin.contact_information') }}
         </a>

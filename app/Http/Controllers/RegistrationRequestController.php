@@ -50,4 +50,14 @@ class RegistrationRequestController extends Controller
             return redirect()->route('registration_request', $event_id);
         }
     }
+
+    public function fetch_registered_users(Request $request, $event_id)
+    {
+        $term = $request->term;
+        $reg_users = RegistrationRequest::where('first_name', 'like', '%' . $term . '%')
+                                        ->selectRaw("id, CONCAT(first_name,' ',last_name) as value")
+                                        ->get();
+        $rows = $reg_users->toArray();
+        return response()->json($rows);
+    }
 }
