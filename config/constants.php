@@ -14,8 +14,8 @@ return [
   'powered_by' => 'Adamastech consulting',
   'powered_by_img' => env('APP_URL').'/images/powered_by.png',
   
-	'CDN_PATH' => public_path('images'),
-  'CDN_URL' => env('APP_URL').'/images',
+  'CDN_PATH' => public_path('images'),
+  'CDN_URL' => env('USE_S3') ? 'https://indiainfocom.s3.ap-south-1.amazonaws.com' : env('APP_URL').'/images',
 
   'CIO_FOLDER' => 'cio',
   'EVENT_FOLDER' => 'event',

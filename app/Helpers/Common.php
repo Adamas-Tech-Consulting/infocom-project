@@ -1,24 +1,36 @@
 <?php
 
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 if(!function_exists('image_upload')) {
   function image_upload($file,$folder,$type,$unlink_filename=NULL)
   {
+    $use_s3 = env('USE_S3');
+
     if(!empty($unlink_filename))
     {
-      if(file_exists(config("constants.CDN_PATH").'/'.$folder.'/'.$unlink_filename)){
-          unlink(config("constants.CDN_PATH").'/'.$folder.'/'.$unlink_filename);
+      if($use_s3) {
+        if(Storage::disk('s3')->exists($folder.'/'.$unlink_filename)) {
+          Storage::disk('s3')->delete($folder.'/'.$unlink_filename);
+        }
+      } else {
+        if(file_exists(public_path('images').'/'.$folder.'/'.$unlink_filename)){
+          unlink(public_path('images').'/'.$folder.'/'.$unlink_filename);
+        }
       }
     }
+
     $extension = $file->getClientOriginalExtension();
     // File Name
     $filename = $type.'_'.time().'.'.$extension;
-    // File upload location
-    $location = config("constants.CDN_PATH").'/'.$folder.'/';
     // Upload file
-    $file->move($location,$filename);
-
+    if($use_s3) {
+      Storage::disk('s3')->put($folder.'/'.$filename, file_get_contents($file));
+    } else {
+      $location = public_path('images').'/'.$folder.'/';
+      $file->move($location,$filename);
+    }
     return $filename;
   }
 }
@@ -26,10 +38,19 @@ if(!function_exists('image_upload')) {
 if(!function_exists('image_delete')) {
   function image_delete($folder,$unlink_filename=NULL)
   {
+    $use_s3 = env('USE_S3');
+
     if(!empty($unlink_filename))
     {
-      if(file_exists(config("constants.CDN_PATH").'/'.$folder.'/'.$unlink_filename)){
-          unlink(config("constants.CDN_PATH").'/'.$folder.'/'.$unlink_filename);
+      if($use_s3) {
+        if(Storage::disk('s3')->exists($folder.'/'.$unlink_filename)) {
+          Storage::disk('s3')->delete($folder.'/'.$unlink_filename);
+        }
+        
+      } else {
+        if(file_exists(public_path('images').'/'.$folder.'/'.$unlink_filename)){
+          unlink(public_path('images').'/'.$folder.'/'.$unlink_filename);
+        }
       }
     }
   }
