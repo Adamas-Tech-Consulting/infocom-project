@@ -25,6 +25,9 @@ return [
   'WP_SITE'  => 'http://3.108.240.107/infocom_wp/',
   'SITE_URL'  => 'http://3.108.240.107/infocom_wp/wp-json/abp/v1/',
 
+  // 'WP_SITE'  => 'http://localhost/infocom/',
+  // 'SITE_URL'  => 'http://localhost/infocom/wp-json/abp/v1/',
+
   'CREATE_EVENT_CATEGORY' => 'create-event-category',
   'UPDATE_EVENT_CATEGORY' => 'update-event-category',
   'DELETE_EVENT_CATEGORY' => 'delete-event-category',
