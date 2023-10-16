@@ -138,5 +138,5 @@
 <script>
 var user_dropdown_url = '{{$user_dropdown_url}}';
 </script>
-<script src="/validation/{{ $page_slug }}.js"></script>
+<script src="{{url('/')}}/validation/{{ $page_slug }}.js"></script>
 @endsection
