@@ -18,6 +18,8 @@ use App\Models\Sponsors;
 use App\Models\EventSponsors;
 use App\Models\Speakers;
 use App\Models\EventSpeakers;
+use App\Models\Cio;
+use App\Models\EventCio;
 use App\Models\ContactInformation;
 use App\Models\EventContactInformation;
 
@@ -391,6 +393,12 @@ class EventController extends Controller
                                             ->where('event_sponsors.event_id',$event_id);
                                          })->get(['sponsors.*','sponsorship_type.wp_term_id as sponsorship_type_id']);
 
+                $data_cio = Cio::join('registration_request','registration_request.id','=','cio.registration_request_id')
+                                         ->Join('event_cio',function($join) use($event_id) {
+                                            $join->on('event_cio.cio_id','cio.id')
+                                            ->where('event_cio.event_id',$event_id);
+                                         })->get(['cio.*','registration_request.first_name','registration_request.last_name']);
+
                 $agenda = Schedule::where('event_id','=',$event_id)->orderBy('schedule_day')->groupBy('schedule_day','schedule_date')->get(['schedule_day','schedule_date']);
                 $agenda_details = Schedule::leftJoin('track','track.id','=','schedule.track_id')
                                           ->where('schedule.event_id','=',$event_id)->orderBy('schedule_day')->get(['schedule.*','track.name as track_name']);
@@ -466,6 +474,18 @@ class EventController extends Controller
                         'sponsor_name'          =>  $sponsor->sponsor_name,
                         'website_link'          =>  $sponsor->website_link,
                         'sponsor_logo'          =>  config('constants.CDN_URL').'/'.config('constants.SPONSORS_FOLDER').'/'.$sponsor->sponsor_logo,
+                    );
+                }
+                $post_data['event_cios'] = [];
+                foreach($data_cio as $cio)
+                {
+                    $post_data['event_cios'][] = array(
+                        'name'              =>  $cio->first_name.' '.$cio->last_name,
+                        'company_name'      =>  $cio->company_name,
+                        'designation'       =>  $cio->designation,
+                        'type'              =>  $cio->type,
+                        'linkedin_url'      =>  $cio->linkedin_url,
+                        'image'             =>  config('constants.CDN_URL').'/'.config('constants.CIO_FOLDER').'/'.$cio->image,
                     );
                 }
                 $post_data['event_agenda'] = $data_agenda;

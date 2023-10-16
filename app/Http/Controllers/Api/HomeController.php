@@ -17,6 +17,7 @@ use App\Models\EventRegistrationRequest;
 use App\Models\Schedule;
 use App\Models\Sponsors;
 use App\Models\Speakers;
+use App\Models\Cio;
 
 class HomeController extends BaseController
 {
@@ -73,6 +74,8 @@ class HomeController extends BaseController
 					$events = $this->getEventSponsors($events);
 
 					$events = $this->getEventSpeakers($events);
+
+					//$events = $this->getEventCIO($events);
 
 					$this->data = $events->toArray();
 					return $this->sendResponse($this->data,'', 'array');
@@ -161,10 +164,6 @@ class HomeController extends BaseController
 		}		
 	}
 
-
-
-
-
 	protected function getEventSponsors($events)
 	{
 		if(!empty($events->toArray()))
@@ -233,6 +232,44 @@ class HomeController extends BaseController
 					}
 				}
 				$events[$evnt_key]->speakers = $speaker_array;
+			}
+		}
+
+		return $events;
+	}
+
+	protected function getEventCIO($events)
+	{
+		if(!empty($events->toArray()))
+		{
+			$event_ids = $events->pluck('event_id')->toArray();
+			$cio_list = Cio::join('event_cio','event_cio.cio_id','=','cio.id')
+													->join('registration_request','registration_request.id','=','cio.registration_request_id')
+													->join('event',function($join) use($event_ids) {
+														$join->on('event_cio.event_id','event.id')->whereIn('event.id', $event_ids);
+													})
+													->selectRaw("
+														event_cio.event_id,
+														concat(registration_request.first_name,' ',registration_request.last_name) as cio_name,
+														cio.type,
+														cio.designation,
+														cio.company_name,
+														cio.linkedin_url,
+														concat('".config('constants.CDN_URL')."', '/', '".config('constants.CIO_FOLDER')."', '/', cio.image) AS cio_logo_url
+													")->get();
+
+			foreach($events as $evnt_key => $event)
+			{
+				$events[$evnt_key]->cio = [];
+				$cio_array = [];
+				foreach($cio_list as $cio)
+				{
+					if($cio->event_id == $event->event_id)
+					{
+						$cio_array[] = $cio;
+					}
+				}
+				$events[$evnt_key]->cio = $cio_array;
 			}
 		}
 

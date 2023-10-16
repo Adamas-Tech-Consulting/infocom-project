@@ -15,9 +15,6 @@ $(function () {
       title: {
         required: true,
       },
-      sub_title: {
-        required: true,
-      },
       event_method_id: {
         required: true,
       },
@@ -49,9 +46,6 @@ $(function () {
       },
       title: {
         required: "Please enter event title",
-      },
-      sub_title: {
-        required: "Please enter event subtitle",
       },
       event_method_id: {
         required: "Please select a registration method",

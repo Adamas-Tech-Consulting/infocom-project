@@ -28,7 +28,6 @@ $(function () {
       }
     }
   });
-
   var url = $(location).attr('href');
   var segments = url.split( '/' );
   var action = segments[4];

@@ -75,7 +75,7 @@
                   </div>
                   <div class="col-4">
                     <div class="form-group">
-                      <label for="title">{{ __('admin.event') }} {{ __('admin.sub_title') }} <span class="text-red">*</span></label>
+                      <label for="title">{{ __('admin.event') }} {{ __('admin.sub_title') }} </label>
                       <input type="text" class="form-control @error('sub_title') is-invalid @enderror" id="sub_title" name="sub_title" placeholder="{{ __('admin.enter') }} {{ __('admin.event') }} {{ __('admin.sub_title') }}" value="{{$row->sub_title}}">
                     </div>
                   </div>
