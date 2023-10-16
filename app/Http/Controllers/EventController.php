@@ -430,6 +430,7 @@ class EventController extends Controller
                                 'add_speaker_name'  => !empty($agenda_speaker) ? $agenda_speaker->name : NULL,
                                 'add_speaker_designation'  => !empty($agenda_speaker) ? $agenda_speaker->designation : NULL,
                                 'add_speaker_image'  => !empty($agenda_speaker) ? config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$agenda_speaker->image : NULL,
+                                'add_speaker_image_url' => !empty($agenda_speaker) ? config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$agenda_speaker->image : NULL,
                                 'row_id' => $index,
                             );
                             $index++;
