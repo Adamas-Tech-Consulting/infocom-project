@@ -48,6 +48,7 @@ class RegistrationFormController extends Controller
         }
         $this->data['event_id'] = $event_id;
         $this->data['row'] = Event::find($event_id);
+        $this->data['row']->form_fields = json_decode($this->data['row']->form_fields,true);
         return view('registration_request.form_fields',$this->data);
     }
 }
