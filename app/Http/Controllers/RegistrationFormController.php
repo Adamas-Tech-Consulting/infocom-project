@@ -34,6 +34,7 @@ class RegistrationFormController extends Controller
         if ($request->isMethod('post')) {
             $inputs = $request->form_fields;
             $form_fields = Event::find($event_id)->form_fields;
+            $form_fields = is_array($form_fields) ? $form_fields : json_decode($form_fields,true);
             foreach($form_fields as $key => $form_field)
             {
                 if(isset($inputs[$key]) && $key>3)
@@ -48,7 +49,7 @@ class RegistrationFormController extends Controller
         }
         $this->data['event_id'] = $event_id;
         $this->data['row'] = Event::find($event_id);
-        $this->data['row']->form_fields = json_decode($this->data['row']->form_fields,true);
+        $this->data['row']->form_fields = is_array($this->data['row']->form_fields) ? $this->data['row']->form_fields : json_decode($this->data['row']->form_fields,true);
         return view('registration_request.form_fields',$this->data);
     }
 }
