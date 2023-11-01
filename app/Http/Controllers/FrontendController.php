@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\Http;
 
 use DB;
 
@@ -13,6 +14,7 @@ use DB;
 use App\Models\RegistrationRequest;
 use App\Models\Event;
 use App\Models\EventRegistrationRequest;
+use App\Models\ContactInformation;
 
 class FrontendController extends Controller
 {
@@ -26,10 +28,55 @@ class FrontendController extends Controller
         ];
     }
 
+    public function registration(Request $request, $event_slug)
+    {
+        $row_event = Event::where('slug', $event_slug)->first(['id', 'title', 'last_registration_date','event_logo','registration_type','form_fields']);
+        if ($request->isMethod('post')) {
+            $validation['mobile'] ='required|digits:10|numeric';
+            $validator = Validator::make($request->all(), $validation);
+            if($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            } else {
+                $event_id = $row_event->id;
+                $request->session()->put('reg_mobile', $request->mobile);
+                $registration_request_query = RegistrationRequest::leftJoin('event_registration_request',function($join) use($event_id) {
+                                                                $join->on('event_registration_request.registration_request_id','registration_request.id')
+                                                                ->where('event_registration_request.event_id', $event_id);
+                                                            })->where('registration_request.mobile', $request->mobile);
+                
+                if($registration_request_query->exists())
+                {
+                    $registration_request = $registration_request_query->first('event_registration_request.*');
+                    if($registration_request->order_id && ($row_event->registration_type=='F' || $registration_request->transaction_id)) {
+                        $request->session()->forget('reg_mobile');
+                        $request->session()->put('reg_order', $registration_request->order_id);
+                        return redirect()->route('thank_you');
+                    }
+                }
+                return redirect()->route('registration_form',$event_slug);
+            }
+        }
+        else
+        {
+            $this->data['row_event'] = $row_event;
+            if($this->data['row_event']) {
+                $this->data['current_date'] = date('Y-m-d');
+                $this->data['event_contact_information'] = ContactInformation::join('event_contact_information',function($join) {
+                    $join->on('event_contact_information.contact_information_id','contact_information.id')
+                    ->where('event_contact_information.event_id',$this->data['row_event']->id);
+                })
+                ->orderByRaw('CASE WHEN event_contact_information.id IS NULL THEN 1 ELSE 0 END ASC')
+                ->get(['contact_information.*','event_contact_information.id as event_contact_information_id']);
+                //dd($this->data);
+                return view('registration_request.index',$this->data);
+            }
+        } 
+    }
+
     public function registration_form(Request $request, $event_slug)
     {
+        $row_event = Event::where('slug', $event_slug)->first(['id','title', 'last_registration_date','registration_type','event_logo','form_fields']);
         if ($request->isMethod('post')) {
-            $row_event = Event::where('slug', $event_slug)->first(['id','form_fields']);
             $validation = [];
             foreach($row_event->form_fields as $form_field)
             {
@@ -49,34 +96,21 @@ class FrontendController extends Controller
             $validation['captcha'] = 'required|captcha';
             $validator = Validator::make($request->all(), $validation);
             if($validator->fails()) {
+                $request->session()->put('reg_mobile', $request->mobile);
                 return back()->withErrors($validator)->withInput();
             } else {
-                DB::beginTransaction();
-                if(RegistrationRequest::where('mobile', $request->mobile)->exists())
-                {
-                    $registration_request = RegistrationRequest::where('mobile', $request->mobile)->first();
-                    if(EventRegistrationRequest::where('event_id', $row_event->id)->where('registration_request_id', $registration_request->id)->exists())
-                    {
-                        return redirect()->route('registration_form',$event_slug)->with('error', trans('flash.AlreadyRegistered')); 
-                    }
-                    else
-                    {
-                        $insert_rel_data = [
-                            'event_id' => $row_event->id,
-                            'registration_request_id' => $registration_request->id,
-                            'first_name' => $request->first_name,
-                            'last_name' => $request->last_name,
-                            'email' => $request->email,
-                            'designation' => isset($request->designation) ? $request->designation : NULL,
-                            'organization' => isset($request->organization) ? $request->organization : NULL,
-                            'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
-                            'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
-                        ];
-                        $rel_data = EventRegistrationRequest::create($insert_rel_data);
-                        $rel_data->save();
-                    }
+                $event_id = $row_event->id;
+                $registration_request_id = NULL;
+                $registration_request_query = RegistrationRequest::leftJoin('event_registration_request',function($join) use($event_id) {
+                    $join->on('event_registration_request.registration_request_id','registration_request.id')
+                    ->where('event_registration_request.event_id', $event_id);
+                })->where('registration_request.mobile', $request->mobile);
+                if($registration_request_query->exists()) {
+                    $registration_request = $registration_request_query->first('event_registration_request.*');
+                    $registration_request_id = $registration_request->registration_request_id;
                 }
-                else
+                DB::beginTransaction();
+                if(!$registration_request_id)
                 {
                     $insert_data = [
                         'first_name' => $request->first_name,
@@ -85,29 +119,58 @@ class FrontendController extends Controller
                     ];
                     $data = RegistrationRequest::create($insert_data);
                     $data->save();
-                    $registration_request_id = $data->id;
-
-                    $insert_rel_data = [
-                        'event_id' => $row_event->id,
-                        'registration_request_id' => $registration_request_id,
-                        'first_name' => $request->first_name,
-                        'last_name' => $request->last_name,
-                        'email' => $request->email,
-                        'designation' => isset($request->designation) ? $request->designation : NULL,
-                        'organization' => isset($request->organization) ? $request->organization : NULL,
-                        'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
-                        'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
-                    ];
-                    $rel_data = EventRegistrationRequest::create($insert_rel_data);
-                    $rel_data->save();
+                    $registration_request_id = $data->id; 
                 }
+                $order_id = 'INFOCOM'.rand(0,15).rand(6,45).$registration_request_id.rand(300,400).time();
+                $rel_input_data = [
+                    'event_id' => $row_event->id,
+                    'registration_request_id' => $registration_request_id,
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'email' => $request->email,
+                    'designation' => isset($request->designation) ? $request->designation : NULL,
+                    'organization' => isset($request->organization) ? $request->organization : NULL,
+                    'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
+                    'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
+                    'order_id' => $order_id
+                ];
+                $rel_data = EventRegistrationRequest::where('event_id', $event_id)->where('registration_request_id', $registration_request_id);
+                if($rel_data->exists()) {
+                    $eventregistration_request_id = $rel_data->first()->id;
+                    $rel_data->update($rel_input_data);
+                } else {
+                    $rel_data = EventRegistrationRequest::create($rel_input_data);
+                    $rel_data->save();
+                    $eventregistration_request_id = $rel_data->id;
+                }
+                $order_id = 'INFOCOM'.rand(0,15).rand(6,45).$eventregistration_request_id.rand(300,400).time();
+                $update_rel_data = [
+                    'order_id' => $order_id
+                ];
+                $rel_data->update($update_rel_data);
                 DB::commit();
-                return redirect()->route('registration_form',$event_slug)->with('success', trans('flash.RegistrationSuccessfully'));
+                $request->session()->put('reg_order', $order_id);
+                if($row_event->registration_type=='P') {
+                    return redirect()->route('payment');
+                }
+                return redirect()->route('thank_you');
             }
         }
-        else
-        {
-            $this->data['row_event'] = Event::where('slug', $event_slug)->first(['title', 'last_registration_date','event_logo','form_fields']);
+        else {
+            if(!$request->session()->get('reg_mobile')) {
+                return redirect()->route('registration',$event_slug);
+            }
+            $this->data['row_event'] = $row_event;
+            $this->data['mobile'] = $request->session()->get('reg_mobile');
+            $this->data['row_form'] = [];
+            if(RegistrationRequest::where('mobile', $this->data['mobile'])->exists())
+            {
+                $registration_request = RegistrationRequest::where('mobile', $this->data['mobile'])->first();
+                if(EventRegistrationRequest::where('event_id', $row_event->id)->where('registration_request_id', $registration_request->id)->exists()) {
+                    $this->data['row_form'] = EventRegistrationRequest::where('event_id', $row_event->id)->where('registration_request_id', $registration_request->id)->first();
+                }
+            }
+            $request->session()->forget('reg_mobile');
             if($this->data['row_event']) {
                 return view('registration_request.form',$this->data);
             }
@@ -119,8 +182,67 @@ class FrontendController extends Controller
         return response()->json(['captcha'=> captcha_img()]);
     }
 
-    public function thank_you()
+    public function payment(Request $request)
     {
-        
+        if(!$request->session()->get('reg_order')) {
+            return redirect()->route('registration',$event_slug);
+        }
+        $order_id = $request->session()->get('reg_order');
+        $request->session()->forget('reg_order');
+        $request_url = 'https://subscriptions.abp.in/abpPaymentGateway/ProcessPaymentRequest';
+        $order_details = EventRegistrationRequest::where('order_id', $order_id)->first();
+        $app_id = 'infocom2023';
+        $payable_amt = '1.00';
+        $payment_date = date('Y/m/d');
+        $string = $order_details->first_name.$order_details->last_name."|".$order_details->email."|".$order_id."|".$payable_amt."|".$app_id."|".$payment_date."|".route('payment_confirmation');  
+        $hash = md5($string);
+        $abpMsg = $string.'|'.$hash;
+        $post_data = array();
+        $request_url = $request_url.'?abpMsg='.$abpMsg;
+        $response = Http::post($request_url,$post_data);
+        echo $response->getBody()->getContents(); die;
+    }
+
+    public function payment_confirmation(Request $request)
+    {
+        if(!$request->abpMsg) {
+
+        } else {
+            $response =  $request->abpMsg;
+            $response_array = explode('|', $response);
+            $order_id = $response_array[2];
+            $transaction_data = [
+                'transaction_id' => $response_array[7],
+                'transaction_date' => date('Y-m-d',strtotime($response_array[5])),
+                'transaction_status' => $response_array[8],
+                'transaction_status_msg' => $response_array[9]
+            ];
+            DB::beginTransaction();
+            $rel_data = EventRegistrationRequest::where('order_id',$order_id)->first();
+            $rel_data->update($transaction_data);
+            $request->session()->put('reg_order', $order_id);
+            DB::commit();
+            return redirect()->route('thank_you');  
+        }
+    }
+
+    public function thank_you(Request $request)
+    {
+        if(!$request->session()->get('reg_order')) {
+            return redirect()->route('home');
+        }
+        $order_id = $request->session()->get('reg_order');
+        $rel_data = EventRegistrationRequest::where('order_id',$order_id)->first();
+        $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'last_registration_date','registration_type','event_logo'])->first();
+        $this->data['row_event'] = $row_event;
+        $this->data['row_event_registration'] = $rel_data;
+        $this->data['event_contact_information'] = ContactInformation::join('event_contact_information',function($join) {
+            $join->on('event_contact_information.contact_information_id','contact_information.id')
+            ->where('event_contact_information.event_id',$this->data['row_event']->id);
+        })
+        ->orderByRaw('CASE WHEN event_contact_information.id IS NULL THEN 1 ELSE 0 END ASC')
+        ->get(['contact_information.*','event_contact_information.id as event_contact_information_id']);
+        $request->session()->forget('reg_order');
+        return view('registration_request.thank_you',$this->data);
     }
 }

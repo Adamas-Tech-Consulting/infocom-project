@@ -28,46 +28,60 @@
         @endif
         <div class="card" style="border-radius: 1rem; margin-bottom:0">
           <div class="row g-0">
-            <div class="col-md-6 col-lg-5 d-none d-md-block" style="padding: 1rem;">
+            <div class="col-md-6 col-lg-4 d-none d-md-block" style="padding: 1rem;">
               <img src="{{($row_event->event_logo)?config('constants.CDN_URL').'/'.config('constants.EVENT_FOLDER').'/'.$row_event->event_logo:'/dist/img/no-banner.jpg'}}"
                 alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
               <h4 class="text-center mt-2">{{$row_event->title}}</h4>
             </div>
-            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+            <div class="col-md-6 col-lg-8 d-flex align-items-center">
               <div class="card-body p-1 p-lg-4 text-black">
                 @if($row_event->form_fields)
                 <form id="validation-form" action="" method="post" enctype="multipart/form-data">
                   @csrf
                   <h5 class="fw-normal" style="letter-spacing: 1px;">
                     Please fill up all information 
-                    <p class="small text-muted mt-1 text-red">* Marked fields are mandatory</p>
                   </h5>
                   <div class="row">
                     @foreach($row_event->form_fields as $key => $form_fields)
+                    @php $field_name = $form_fields['name']; @endphp
                     @if($form_fields['is_visible'])
                     <div class="{{$form_fields['class']}}" id="field_{{$form_fields['name']}}">
                       <div class="form-group">
                         <label class="form-label" for="{{$form_fields['name']}}">{{$form_fields['label']}} @if($form_fields['is_mandatory']) <span class="text-red">*</span> @endif</label>
                         @if($form_fields['type'] == 'textarea')
-                          <textarea class="form-control form-control-md @error($form_fields['name']) is-invalid @enderror" name="{{$form_fields['name']}}" placeholder="{{ __('admin.enter') }} {{$form_fields['label']}}">{{ old($form_fields['name']) }}</textarea>
+                          <textarea class="form-control form-control-md @error($form_fields['name']) is-invalid @enderror" name="{{$form_fields['name']}}" placeholder="{{ __('admin.enter') }} {{$form_fields['label']}}">{{ old($form_fields['name'], isset($row_form->$field_name) ? $row_form->$field_name : '') }}</textarea>
                           @error($form_fields['name'])<strong class="error invalid-feedback">{{ $message }}</strong>@enderror
                         @elseif($form_fields['type'] == 'radio')
                           <div class="icheck-primary d-inline">
-                            <input class="form-check-input" type="radio" name="{{$form_fields['name']}}" id="{{ __('admin.yes') }}" value="1" checked>
+                            <input class="form-check-input" type="radio" name="{{$form_fields['name']}}" id="{{ __('admin.yes') }}" value="1" @if(old($form_fields['name'], isset($row_form->$field_name) ? $row_form->$field_name : '')!=0) checked @endif>
                             <label for="{{ __('admin.yes') }}">{{ __('admin.yes') }}</label>
                           </div>
                           <div class="icheck-primary d-inline ml-2">
-                            <input class="form-check-input" type="radio" name="{{$form_fields['name']}}" id="{{ __('admin.no') }}" value="0">
+                            <input class="form-check-input" type="radio" name="{{$form_fields['name']}}" id="{{ __('admin.no') }}" value="0" @if(old($form_fields['name'], isset($row_form->$field_name) ? $row_form->$field_name : '')==0) checked @endif>
                             <label for="{{ __('admin.no') }}">{{ __('admin.no') }}</label>
                           </div>
                         @else
-                          <input type="{{$form_fields['type']}}" id="{{$form_fields['name']}}" class="form-control form-control-md @error($form_fields['name']) is-invalid @enderror" name="{{$form_fields['name']}}" value="{{ old($form_fields['name']) }}" @if($form_fields['name']=='mobile') min="10" max="10" @endif placeholder="{{ __('admin.enter') }} {{$form_fields['label']}}" @if($form_fields['is_mandatory']) required @endif />
+                          <input type="{{$form_fields['type']}}" id="{{$form_fields['name']}}" class="form-control form-control-md @error($form_fields['name']) is-invalid @enderror" name="{{$form_fields['name']}}" @if($form_fields['name']=='mobile') value="{{ $mobile }}" readonly @else value="{{ old($form_fields['name'], isset($row_form->$field_name) ? $row_form->$field_name : '') }}" @endif @if($form_fields['name']=='mobile') min="10" max="10" @endif placeholder="{{ __('admin.enter') }} {{$form_fields['label']}}" @if($form_fields['is_mandatory']) required @endif @if(isset($row_form->$field_name) && $row_form->$field_name) readonly @endif />
                           @error($form_fields['name'])<strong class="error invalid-feedback">{{ $message }}</strong>@enderror
                         @endif
                       </div>
                     </div>
                     @endif
                     @endforeach
+                    <div class="col-12" id="field_attendance_type">
+                      <hr class="mt-2 mb-2">
+                      <div class="form-group">
+                        <label class="form-label" for="attendance_type">Attend on</label>
+                        <div class="icheck-primary d-inline">
+                          <input class="form-check-input" type="radio" name="attendance_type" id="one" value="one" checked="">
+                          <label for="one">One day @if($row_event->registration_type=='P')(₹ 1000)@endif</label>
+                        </div>
+                        <div class="icheck-primary d-inline ml-2">
+                          <input class="form-check-input" type="radio" name="attendance_type" id="all" value="all">
+                          <label for="all">All days @if($row_event->registration_type=='P')(₹ 2000)@endif</label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-md-12">
@@ -95,7 +109,7 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <button type="submit" class="btn btn-primary btn-block btn-sm"><i class="fa fa-paper-plane"></i> SUBMIT</button>
+                      <button type="submit" class="btn btn-primary btn-block btn-sm">@if($row_event->registration_type=='P') PAY ₹ <span id="payable_amt">1000</span> @else SUBMIT @endif</button>
                     </div>
                   </div>
                 </form>
@@ -122,11 +136,26 @@
   });
  if($('input[name="is_pickup"]').length>0)
  {
+  var isPickUp = $('input[name="is_pickup"]:checked').val();
+  if(isPickUp == 0) {
+    $('#field_pickup_address').hide();
+  }
   $('input[name="is_pickup"]').on('change', function() {
     if($(this).val() == '1') {
       $('#field_pickup_address').show();
     } else {
       $('#field_pickup_address').hide();
+    }
+  })
+ }
+
+ if($('input[name="attendance_type"]').length>0)
+ {
+  $('input[name="attendance_type"]').on('change', function() {
+    if($(this).val() == 'one') {
+      $('#payable_amt').html(1000);
+    } else {
+      $('#payable_amt').html(2000);
     }
   })
  }

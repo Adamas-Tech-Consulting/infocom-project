@@ -18,8 +18,11 @@ Route::middleware(['web'])->group(function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     //Frontend
-    Route::any('/registration/{event_slug}', [App\Http\Controllers\FrontendController::class, 'registration_form'])->name('registration_form');
-    Route::any('/thank_you', [App\Http\Controllers\FrontendController::class, 'thank_you'])->name('thank_you');
+    Route::any('/registration/{event_slug}', [App\Http\Controllers\FrontendController::class, 'registration'])->name('registration');
+    Route::any('/registration-form/{event_slug}', [App\Http\Controllers\FrontendController::class, 'registration_form'])->name('registration_form');
+    Route::any('/payment', [App\Http\Controllers\FrontendController::class, 'payment'])->name('payment');
+    Route::any('/payment-confirmation', [App\Http\Controllers\FrontendController::class, 'payment_confirmation'])->name('payment_confirmation');
+    Route::any('/thank-you', [App\Http\Controllers\FrontendController::class, 'thank_you'])->name('thank_you');
     Route::get('/reload-captcha', [App\Http\Controllers\FrontendController::class, 'reload_captcha'])->name('reload_captcha');
 
     //Authendication

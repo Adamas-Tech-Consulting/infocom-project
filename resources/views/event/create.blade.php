@@ -103,7 +103,7 @@
                       <div class="input-group-append" data-target="#auto_registration_date_limit" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
-                      <input type="text" name="auto_registration_date_limit" class="form-control datetimepicker-input" data-target="#auto_registration_date_limit" data-toggle="datetimepicker" placeholder="DD-MM-YYYY"/>   
+                      <input type="text" name="last_registration_date" class="form-control datetimepicker-input" data-target="#auto_registration_date_limit" data-toggle="datetimepicker" placeholder="DD-MM-YYYY"/>   
                     </div>
                   </div>
                 </div>
