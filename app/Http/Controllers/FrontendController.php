@@ -206,7 +206,7 @@ class FrontendController extends Controller
         $request_url = 'https://subscriptions.abp.in/abpPaymentGateway/ProcessPaymentRequest';
         $order_details = EventRegistrationRequest::where('order_id', $order_id)->first();
         $app_id = 'infocom2023';
-        $payable_amt = '1.00';
+        $payable_amt = '1.00'; //$order_details->payable_amount;
         $payment_date = date('Y/m/d');
         $string = $order_details->first_name.$order_details->last_name."|".$order_details->email."|".$order_id."|".$payable_amt."|".$app_id."|".$payment_date."|".route('payment_confirmation');  
         $hash = md5($string);
@@ -214,7 +214,9 @@ class FrontendController extends Controller
         $post_data = array();
         $request_url = $request_url.'?abpMsg='.$abpMsg;
         $response = Http::post($request_url,$post_data);
-        echo $response->getBody()->getContents(); die;
+        $html = $response->getBody()->getContents();
+        $html = str_replace('/abpPaymentGateway','/abp_admin/abpPaymentGateway',$html);
+        echo $html; die;
     }
 
     public function payment_confirmation(Request $request)
