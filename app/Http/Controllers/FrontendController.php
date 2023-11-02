@@ -43,7 +43,6 @@ class FrontendController extends Controller
                                                                 $join->on('event_registration_request.registration_request_id','registration_request.id')
                                                                 ->where('event_registration_request.event_id', $event_id);
                                                             })->where('registration_request.mobile', $request->mobile);
-                
                 if($registration_request_query->exists())
                 {
                     $registration_request = $registration_request_query->first('event_registration_request.*');
@@ -75,10 +74,19 @@ class FrontendController extends Controller
 
     public function registration_form(Request $request, $event_slug)
     {
+        $payment = [
+            'one' => 10000,
+            'all' => 20000
+        ];
+        $payment_with_gst = [
+            'one' => ($payment['one'] + ($payment['one'] * 18)/100),
+            'all' => ($payment['all'] + ($payment['all'] * 18)/100),
+        ];
         $row_event = Event::where('slug', $event_slug)->first(['id','title', 'last_registration_date','registration_type','event_logo','form_fields']);
+        $form_fields = is_array($row_event->form_fields) ? $row_event->form_fields : json_decode($row_event->form_fields,true);
         if ($request->isMethod('post')) {
             $validation = [];
-            foreach($row_event->form_fields as $form_field)
+            foreach($form_fields as $form_field)
             {
                 if($form_field['is_visible'] && $form_field['is_mandatory'])
                 {
@@ -102,13 +110,14 @@ class FrontendController extends Controller
                 $event_id = $row_event->id;
                 $registration_request_id = NULL;
                 $registration_request_query = RegistrationRequest::leftJoin('event_registration_request',function($join) use($event_id) {
-                    $join->on('event_registration_request.registration_request_id','registration_request.id')
-                    ->where('event_registration_request.event_id', $event_id);
-                })->where('registration_request.mobile', $request->mobile);
+                                                                        $join->on('event_registration_request.registration_request_id','registration_request.id')
+                                                                        ->where('event_registration_request.event_id', $event_id);
+                                                                    })->where('registration_request.mobile', $request->mobile);
                 if($registration_request_query->exists()) {
-                    $registration_request = $registration_request_query->first('event_registration_request.*');
-                    $registration_request_id = $registration_request->registration_request_id;
+                    $registration_request = $registration_request_query->first('registration_request.*');
+                    $registration_request_id = $registration_request->id;
                 }
+
                 DB::beginTransaction();
                 if(!$registration_request_id)
                 {
@@ -132,7 +141,9 @@ class FrontendController extends Controller
                     'organization' => isset($request->organization) ? $request->organization : NULL,
                     'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
                     'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
-                    'order_id' => $order_id
+                    'order_id' => $order_id,
+                    'attendance_type' => $request->attendance_type,
+                    'payable_amount' => ($row_event->registration_type=='P') ? $payment_with_gst[$request->attendance_type] : '0.00'
                 ];
                 $rel_data = EventRegistrationRequest::where('event_id', $event_id)->where('registration_request_id', $registration_request_id);
                 if($rel_data->exists()) {
@@ -172,6 +183,9 @@ class FrontendController extends Controller
             }
             $request->session()->forget('reg_mobile');
             if($this->data['row_event']) {
+                $this->data['row_event']->form_fields = is_array($this->data['row_event']->form_fields) ? $this->data['row_event']->form_fields : json_decode($this->data['row_event']->form_fields,true);
+                $this->data['payment'] = $payment;
+                $this->data['payment_with_gst'] = $payment_with_gst;
                 return view('registration_request.form',$this->data);
             }
         } 
@@ -233,7 +247,7 @@ class FrontendController extends Controller
         }
         $order_id = $request->session()->get('reg_order');
         $rel_data = EventRegistrationRequest::where('order_id',$order_id)->first();
-        $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'last_registration_date','registration_type','event_logo'])->first();
+        $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'event_venue', 'event_start_date', 'event_end_date', 'last_registration_date','registration_type','event_logo']);
         $this->data['row_event'] = $row_event;
         $this->data['row_event_registration'] = $rel_data;
         $this->data['event_contact_information'] = ContactInformation::join('event_contact_information',function($join) {
@@ -242,7 +256,7 @@ class FrontendController extends Controller
         })
         ->orderByRaw('CASE WHEN event_contact_information.id IS NULL THEN 1 ELSE 0 END ASC')
         ->get(['contact_information.*','event_contact_information.id as event_contact_information_id']);
-        $request->session()->forget('reg_order');
+        //$request->session()->forget('reg_order');
         return view('registration_request.thank_you',$this->data);
     }
 }

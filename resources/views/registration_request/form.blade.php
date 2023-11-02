@@ -2,7 +2,7 @@
 @section('title', $page_name)
 @section('content')
 <style>
-  .form-group {margin-bottom:0.7rem}
+  .form-group {margin-bottom:0.4rem}
 </style>
 <section>
   <div class="container @if($row_event->form_fields && $row_event->form_fields[6]['is_visible']) py_2 @else py_4 @endif h-100">
@@ -69,16 +69,15 @@
                     @endif
                     @endforeach
                     <div class="col-12" id="field_attendance_type">
-                      <hr class="mt-2 mb-2">
                       <div class="form-group">
                         <label class="form-label" for="attendance_type">Attend on</label>
                         <div class="icheck-primary d-inline">
-                          <input class="form-check-input" type="radio" name="attendance_type" id="one" value="one" checked="">
-                          <label for="one">One day @if($row_event->registration_type=='P')(₹ 1000)@endif</label>
+                          <input class="form-check-input" type="radio" name="attendance_type" id="one" value="one" checked="" data-value="{{$payment_with_gst['one']}}">
+                          <label for="one">One day @if($row_event->registration_type=='P')(₹ {{$payment['one']}} + 18% GST)@endif</label>
                         </div>
                         <div class="icheck-primary d-inline ml-2">
-                          <input class="form-check-input" type="radio" name="attendance_type" id="all" value="all">
-                          <label for="all">All days @if($row_event->registration_type=='P')(₹ 2000)@endif</label>
+                          <input class="form-check-input" type="radio" name="attendance_type" id="all" value="all" data-value="{{$payment_with_gst['all']}}">
+                          <label for="all">All days @if($row_event->registration_type=='P')(₹ {{$payment['all']}} + 18% GST)@endif</label>
                         </div>
                       </div>
                     </div>
@@ -109,7 +108,7 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <button type="submit" class="btn btn-primary btn-block btn-sm">@if($row_event->registration_type=='P') PAY ₹ <span id="payable_amt">1000</span> @else SUBMIT @endif</button>
+                      <button type="submit" class="btn btn-primary btn-block btn-sm">@if($row_event->registration_type=='P') PAY ₹ <span id="payable_amt">{{$payment_with_gst['one']}}</span> @else SUBMIT @endif</button>
                     </div>
                   </div>
                 </form>
@@ -153,9 +152,9 @@
  {
   $('input[name="attendance_type"]').on('change', function() {
     if($(this).val() == 'one') {
-      $('#payable_amt').html(1000);
+      $('#payable_amt').html($(this).data('value'));
     } else {
-      $('#payable_amt').html(2000);
+      $('#payable_amt').html($(this).data('value'));
     }
   })
  }
