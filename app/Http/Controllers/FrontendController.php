@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeUser;
 use App\Helpers\Http;
 
 use DB;
@@ -49,6 +51,7 @@ class FrontendController extends Controller
                     if($registration_request->order_id && ($row_event->registration_type=='F' || $registration_request->transaction_id)) {
                         $request->session()->forget('reg_mobile');
                         $request->session()->put('reg_order', $registration_request->order_id);
+                        $this->send_welcome_mail($registration_request->order_id);
                         return redirect()->route('thank_you');
                     }
                 }
@@ -262,5 +265,27 @@ class FrontendController extends Controller
         ->get(['contact_information.*','event_contact_information.id as event_contact_information_id']);
         //$request->session()->forget('reg_order');
         return view('registration_request.thank_you',$this->data);
+    }
+
+    protected function send_welcome_mail($order_id)
+    {
+        $rel_data = EventRegistrationRequest::where('order_id',$order_id)->first();
+        $reg_data = RegistrationRequest::where('id', $rel_data->registration_request_id)->first();
+        $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'event_venue', 'event_start_date', 'event_end_date', 'last_registration_date','registration_type','event_logo']);
+        $mail_data = [
+            'first_name' => 'AVIK',
+            'event_name' => 'INFOCOM CALCUTTA 2023',
+            'event_venue' => 'ITC Sonar, Calcutta',
+            'event_date' => 'November 30, 2023 - December 02, 2023',
+            'amount' => '₹ 2.36 (For all days)',
+            'payment_status' => 'Paid'
+        ];
+        try{
+            Mail::to('avik1.basak@adamastech.in')->send(new WelcomeUser($mail_data));
+        }
+        catch(\Swift_TransportException $e){
+            print $e->getMessage();
+    exit;
+        }
     }
 }
