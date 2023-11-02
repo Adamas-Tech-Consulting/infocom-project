@@ -215,8 +215,9 @@ class FrontendController extends Controller
         $request_url = $request_url.'?abpMsg='.$abpMsg;
         $response = Http::post($request_url,$post_data);
         $html = $response->getBody()->getContents();
-        $html = str_replace('/abpPaymentGateway/css','/abp_admin/abpPaymentGateway/css',$html);
-        $html = str_replace('/abpPaymentGateway/js','/abp_admin/abpPaymentGateway/js',$html);
+        $html = str_replace('href="/abpPaymentGateway/css/loader.css"','href="/abp_admin/abpPaymentGateway/css/loader.css"',$html);
+        $html = str_replace('src="/abpPaymentGateway/js/jquery.js"','src="/abp_admin/abpPaymentGateway/js/jquery.js"',$html);
+        $html = str_replace('src="/abpPaymentGateway/js/jquery.min.js"','src="/abp_admin/abpPaymentGateway/js/jquery.min.js"',$html);
         echo $html; die;
     }
 
