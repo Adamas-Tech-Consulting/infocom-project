@@ -30,7 +30,9 @@ class WelcomeUser extends Mailable
      */
     public function build()
     {
-        return $this->markdown('email.welcomeuser')
-        ->with('user',$this->user);
+        return $this->subject('Welcome to ABP')
+        ->view('email.welcomeuser',$this->user);
+
+        //return $this->markdown('email.welcomeuser')->with('user',$this->user);
     }
 }

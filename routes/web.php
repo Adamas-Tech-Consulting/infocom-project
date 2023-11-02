@@ -24,6 +24,7 @@ Route::middleware(['web'])->group(function () {
     Route::any('/payment-confirmation', [App\Http\Controllers\FrontendController::class, 'payment_confirmation'])->name('payment_confirmation');
     Route::any('/thank-you', [App\Http\Controllers\FrontendController::class, 'thank_you'])->name('thank_you');
     Route::get('/reload-captcha', [App\Http\Controllers\FrontendController::class, 'reload_captcha'])->name('reload_captcha');
+    Route::get('/send_welcome_mail/{order_id}', [App\Http\Controllers\FrontendController::class, 'send_welcome_mail'])->name('send_welcome_mail');
 
     //Authendication
     Route::middleware(['auth'])->group(function () {    

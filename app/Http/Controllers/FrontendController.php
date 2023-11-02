@@ -267,25 +267,29 @@ class FrontendController extends Controller
         return view('registration_request.thank_you',$this->data);
     }
 
-    protected function send_welcome_mail($order_id)
+    public function send_welcome_mail(Request $request, $order_id)
     {
         $rel_data = EventRegistrationRequest::where('order_id',$order_id)->first();
         $reg_data = RegistrationRequest::where('id', $rel_data->registration_request_id)->first();
         $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'event_venue', 'event_start_date', 'event_end_date', 'last_registration_date','registration_type','event_logo']);
         $mail_data = [
-            'first_name' => 'AVIK',
-            'event_name' => 'INFOCOM CALCUTTA 2023',
-            'event_venue' => 'ITC Sonar, Calcutta',
-            'event_date' => 'November 30, 2023 - December 02, 2023',
-            'amount' => '₹ 2.36 (For all days)',
-            'payment_status' => 'Paid'
+            'first_name' => $reg_data->first_name,
+            'title' => $row_event->title,
+            'event_venue' => $row_event->event_venue,
+            'event_start_date' => $row_event->event_start_date,
+            'event_end_date' => $row_event->event_end_date,
+            'registration_type' => $row_event->registration_type,
+            'attendance_type' => $rel_data->attendance_type,
+            'payable_amount' => $rel_data->payable_amount,
+            'transaction_status' => $rel_data->transaction_status
         ];
         try{
-            Mail::to('avik1.basak@adamastech.in')->send(new WelcomeUser($mail_data));
+            Mail::to($rel_data->email)->send(new WelcomeUser($mail_data));
+            dd('SUCCESS');
         }
-        catch(\Swift_TransportException $e){
+        catch(\Exception $e){
             print $e->getMessage();
-    exit;
+            exit;
         }
     }
 }
