@@ -20,15 +20,16 @@
                 <h3 class="fw-normal text-green" style="letter-spacing: 1px;">
                   You have registered successfully
                 </h3>
-                <h5 class="fw-normal" style="letter-spacing: 1px;">
+                <h5 class="fw-normal mt-5" style="letter-spacing: 1px;">
                   <p>Conference Name :  {{$row_event->title}} </p>
                   <p>Conference Venue : {{$row_event->event_venue}} </p>
-                  <p>Conference Date : {{date('F, d Y',strtotime($row_event->event_start_date))}} @if($row_event->event_end_date>$row_event->event_start_date) - {{date('F, d Y',strtotime($row_event->event_end_date))}} @endif</p>
+                  <p>Conference Date : {{date('F d, Y',strtotime($row_event->event_start_date))}} @if($row_event->event_end_date>$row_event->event_start_date) - {{date('F d, Y',strtotime($row_event->event_end_date))}} @endif</p>
                   @if($row_event->registration_type=='P')
                   <p>Amount  : ₹ {{$row_event_registration->payable_amount}} (For {{$row_event_registration->attendance_type}} day)</p>
                   <p>Payment Status : @if($row_event_registration->transaction_status=='SUCCESS') Paid @else Pending @endif</p>
                   @endif
                 </h5>
+                <hr>
                 <h5 class="mt-2" style="line-height:30px">Please contact 
                   @foreach($event_contact_information as $key => $contact_information)
                   @if($key>0) OR @endif

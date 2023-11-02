@@ -75,8 +75,8 @@ class FrontendController extends Controller
     public function registration_form(Request $request, $event_slug)
     {
         $payment = [
-            'one' => 10000,
-            'all' => 20000
+            'one' => 1,
+            'all' => 2
         ];
         $payment_with_gst = [
             'one' => ($payment['one'] + ($payment['one'] * 18)/100),
@@ -206,7 +206,7 @@ class FrontendController extends Controller
         $request_url = 'https://subscriptions.abp.in/abpPaymentGateway/ProcessPaymentRequest';
         $order_details = EventRegistrationRequest::where('order_id', $order_id)->first();
         $app_id = 'infocom2023';
-        $payable_amt = '1.00'; //$order_details->payable_amount;
+        $payable_amt = $order_details->payable_amount;
         $payment_date = date('Y/m/d');
         $string = $order_details->first_name.$order_details->last_name."|".$order_details->email."|".$order_id."|".$payable_amt."|".$app_id."|".$payment_date."|".route('payment_confirmation');  
         $hash = md5($string);
@@ -215,7 +215,8 @@ class FrontendController extends Controller
         $request_url = $request_url.'?abpMsg='.$abpMsg;
         $response = Http::post($request_url,$post_data);
         $html = $response->getBody()->getContents();
-        $html = str_replace('/abpPaymentGateway','/abp_admin/abpPaymentGateway',$html);
+        $html = str_replace('/abpPaymentGateway/css','/abp_admin/abpPaymentGateway/css',$html);
+        $html = str_replace('/abpPaymentGateway/js','/abp_admin/abpPaymentGateway/js',$html);
         echo $html; die;
     }
 
