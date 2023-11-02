@@ -124,10 +124,11 @@
 @endsection
 @section('script')
 <script type="text/javascript">
+  var APP_URL = {!! json_encode(url('/')) !!};
   $('#reload').click(function () {
       $.ajax({
           type: 'GET',
-          url: '/reload-captcha',
+          url: APP_URL+'/reload-captcha',
           success: function (data) {
             $(".captcha span").html(data.captcha);
           }
