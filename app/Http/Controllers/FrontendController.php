@@ -51,7 +51,7 @@ class FrontendController extends Controller
                     if($registration_request->order_id && ($row_event->registration_type=='F' || $registration_request->transaction_id)) {
                         $request->session()->forget('reg_mobile');
                         $request->session()->put('reg_order', $registration_request->order_id);
-                        //$this->send_welcome_mail($registration_request->order_id);
+                        $this->send_welcome_mail($registration_request->order_id);
                         return redirect()->route('thank_you');
                     }
                 }
@@ -167,6 +167,7 @@ class FrontendController extends Controller
                 if($row_event->registration_type=='P') {
                     return redirect()->route('payment');
                 }
+                $this->send_welcome_mail($order_id);
                 return redirect()->route('thank_you');
             }
         }
@@ -243,6 +244,7 @@ class FrontendController extends Controller
             $rel_data->update($transaction_data);
             $request->session()->put('reg_order', $order_id);
             DB::commit();
+            $this->send_welcome_mail($order_id);
             return redirect()->route('thank_you');  
         }
     }
@@ -267,7 +269,7 @@ class FrontendController extends Controller
         return view('registration_request.thank_you',$this->data);
     }
 
-    public function send_welcome_mail(Request $request, $order_id)
+    protected function send_welcome_mail($order_id)
     {
         $rel_data = EventRegistrationRequest::where('order_id',$order_id)->first();
         $reg_data = RegistrationRequest::where('id', $rel_data->registration_request_id)->first();
@@ -280,12 +282,12 @@ class FrontendController extends Controller
             'event_end_date' => $row_event->event_end_date,
             'registration_type' => $row_event->registration_type,
             'attendance_type' => $rel_data->attendance_type,
+            'order_id' => $order_id,
             'payable_amount' => $rel_data->payable_amount,
             'transaction_status' => $rel_data->transaction_status
         ];
         try{
             Mail::to($rel_data->email)->send(new WelcomeUser($mail_data));
-            dd('SUCCESS');
         }
         catch(\Exception $e){
             print $e->getMessage();
