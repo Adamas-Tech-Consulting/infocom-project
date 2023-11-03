@@ -265,7 +265,7 @@ class FrontendController extends Controller
         })
         ->orderByRaw('CASE WHEN event_contact_information.id IS NULL THEN 1 ELSE 0 END ASC')
         ->get(['contact_information.*','event_contact_information.id as event_contact_information_id']);
-        //$request->session()->forget('reg_order');
+        $request->session()->forget('reg_order');
         return view('registration_request.thank_you',$this->data);
     }
 
