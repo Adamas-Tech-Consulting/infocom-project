@@ -295,6 +295,7 @@ class FrontendController extends Controller
             'event_start_date' => $row_event->event_start_date,
             'event_end_date' => $row_event->event_end_date,
             'registration_type' => $row_event->registration_type,
+            'rt_request' => $rel_data->rt_request,
             'attendance_type' => $rel_data->attendance_type,
             'order_id' => $order_id,
             'payable_amount' => $rel_data->payable_amount,
