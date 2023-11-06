@@ -53,7 +53,7 @@ class FrontendController extends Controller
                     if($registration_request->order_id && ($row_event->registration_type=='F' || $registration_request->rt_request || $registration_request->transaction_id)) {
                         $request->session()->forget('reg_mobile');
                         $request->session()->put('reg_order', $registration_request->order_id);
-                        //$this->send_welcome_mail($registration_request->order_id);
+                        $this->send_welcome_mail($registration_request->order_id);
                         return redirect()->route('thank_you');
                     }
                 }
