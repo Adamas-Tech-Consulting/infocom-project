@@ -21,12 +21,14 @@ use App\Models\ContactInformation;
 class FrontendController extends Controller
 {
     protected $data;
+    protected $rt = 184093;
 
     public function __construct(Request $request)
     {
         $this->data = [
             'page_name'   => trans('admin.registration_form'),
             'page_slug'   => Str::slug(trans('admin.registration_form'),'-'),
+            'page_rt'     => base64_encode($this->rt)
         ];
     }
 
@@ -48,12 +50,17 @@ class FrontendController extends Controller
                 if($registration_request_query->exists())
                 {
                     $registration_request = $registration_request_query->first('event_registration_request.*');
-                    if($registration_request->order_id && ($row_event->registration_type=='F' || $registration_request->transaction_id)) {
+                    if($registration_request->order_id && ($row_event->registration_type=='F' || $registration_request->rt_request || $registration_request->transaction_id)) {
                         $request->session()->forget('reg_mobile');
                         $request->session()->put('reg_order', $registration_request->order_id);
                         // $this->send_welcome_mail($registration_request->order_id);
                         return redirect()->route('thank_you');
                     }
+                }
+                if($request->rt && $request->rt == base64_encode($this->rt)) {
+                    $request->session()->put('rt_request', $request->rt);
+                } else {
+                    $request->session()->forget('rt_request');
                 }
                 return redirect()->route('registration_form',$event_slug);
             }
@@ -133,6 +140,11 @@ class FrontendController extends Controller
                     $data->save();
                     $registration_request_id = $data->id; 
                 }
+                $rt_request = 0;
+                if(isset($request->rt_request) && $request->rt_request == base64_encode($this->rt)) {
+                    $rt_request = 1;
+                    $row_event->registration_type='F';
+                }
                 $order_id = 'INFOCOM'.rand(0,15).rand(6,45).$registration_request_id.rand(300,400).time();
                 $rel_input_data = [
                     'event_id' => $row_event->id,
@@ -144,6 +156,7 @@ class FrontendController extends Controller
                     'organization' => isset($request->organization) ? $request->organization : NULL,
                     'is_pickup' => (isset($request->is_pickup) && $request->is_pickup == 1) ? 1 : 0,
                     'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
+                    'rt_request' => $rt_request,
                     'order_id' => $order_id,
                     'attendance_type' => $request->attendance_type,
                     'payable_amount' => ($row_event->registration_type=='P') ? $payment_with_gst[$request->attendance_type] : '0.00'
@@ -174,6 +187,10 @@ class FrontendController extends Controller
         else {
             if(!$request->session()->get('reg_mobile')) {
                 return redirect()->route('registration',$event_slug);
+            }
+            $this->data['rt_request'] = NULL;
+            if($request->session()->get('rt_request')) {
+                $this->data['rt_request'] = $request->session()->get('rt_request');
             }
             $this->data['row_event'] = $row_event;
             $this->data['mobile'] = $request->session()->get('reg_mobile');
@@ -219,9 +236,6 @@ class FrontendController extends Controller
         $request_url = $request_url.'?abpMsg='.$abpMsg;
         $response = Http::post($request_url,$post_data);
         $html = $response->getBody()->getContents();
-        // $html = str_replace('href="/abpPaymentGateway/css/loader.css"','href="/abp_admin/abpPaymentGateway/css/loader.css"',$html);
-        // $html = str_replace('src="/abpPaymentGateway/js/jquery.js"','src="/abp_admin/abpPaymentGateway/js/jquery.js"',$html);
-        // $html = str_replace('src="/abpPaymentGateway/js/jquery.min.js"','src="/abp_admin/abpPaymentGateway/js/jquery.min.js"',$html);
         echo $html; die;
     }
 
