@@ -22,6 +22,7 @@ return [
     'ajax_error' => 'Error occured.please try again',
     'all' => 'All',
     'allow' => 'Allow',
+    'amount' => 'Amount',
     'assign' => 'Assign',
     'assign_or_remove' => 'Assign/Remove',
     'attach_file' => 'Attach File',
@@ -135,6 +136,7 @@ return [
     'one' => 'One',
     'organization' => 'Organization',
     'other' => 'Other',
+    'order_id' => 'Order ID',
     'ordering' => 'Ordering',
     'overview_description' => 'Overview Description',
 
@@ -142,6 +144,7 @@ return [
     'paid' => 'Paid',
     'password'=> 'Password',
     'past' => 'Past',
+    'payment_status' => 'Payment Status',
     'physical' => 'Physical',
     'pickup_address' => 'Pickup Address',
     'preview'=> 'Preview',

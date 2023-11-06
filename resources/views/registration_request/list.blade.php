@@ -69,7 +69,8 @@
                 <th>{{ __('admin.organization') }}</th>
                 <th>{{ __('admin.email') }}</th>
                 <th>{{ __('admin.mobile') }}</th>
-                <th>{{ __('admin.pickup_address') }}</th>
+                <th>{{ __('admin.order_id') }}</th>
+                <th>{{ __('admin.payment_status') }}</th>
               </tr>
               </thead>
               <tbody>
@@ -81,7 +82,8 @@
                 <td>{{$row->organization}}</td>
                 <td>{{$row->email}}</td>
                 <td>{{$row->mobile}}</td>
-                <td>{{$row->pickup_address}}</td>
+                <td>{{$row->order_id}}</td>
+                <td>{{$row->transaction_status}}</td>
               </tr>
               @endforeach
               </tbody>
