@@ -51,7 +51,7 @@ class FrontendController extends Controller
                     if($registration_request->order_id && ($row_event->registration_type=='F' || $registration_request->transaction_id)) {
                         $request->session()->forget('reg_mobile');
                         $request->session()->put('reg_order', $registration_request->order_id);
-                        $this->send_welcome_mail($registration_request->order_id);
+                        // $this->send_welcome_mail($registration_request->order_id);
                         return redirect()->route('thank_you');
                     }
                 }
@@ -78,8 +78,8 @@ class FrontendController extends Controller
     public function registration_form(Request $request, $event_slug)
     {
         $payment = [
-            'one' => 1,
-            'all' => 2
+            'one' => 10000,
+            'all' => 20000
         ];
         $payment_with_gst = [
             'one' => ($payment['one'] + ($payment['one'] * 18)/100),
@@ -219,9 +219,9 @@ class FrontendController extends Controller
         $request_url = $request_url.'?abpMsg='.$abpMsg;
         $response = Http::post($request_url,$post_data);
         $html = $response->getBody()->getContents();
-        $html = str_replace('href="/abpPaymentGateway/css/loader.css"','href="/abp_admin/abpPaymentGateway/css/loader.css"',$html);
-        $html = str_replace('src="/abpPaymentGateway/js/jquery.js"','src="/abp_admin/abpPaymentGateway/js/jquery.js"',$html);
-        $html = str_replace('src="/abpPaymentGateway/js/jquery.min.js"','src="/abp_admin/abpPaymentGateway/js/jquery.min.js"',$html);
+        // $html = str_replace('href="/abpPaymentGateway/css/loader.css"','href="/abp_admin/abpPaymentGateway/css/loader.css"',$html);
+        // $html = str_replace('src="/abpPaymentGateway/js/jquery.js"','src="/abp_admin/abpPaymentGateway/js/jquery.js"',$html);
+        // $html = str_replace('src="/abpPaymentGateway/js/jquery.min.js"','src="/abp_admin/abpPaymentGateway/js/jquery.min.js"',$html);
         echo $html; die;
     }
 
