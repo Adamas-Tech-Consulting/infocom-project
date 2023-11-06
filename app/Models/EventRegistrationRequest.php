@@ -19,6 +19,7 @@ class EventRegistrationRequest extends Model
         'is_pickup',
         'pickup_address',
         'attendance_type',
+        'rt_request',
         'order_id',
         'payable_amount',
         'transaction_id',

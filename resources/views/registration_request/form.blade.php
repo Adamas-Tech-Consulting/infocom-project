@@ -38,6 +38,9 @@
                 @if($row_event->form_fields)
                 <form id="validation-form" action="" method="post" enctype="multipart/form-data">
                   @csrf
+                  @if($rt_request == $page_rt)
+                  <input type="hidden" name="rt_request" value="{{$rt_request}}" />
+                  @endif
                   <h5 class="fw-normal" style="letter-spacing: 1px;">
                     Please fill up all information 
                   </h5>
@@ -73,11 +76,11 @@
                         <label class="form-label" for="attendance_type">Attend on</label>
                         <div class="icheck-primary d-inline">
                           <input class="form-check-input" type="radio" name="attendance_type" id="one" value="one" checked="" data-value="{{$payment_with_gst['one']}}">
-                          <label for="one">One day @if($row_event->registration_type=='P')(₹ {{$payment['one']}} + 18% GST)@endif</label>
+                          <label for="one">One day @if($row_event->registration_type=='P' && $rt_request != $page_rt)(₹ {{$payment['one']}} + 18% GST)@endif</label>
                         </div>
                         <div class="icheck-primary d-inline ml-2">
                           <input class="form-check-input" type="radio" name="attendance_type" id="all" value="all" data-value="{{$payment_with_gst['all']}}">
-                          <label for="all">All days @if($row_event->registration_type=='P')(₹ {{$payment['all']}} + 18% GST)@endif</label>
+                          <label for="all">All days @if($row_event->registration_type=='P' && $rt_request != $page_rt)(₹ {{$payment['all']}} + 18% GST)@endif</label>
                         </div>
                       </div>
                     </div>
@@ -108,7 +111,7 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <button type="submit" class="btn btn-primary btn-block btn-sm">@if($row_event->registration_type=='P') PAY ₹ <span id="payable_amt">{{$payment_with_gst['one']}}</span> @else SUBMIT @endif</button>
+                      <button type="submit" class="btn btn-primary btn-block btn-sm">@if($row_event->registration_type=='P' && $rt_request != $page_rt) PAY ₹ <span id="payable_amt">{{$payment_with_gst['one']}}</span> @else SUBMIT @endif</button>
                     </div>
                   </div>
                 </form>
