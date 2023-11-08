@@ -36,7 +36,7 @@ class RegistrationRequestController extends Controller
         $this->data['event_id'] = $event_id;
         $this->data['row'] = Event::find($event_id);
         $this->data['rows'] = RegistrationRequest::join('event_registration_request','registration_request.id','=','event_registration_request.registration_request_id')
-                                                 ->where('event_registration_request.event_id',$event_id)->get(['registration_request.id','event_registration_request.first_name','event_registration_request.last_name','event_registration_request.designation','event_registration_request.organization','mobile','event_registration_request.email','event_registration_request.pickup_address','event_registration_request.order_id','event_registration_request.transaction_status']);
+                                                 ->where('event_registration_request.event_id',$event_id)->get(['registration_request.id','event_registration_request.first_name','event_registration_request.last_name','event_registration_request.designation','event_registration_request.organization','mobile','event_registration_request.email','event_registration_request.pickup_address','event_registration_request.order_id','event_registration_request.payable_amount','event_registration_request.transaction_status']);
         return view('registration_request.list',$this->data);
     }
 

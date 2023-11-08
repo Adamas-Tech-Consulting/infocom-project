@@ -70,6 +70,7 @@
                 <th>{{ __('admin.email') }}</th>
                 <th>{{ __('admin.mobile') }}</th>
                 <th>{{ __('admin.order_id') }}</th>
+                <th>{{ __('admin.amount') }}</th>
                 <th>{{ __('admin.payment_status') }}</th>
               </tr>
               </thead>
@@ -83,6 +84,7 @@
                 <td>{{$row->email}}</td>
                 <td>{{$row->mobile}}</td>
                 <td>{{$row->order_id}}</td>
+                <td>{{$row->payable_amount}}</td>
                 <td>{{$row->transaction_status}}</td>
               </tr>
               @endforeach
