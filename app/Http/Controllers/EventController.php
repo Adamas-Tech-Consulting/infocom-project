@@ -498,8 +498,12 @@ class EventController extends Controller
                 }
                 $response = Http::post(site_settings('site_api_url').$request_url,$post_data);
                 $response_object = json_decode($response->getBody()->getContents());
+                //dd($response_object->post_id);   
                 if(isset($response_object->post_id)) {
-                    $data->update(array('wp_post_id' => $response_object->post_id));
+                    $update_data = array(
+                        'wp_post_id' => $response_object->post_id
+                    );
+                    Event::where('id', $event_id)->update($update_data);
                 }
                 return response()->json(['success' => trans('flash.SyncSuccessfully')]);
             }   
