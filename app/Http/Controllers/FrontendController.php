@@ -237,8 +237,7 @@ class FrontendController extends Controller
         $response = Http::post($request_url,$post_data);
         $html = $response->getBody()->getContents();
         $html = str_replace('href="/abpPaymentGateway/','href="/abp_admin/abpPaymentGateway/', $html);
-        $html = str_replace('href="/abpPaymentGateway/','href="/abp_admin/abpPaymentGateway/', $html);
-        $html = str_replace('href="/abpPaymentGateway/','href="/abp_admin/abpPaymentGateway/', $html);
+        $html = str_replace('src="/abpPaymentGateway/','src="/abp_admin/abpPaymentGateway/', $html);
         echo $html; die;
     }
 
