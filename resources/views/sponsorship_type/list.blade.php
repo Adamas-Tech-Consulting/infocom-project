@@ -137,7 +137,7 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         type:"POST",
-        url: "{{route($page_sync)}}",
+        url: "{{$page_sync}}",
         data:{'id':id},
         beforeSend: function() {
           $(buttonObject).find('i').addClass('fa-spin');
