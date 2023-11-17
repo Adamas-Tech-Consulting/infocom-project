@@ -26,7 +26,7 @@ class SponsorshipTypeController extends Controller
             'page_add'              => 'sponsorship_type_create',
             'page_update'           => 'sponsorship_type_update',
             'page_delete'           => 'sponsorship_type_delete',
-            'page_sync'             => route('sponsorship_type_sync'),
+            'page_sync'             => 'sponsorship_type_sync'
         ];
     }  
 

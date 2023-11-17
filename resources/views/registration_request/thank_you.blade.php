@@ -21,6 +21,7 @@
                   You have registered successfully
                 </h3>
                 <h5 class="fw-normal mt-5" style="letter-spacing: 1px;">
+                  <p>Registrant Name : {{$row_event_registration->first_name}} {{$row_event_registration->last_name}}
                   <p>Conference Name :  {{$row_event->title}} </p>
                   <p>Conference Venue : {{$row_event->event_venue}} </p>
                   <p>Conference Date : {{date('F d, Y',strtotime($row_event->event_start_date))}} @if($row_event->event_end_date>$row_event->event_start_date) - {{date('F d, Y',strtotime($row_event->event_end_date))}} @endif</p>

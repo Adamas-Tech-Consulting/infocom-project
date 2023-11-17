@@ -53,7 +53,7 @@ class FrontendController extends Controller
                     if($registration_request->order_id && ($row_event->registration_type=='F' || $registration_request->rt_request || $registration_request->transaction_id)) {
                         $request->session()->forget('reg_mobile');
                         $request->session()->put('reg_order', $registration_request->order_id);
-                        // $this->send_welcome_mail($registration_request->order_id);
+                        $this->send_welcome_mail($registration_request->order_id);
                         return redirect()->route('thank_you');
                     }
                 }
@@ -236,8 +236,10 @@ class FrontendController extends Controller
         $request_url = $request_url.'?abpMsg='.$abpMsg;
         $response = Http::post($request_url,$post_data);
         $html = $response->getBody()->getContents();
-        $html = str_replace('href="/abpPaymentGateway/','href="/abp_admin/abpPaymentGateway/', $html);
-        $html = str_replace('src="/abpPaymentGateway/','src="/abp_admin/abpPaymentGateway/', $html);
+        if(config('app.env')=='development') {
+            $html = str_replace('href="/abpPaymentGateway/','href="/abp_admin/abpPaymentGateway/', $html);
+            $html = str_replace('src="/abpPaymentGateway/','src="/abp_admin/abpPaymentGateway/', $html);
+        }
         echo $html; die;
     }
 
@@ -292,6 +294,7 @@ class FrontendController extends Controller
         $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'event_venue', 'event_start_date', 'event_end_date', 'last_registration_date','registration_type','event_logo']);
         $mail_data = [
             'first_name' => $reg_data->first_name,
+            'last_name' => $reg_data->last_name,
             'title' => $row_event->title,
             'event_venue' => $row_event->event_venue,
             'event_start_date' => $row_event->event_start_date,
