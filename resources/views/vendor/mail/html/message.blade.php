@@ -1,7 +1,7 @@
 @component('mail::layout')
 {{-- Header --}}
 @slot('header')
-@component('mail::header', ['url' => config('app.url'), 'logo' => asset(site_settings('site_logo'))])
+@component('mail::header', ['url' => 'https://indiainfocom.com', 'logo' => 'https://indiainfocom.s3.ap-south-1.amazonaws.com/Infocom-Main-Logo-2022.png'])
 {{ config('app.name') }}
 @endcomponent
 @endslot
