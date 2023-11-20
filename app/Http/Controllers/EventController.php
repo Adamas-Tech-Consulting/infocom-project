@@ -490,7 +490,7 @@ class EventController extends Controller
                     );
                 }
                 $post_data['event_agenda'] = $data_agenda;
-                //dd($post_data['event_agenda']);
+                dd($post_data['event_agenda']);
                 if($data->wp_post_id) {
                     $request_url = config("constants.UPDATE_EVENT").'/'.$data->wp_post_id;
                 } else {
