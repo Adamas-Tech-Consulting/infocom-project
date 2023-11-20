@@ -5,7 +5,7 @@
   .form-group {margin-bottom:0.4rem}
 </style>
 <section>
-  <div class="container @if($row_event->form_fields && $row_event->form_fields[6]['is_visible']) py_2 @else py_4 @endif h-100">
+  <div class="container p-1 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-xl-10">
         @if(Session::has('success'))
