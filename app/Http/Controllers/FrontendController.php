@@ -16,6 +16,7 @@ use DB;
 use App\Models\RegistrationRequest;
 use App\Models\Event;
 use App\Models\EventRegistrationRequest;
+use App\Models\EventPricing;
 use App\Models\ContactInformation;
 
 class FrontendController extends Controller
@@ -84,15 +85,8 @@ class FrontendController extends Controller
 
     public function registration_form(Request $request, $event_slug)
     {
-        $payment = [
-            'one' => 10000,
-            'all' => 20000
-        ];
-        $payment_with_gst = [
-            'one' => ($payment['one'] + ($payment['one'] * 18)/100),
-            'all' => ($payment['all'] + ($payment['all'] * 18)/100),
-        ];
         $row_event = Event::where('slug', $event_slug)->first(['id','title', 'last_registration_date','registration_type','event_logo','form_fields']);
+        $event_pricing = EventPricing::where('event_id', $row_event->id)->get();
         $form_fields = is_array($row_event->form_fields) ? $row_event->form_fields : json_decode($row_event->form_fields,true);
         if ($request->isMethod('post')) {
             $validation = [];
@@ -146,6 +140,8 @@ class FrontendController extends Controller
                     $row_event->registration_type='F';
                 }
                 $order_id = 'INFOCOM'.rand(0,15).rand(6,45).$registration_request_id.rand(300,400).time();
+                $event_price = EventPricing::where('id', $request->attendance_type)->first();
+                $event_price_with_gst = ($event_price->amount + ($event_price->amount*$event_price->gst_percentage)/100);
                 $rel_input_data = [
                     'event_id' => $row_event->id,
                     'registration_request_id' => $registration_request_id,
@@ -159,7 +155,7 @@ class FrontendController extends Controller
                     'rt_request' => $rt_request,
                     'order_id' => $order_id,
                     'attendance_type' => $request->attendance_type,
-                    'payable_amount' => ($row_event->registration_type=='P') ? $payment_with_gst[$request->attendance_type] : '0.00'
+                    'payable_amount' => ($row_event->registration_type=='P') ? $event_price_with_gst : '0.00'
                 ];
                 $rel_data = EventRegistrationRequest::where('event_id', $event_id)->where('registration_request_id', $registration_request_id);
                 if($rel_data->exists()) {
@@ -205,8 +201,7 @@ class FrontendController extends Controller
             $request->session()->forget('reg_mobile');
             if($this->data['row_event']) {
                 $this->data['row_event']->form_fields = is_array($this->data['row_event']->form_fields) ? $this->data['row_event']->form_fields : json_decode($this->data['row_event']->form_fields,true);
-                $this->data['payment'] = $payment;
-                $this->data['payment_with_gst'] = $payment_with_gst;
+                $this->data['event_pricing'] = $event_pricing;
                 return view('registration_request.form',$this->data);
             }
         } 
@@ -270,13 +265,14 @@ class FrontendController extends Controller
     public function thank_you(Request $request)
     {
         if(!$request->session()->get('reg_order')) {
-            return redirect()->route('home');
+            return redirect()->away(site_settings('site_url'));
         }
         $order_id = $request->session()->get('reg_order');
         $rel_data = EventRegistrationRequest::where('order_id',$order_id)->first();
         $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'event_venue', 'event_start_date', 'event_end_date', 'last_registration_date','registration_type','event_logo']);
         $this->data['row_event'] = $row_event;
         $this->data['row_event_registration'] = $rel_data;
+        $this->data['event_price'] = EventPricing::where('id', $rel_data->attendance_type)->first();
         $this->data['event_contact_information'] = ContactInformation::join('event_contact_information',function($join) {
             $join->on('event_contact_information.contact_information_id','contact_information.id')
             ->where('event_contact_information.event_id',$this->data['row_event']->id);
@@ -291,6 +287,7 @@ class FrontendController extends Controller
     {
         $rel_data = EventRegistrationRequest::where('order_id',$order_id)->first();
         $reg_data = RegistrationRequest::where('id', $rel_data->registration_request_id)->first();
+        $event_price = EventPricing::where('id', $rel_data->attendance_type)->first();
         $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'event_venue', 'event_start_date', 'event_end_date', 'last_registration_date','registration_type','event_logo']);
         $mail_data = [
             'first_name' => $reg_data->first_name,
@@ -301,7 +298,7 @@ class FrontendController extends Controller
             'event_end_date' => $row_event->event_end_date,
             'registration_type' => $row_event->registration_type,
             'rt_request' => $rel_data->rt_request,
-            'attendance_type' => $rel_data->attendance_type,
+            'attendance_type' => ($row_event->registration_type=='P' && !$rel_data->rt_request) ? $event_price->name_with_price : $name_without_price,
             'order_id' => $order_id,
             'payable_amount' => $rel_data->payable_amount,
             'transaction_status' => $rel_data->transaction_status

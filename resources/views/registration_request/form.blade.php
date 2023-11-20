@@ -74,14 +74,13 @@
                     <div class="col-12" id="field_attendance_type">
                       <div class="form-group">
                         <label class="form-label" for="attendance_type">Attend on</label>
-                        <div class="icheck-primary d-inline">
-                          <input class="form-check-input" type="radio" name="attendance_type" id="one" value="one" checked="" data-value="{{$payment_with_gst['one']}}">
-                          <label for="one">One day @if($row_event->registration_type=='P' && $rt_request != $page_rt)(₹ {{$payment['one']}} + 18% GST)@endif</label>
+                        @foreach($event_pricing as $ev_pricing)
+                        @php $payment_with_gst = ($ev_pricing->amount + ($ev_pricing->amount*$ev_pricing->gst_percentage)/100); @endphp
+                        <div class="icheck-primary">
+                          <input class="form-check-input" type="radio" name="attendance_type" id="option_{{$ev_pricing->id}}" value="{{$ev_pricing->id}}" {{($ev_pricing->is_default==1) ? 'checked=""' : ''}} data-value="{{$payment_with_gst}}">
+                          <label for="option_{{$ev_pricing->id}}">@if($row_event->registration_type=='P' && $rt_request != $page_rt) {{$ev_pricing->name_with_price}} @else {{$ev_pricing->name_without_price}} @endif</label>
                         </div>
-                        <div class="icheck-primary d-inline ml-2">
-                          <input class="form-check-input" type="radio" name="attendance_type" id="all" value="all" data-value="{{$payment_with_gst['all']}}">
-                          <label for="all">All days @if($row_event->registration_type=='P' && $rt_request != $page_rt)(₹ {{$payment['all']}} + 18% GST)@endif</label>
-                        </div>
+                        @endforeach
                       </div>
                     </div>
                   </div>
@@ -90,7 +89,7 @@
                       <div class="form-group"> 
                         <div class="icheck-primary">
                           <input class="form-check-input" type="checkbox" name="agree" id="agree" required>
-                          <label for="agree">By registering, you agree to Indiainfocom <a href="{{config('constants.WP_SITE')}}" target="_blank">Terms &amp; Conditions</a></label>
+                          <label for="agree">By registering, you agree to Indiainfocom <a href="{{site_settings('site_url')}}" target="_blank">Terms &amp; Conditions</a></label>
                         </div>
                       </div>
                     </div>
@@ -111,7 +110,7 @@
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <button type="submit" class="btn btn-primary btn-block btn-sm">@if($row_event->registration_type=='P' && $rt_request != $page_rt) PAY ₹ <span id="payable_amt">{{$payment_with_gst['one']}}</span> @else SUBMIT @endif</button>
+                      <button type="submit" class="btn btn-primary btn-block btn-sm">@if($row_event->registration_type=='P' && $rt_request != $page_rt) PAY ₹ <span id="payable_amt"></span> @else SUBMIT @endif</button>
                     </div>
                   </div>
                 </form>
@@ -150,6 +149,12 @@
       $('#field_pickup_address').hide();
     }
   })
+ }
+
+ if($('#payable_amt').length>0)
+ {
+   var attendance_type = $('input[name="attendance_type"]:checked');
+   $('#payable_amt').html(attendance_type.data('value'));
  }
 
  if($('input[name="attendance_type"]').length>0)
