@@ -297,7 +297,7 @@ class FrontendController extends Controller
             'event_end_date' => $row_event->event_end_date,
             'registration_type' => $row_event->registration_type,
             'rt_request' => $rel_data->rt_request,
-            'attendance_type' => ($row_event->registration_type=='P' && !$rel_data->rt_request) ? $event_price->name_with_price : $name_without_price,
+            'attendance_type' => ($row_event->registration_type=='P' && !$rel_data->rt_request) ? $event_price->name_with_price : $event_price->name_without_price,
             'order_id' => $order_id,
             'payable_amount' => $rel_data->payable_amount,
             'transaction_status' => $rel_data->transaction_status
