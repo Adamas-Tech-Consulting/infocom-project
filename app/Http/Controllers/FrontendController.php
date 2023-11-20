@@ -12,7 +12,6 @@ use App\Helpers\Http;
 
 use DB;
 
-//Model
 use App\Models\RegistrationRequest;
 use App\Models\Event;
 use App\Models\EventRegistrationRequest;
