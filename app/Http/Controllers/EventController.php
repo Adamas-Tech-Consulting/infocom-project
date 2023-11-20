@@ -401,7 +401,7 @@ class EventController extends Controller
 
                 $agenda = Schedule::where('event_id','=',$event_id)->orderBy('schedule_day')->groupBy('schedule_day','schedule_date')->get(['schedule_day','schedule_date']);
                 $agenda_details = Schedule::leftJoin('track','track.id','=','schedule.track_id')
-                                          ->where('schedule.event_id','=',$event_id)->orderBy('schedule_day','schedule_date')->get(['schedule.*','track.name as track_name']);
+                                          ->where('schedule.event_id','=',$event_id)->orderBy('schedule_day','asc')->orderBy('schedule_date','asc')->get(['schedule.*','track.name as track_name']);
 
                 $data_agenda = [];
                 foreach($agenda as $agkey => $agnda) {
