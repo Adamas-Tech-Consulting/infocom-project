@@ -110,7 +110,7 @@
   });
 
   $(function () {
-    $(".delete-btn").on('click', function(e) {
+    $(document).on('click', '.delete-btn', function(e) {
       var form = $(this).data('form');
       Swal.fire({
         title: 'Are you sure?',
@@ -129,7 +129,7 @@
   });
 
   $(function () {
-    $('.wp-sync').on('click',function() {
+    $(document).on('click', '.wp-sync', function(e) {
       var buttonObject = $(this);
       var id = $(this).data('id');
       $.ajax({
