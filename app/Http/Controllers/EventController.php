@@ -443,7 +443,7 @@ class EventController extends Controller
                     'category'              => $data->category,
                     'title'                 => $data->title,
                     'sub_title'             => $data->sub_title,
-                    'event_start_date'      => $data->event_start_date,
+                    'event_start_date'      => date('d M, Y',strtotime($data->event_start_date)).' - '.date('d M, Y',strtotime($data->event_end_date)),
                     'event_venue'           => $data->event_venue,
                     'event_theme'           => $data->event_theme,
                     'overview_description'  => $data->overview_description,
