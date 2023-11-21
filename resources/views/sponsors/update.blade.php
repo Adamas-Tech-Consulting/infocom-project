@@ -78,7 +78,7 @@
                       <label for="rank">{{ __('admin.rank') }}</label>
                       <select class="form-control select2bs4 @error('rank') is-invalid @enderror" name="rank" style="width: 100%;">
                         <option value="">{{ __('admin.select') }} {{ __('admin.rank') }}</option>
-                        @for($i=1; $i<=30; $i++)
+                        @for($i=1; $i<=99; $i++)
                         <option value="{{$i}}" {{($row->rank == $i)?'selected':''}}>{{$i}}</option>
                         @endfor
                       </select>
