@@ -46,7 +46,7 @@ class SpeakersController extends Controller
                 ->where('event_speakers.event_id',$event_id);
             });
         }
-        $rows = $rows->orderBy('speakers_category.ordering','asc')->get(['speakers.*','speakers_category.name as speakers_category_name']);
+        $rows = $rows->orderBy('speakers.id','desc')->get(['speakers.*','speakers_category.name as speakers_category_name']);
         $this->data['rows'] = $rows;
         return view('speakers.list',$this->data);
     }
