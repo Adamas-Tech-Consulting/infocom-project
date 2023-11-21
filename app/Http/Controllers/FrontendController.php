@@ -104,6 +104,7 @@ class FrontendController extends Controller
                     } 
                 }
             }
+            $validation['attendance_type'] = 'required';
             $validation['captcha'] = 'required|captcha';
             $validator = Validator::make($request->all(), $validation);
             if($validator->fails()) {

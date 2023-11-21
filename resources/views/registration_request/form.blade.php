@@ -81,6 +81,7 @@
                           <label for="option_{{$ev_pricing->id}}">@if($row_event->registration_type=='P' && $rt_request != $page_rt) {{$ev_pricing->name_with_price}} @else {{$ev_pricing->name_without_price}} @endif</label>
                         </div>
                         @endforeach
+                        @error('attendance_type')<strong class="error text-red">Invalid Attendance Type</strong>@enderror
                       </div>
                     </div>
                   </div>
