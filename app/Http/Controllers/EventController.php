@@ -385,7 +385,7 @@ class EventController extends Controller
                                          ->Join('event_speakers',function($join) use($event_id) {
                                             $join->on('event_speakers.speakers_id','speakers.id')
                                             ->where('event_speakers.event_id',$event_id);
-                                         })->get(['speakers.*','speakers_category.key_name as speakers_category']);
+                                         })->orderBy('speakers.id','asc')->get(['speakers.*','speakers_category.key_name as speakers_category']);
 
                 $data_sponsors = Sponsors::join('sponsorship_type','sponsorship_type.id','=','sponsors.sponsorship_type_id')
                                          ->Join('event_sponsors',function($join) use($event_id) {
