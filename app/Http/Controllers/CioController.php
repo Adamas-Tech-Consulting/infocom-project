@@ -174,7 +174,6 @@ class CioController extends Controller
     public function publish_unpublish(Request $request)
     {
         if ($request->isMethod('post')) {
-
             $validator = Validator::make($request->all(), [
                 'id' => 'required',
                 'published' => 'required',
