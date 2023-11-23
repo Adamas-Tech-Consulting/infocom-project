@@ -112,7 +112,7 @@
   });
 
   $(function () {
-    $('.toggle-published').on('click',function() {
+    $(document).on('click', '.toggle-published', function(e) {
       var buttonObject = $(this);
       var id = $(this).data('id');
       var isPublished = $(this).data('is-published') ? 0 : 1;
@@ -142,7 +142,7 @@
   });
 
   $(function () {
-    $(".delete-btn").on('click', function(e) {
+    $(document).on('click', ".delete-btn", function(e) {
       var form = $(this).data('form');
       Swal.fire({
         title: 'Are you sure?',
