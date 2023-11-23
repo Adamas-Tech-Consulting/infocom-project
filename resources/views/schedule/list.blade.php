@@ -108,6 +108,14 @@
       "info": true,
       "autoWidth": true,
       "responsive": true,
+      "columnDefs": [
+        { "width": "5%", "targets": 0 },
+        { "width": "25%", "targets": 1 },
+        { "width": "18%", "targets": 2 },
+        { "width": "18%", "targets": 3 },
+        { "width": "18%", "targets": 4 },
+        { "width": "15%", "targets": 5 },
+      ],
     });
   });
 
