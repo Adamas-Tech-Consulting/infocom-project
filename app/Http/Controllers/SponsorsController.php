@@ -46,7 +46,7 @@ class SponsorsController extends Controller
                 ->where('event_sponsors.event_id',$event_id);
             });
         }
-        $rows = $rows->get(['sponsors.*','sponsorship_type.name as sponsorship_type_name']);
+        $rows = $rows->orderBy('sponsorship_type.display_order')->get(['sponsors.*','sponsorship_type.name as sponsorship_type_name']);
         $this->data['rows'] = $rows;
         return view('sponsors.list',$this->data);
     }

@@ -55,6 +55,12 @@
                   <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{$row->name}}"  placeholder="{{ __('admin.enter') }} {{ $page_name }}">
                 </div>
               </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="display_order">{{ __('admin.display_order') }}</label>
+                  <input type="number" class="form-control @error('display_order') is-invalid @enderror" id="display_order" name="display_order" value="{{$row->display_order}}" placeholder="Eg. 1">
+                </div>
+              </div>
             </div>
           </div>
           <!-- /.card-body -->

@@ -63,6 +63,7 @@
             <tr>
               <th>#</th>
               <th>{{ __('admin.name') }}</th>
+              <th>{{ __('admin.display_order') }}</th>
               <th class="text-center">{{ __('admin.action') }}</th>
             </tr>
             </thead>
@@ -71,6 +72,7 @@
             <tr>
               <td>{{$key+1}}</td>
               <td><span>{{$row->name}}</span></td>
+              <td><span>{{$row->display_order}}</span></td>
               <td class="text-center">
                 <a href="{{route($page_update,$row->id)}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
                 <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,$row->id)}}" method="post">

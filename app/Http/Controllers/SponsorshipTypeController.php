@@ -32,7 +32,7 @@ class SponsorshipTypeController extends Controller
 
     public function index()
     {
-        $this->data['rows'] = SponsorshipType::all();
+        $this->data['rows'] = SponsorshipType::orderBy('display_order')->get();
         return view('sponsorship_type.list',$this->data);
     }
 
@@ -42,6 +42,7 @@ class SponsorshipTypeController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
+                'display_order' => 'required'
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -69,6 +70,7 @@ class SponsorshipTypeController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
+                'display_order' => 'required'
             ]);
             if($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
@@ -124,7 +126,8 @@ class SponsorshipTypeController extends Controller
                 $post_data = [
                     'name'          => $data->name,
                     'slug'          => Str::slug($data->name,'-'),
-                    'description'   => $data->name
+                    'description'   => $data->name,
+                    'display_order' => $data->display_order
                 ];
                 if($data->wp_term_id) {
                     $request_url = config("constants.UPDATE_SPONSORSHIP_TYPE").'/'.$data->wp_term_id;

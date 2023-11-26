@@ -57,6 +57,7 @@ return [
     'designation' => 'Designation',
     'details' => 'Details',
     'dimension' => 'Dimension',
+    'display_order' => 'Display Order',
     'download_csv' => 'Download Excel',
     
 
