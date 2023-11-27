@@ -150,6 +150,14 @@ $(function () {
     });
   }
 
+  //Initialize Date Time picker
+  if( $('.reservationdatetime').length > 0) {
+    $('.reservationdatetime').datetimepicker({
+        format: 'DD-MM-YYYY h:mm A',
+        icons: { time: 'far fa-clock' }
+    });
+  }
+
   //Initialize Date picker
   if( $('.summernote').length > 0) {
     $('.summernote').each(function() {

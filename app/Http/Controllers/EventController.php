@@ -96,7 +96,7 @@ class EventController extends Controller
                         'sub_title' => $request->sub_title,
                         'event_method_id' => $request->event_method_id,
                         'registration_type' => $request->registration_type,
-                        'last_registration_date' => $request->last_registration_date ? date('Y-m-d',strtotime($request->last_registration_date)) : NULL,
+                        'last_registration_date' => $request->last_registration_date ? date('Y-m-d H:i:s',strtotime($request->last_registration_date)) : NULL,
                         'event_start_date' => date('Y-m-d',strtotime($request->event_start_date)),
                         'event_end_date' => date('Y-m-d',strtotime($request->event_end_date)),
                         'event_days' => ($event_days+1),
@@ -106,6 +106,7 @@ class EventController extends Controller
                         'longitude' => $request->longitude,
                         'overview_description' => $request->overview_description,
                         'event_description' => $request->event_description,
+                        'registration_closed_message' => $request->registration_closed_message,
                         'featured' => (isset($request->featured) ? 1 : 0),
                         'form_fields' => json_encode($form_fields),
                     ];
@@ -179,7 +180,7 @@ class EventController extends Controller
                         'sub_title' => $request->sub_title,
                         'event_method_id' => $request->event_method_id,
                         'registration_type' => $request->registration_type,
-                        'last_registration_date' => $request->last_registration_date ? date('Y-m-d',strtotime($request->last_registration_date)) : NULL,
+                        'last_registration_date' => $request->last_registration_date ? date('Y-m-d H:i:s',strtotime($request->last_registration_date)) : NULL,
                         'event_start_date' => date('Y-m-d',strtotime($request->event_start_date)),
                         'event_end_date' => date('Y-m-d',strtotime($request->event_end_date)),
                         'event_days' => ($event_days+1),
@@ -189,6 +190,7 @@ class EventController extends Controller
                         'longitude' => $request->longitude,
                         'overview_description' => $request->overview_description,
                         'event_description' => $request->event_description,
+                        'registration_closed_message' => $request->registration_closed_message,
                         'featured' => (isset($request->featured) ? 1 : 0),
                     ];
                     $data = Event::findOrFail($id);

@@ -99,11 +99,11 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label for="auto_registration_date_limit">{{ __('admin.auto_registration_date_limit') }}</label>
-                    <div class="input-group date reservationdate" id="auto_registration_date_limit" data-target-input="nearest">
+                    <div class="input-group date reservationdatetime" id="auto_registration_date_limit" data-target-input="nearest">
                       <div class="input-group-append" data-target="#auto_registration_date_limit" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
-                      <input type="text" name="last_registration_date" class="form-control datetimepicker-input" data-target="#auto_registration_date_limit" data-toggle="datetimepicker" placeholder="DD-MM-YYYY"/>   
+                      <input type="text" name="last_registration_date" class="form-control datetimepicker-input" data-target="#auto_registration_date_limit" data-toggle="datetimepicker" placeholder="DD-MM-YYYY HH:MM AM/PM" autocomplete="off"/>   
                     </div>
                   </div>
                 </div>
@@ -118,7 +118,7 @@
                           <div class="input-group-append" data-target="#event_start_date" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
-                          <input type="text" class="form-control datetimepicker-input" name="event_start_date" data-target="#event_start_date" data-toggle="datetimepicker" placeholder="DD-MM-YYYY"/>   
+                          <input type="text" class="form-control datetimepicker-input" name="event_start_date" data-target="#event_start_date" data-toggle="datetimepicker" placeholder="DD-MM-YYYY" autocomplete="off"/>   
                         </div>
                       </div>
                     </div>
@@ -129,7 +129,7 @@
                           <div class="input-group-append" data-target="#event_end_date" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
-                          <input type="text" class="form-control datetimepicker-input" name="event_end_date" data-target="#event_end_date" data-toggle="datetimepicker" placeholder="DD-MM-YYYY"/>   
+                          <input type="text" class="form-control datetimepicker-input" name="event_end_date" data-target="#event_end_date" data-toggle="datetimepicker" placeholder="DD-MM-YYYY" autocomplete="off"/>   
                         </div>
                       </div>
                     </div>
@@ -178,6 +178,14 @@
                   </div>
                 </div>
               </div><!-- /.row -->
+              <div class="row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label for="registration_closed_message">{{ __('admin.event') }} {{ __('admin.registration_closed_message') }}</label>
+                      <textarea id="registration_closed_message" name="registration_closed_message" class="form-control @error('registration_closed_message') is-invalid @enderror"></textarea>
+                    </div>
+                  </div>
+                </div><!-- /.row -->
               <div class="row">
                 <div class="col-4">
                   <div class="card card-widget card-secondary card-outline widget-user mt-2">

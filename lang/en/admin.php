@@ -157,6 +157,7 @@ return [
 
     //R
     'rank' => 'Rank',
+    'registration_closed_message' => 'Registration Closed Message',
     'registration_form' => 'Registration Form',
     'registration_method' => 'Registration Method',
     'registered_on' => 'Registered On',

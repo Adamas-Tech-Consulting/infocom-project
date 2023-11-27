@@ -69,7 +69,7 @@ class FrontendController extends Controller
         {
             $this->data['row_event'] = $row_event;
             if($this->data['row_event']) {
-                $this->data['current_date'] = date('Y-m-d');
+                $this->data['current_date'] = date('Y-m-d H:i:s');
                 $this->data['event_contact_information'] = ContactInformation::join('event_contact_information',function($join) {
                     $join->on('event_contact_information.contact_information_id','contact_information.id')
                     ->where('event_contact_information.event_id',$this->data['row_event']->id);
