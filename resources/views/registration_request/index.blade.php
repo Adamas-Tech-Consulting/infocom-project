@@ -21,12 +21,17 @@
                 <h3 class="fw-normal text-red text-center" style="letter-spacing: 1px;">
                   Registration Closed
                 </h3>
-                <h5 class="mt-3" style="line-height:30px">Please contact 
+                <h5 class="mt-3" style="line-height:30px">
+                  @if($row_event->registration_closed_message)
+                    {{$row_event->registration_closed_message}}
+                  @else
+                  Please contact
                   @foreach($event_contact_information as $key => $contact_information)
                   @if($key>0) OR @endif
                   {{$contact_information->name}} at {{$contact_information->mobile}}
                   @endforeach
-                  for any queries</h5> 
+                  for any queries</h5>
+                  @endif 
                 @else
                 <form id="validation-form" action="" method="post" enctype="multipart/form-data">
                   @csrf

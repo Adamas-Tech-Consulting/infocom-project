@@ -34,7 +34,7 @@ class FrontendController extends Controller
 
     public function registration(Request $request, $event_slug)
     {
-        $row_event = Event::where('slug', $event_slug)->first(['id', 'title', 'last_registration_date','event_logo','registration_type','form_fields']);
+        $row_event = Event::where('slug', $event_slug)->first(['id', 'title', 'last_registration_date','registration_closed_message','event_logo','registration_type','form_fields']);
         if ($request->isMethod('post')) {
             $validation['mobile'] ='required|digits:10|numeric';
             $validator = Validator::make($request->all(), $validation);
