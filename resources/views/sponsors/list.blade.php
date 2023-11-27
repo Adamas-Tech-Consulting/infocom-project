@@ -69,6 +69,7 @@
                 <th>{{ __('admin.name') }}</th>
                 <th>{{ __('admin.type') }}</th>
                 <th>{{ __('admin.company_website') }}</th>
+                <th>{{ __('admin.rank') }}</th>
                 <th class="text-center">{{ __('admin.action') }}</th>
               </tr>
               </thead>
@@ -82,6 +83,7 @@
                 <td>{{$row->sponsor_name}}</td>
                 <td>{{$row->sponsorship_type_name}}</td>
                 <td>{{$row->website_link}}</td>
+                <td>{{$row->rank}}</td>
                 <td class="text-center">
                   <a href="{{route($page_update,[$row->id,$event_id])}}" class="btn btn-xs bg-gradient-primary" data-bs-toggle="tooltip" title="{{ __('admin.edit') }}"><i class="fas fa-edit"></i></a>
                   <form class="d-inline-block" id="form_{{$row->id}}" action="{{route($page_delete,[$row->id,$event_id])}}" method="post">
@@ -118,12 +120,13 @@
       "autoWidth": true,
       "responsive": true,
       "columnDefs": [
-        { "width": "5%", "targets": 0 },
-        { "width": "5%", "targets": 1 },
+        { "width": "5%",  "targets": 0 },
+        { "width": "5%",  "targets": 1 },
         { "width": "25%", "targets": 2 },
         { "width": "20%", "targets": 3 },
-        { "width": "30%", "targets": 4},
-        { "width": "15%", "targets": 5 },
+        { "width": "20%", "targets": 4},
+        { "width": "5%", "targets": 5 },
+        { "width": "20%", "targets": 6 },
       ]
     });
   });

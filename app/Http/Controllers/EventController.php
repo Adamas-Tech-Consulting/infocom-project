@@ -391,7 +391,7 @@ class EventController extends Controller
                                          ->Join('event_sponsors',function($join) use($event_id) {
                                             $join->on('event_sponsors.sponsors_id','sponsors.id')
                                             ->where('event_sponsors.event_id',$event_id);
-                                         })->get(['sponsors.*','sponsorship_type.wp_term_id as sponsorship_type_id']);
+                                         })->orderBy('sponsors.rank')->get(['sponsors.*','sponsorship_type.wp_term_id as sponsorship_type_id']);
 
                 $data_cio = Cio::join('registration_request','registration_request.id','=','cio.registration_request_id')
                                          ->Join('event_cio',function($join) use($event_id) {
