@@ -133,7 +133,7 @@
   });
 
   $(function () {
-    $(document).on('click', '.toggle-published', function(e) {
+    $(document).on('click', '.toggle-assigned', function(e) {
       var buttonObject = $(this);
       var id = $(this).data('id');
       var speakersId = $(this).data('speakers-id');

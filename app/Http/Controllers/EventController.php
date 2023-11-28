@@ -415,11 +415,20 @@ class EventController extends Controller
                         if($agnda->schedule_day == $agenda_detail->schedule_day)
                         {
                             $agenda_id = $agenda_detail->id;
-                            $agenda_speaker = Speakers::Join('schedule_speakers',function($join) use($event_id,$agenda_id) {
+                            $agenda_speakers = Speakers::Join('schedule_speakers',function($join) use($event_id,$agenda_id) {
                                 $join->on('schedule_speakers.speakers_id','speakers.id')
                                     ->where('schedule_speakers.schedule_id',$agenda_id)
                                     ->where('schedule_speakers.event_id',$event_id);
-                                })->first(['speakers.*']);
+                                })->get(['speakers.*']);
+                            $add_speaker_info = [];
+                            foreach($agenda_speakers as $agenda_speaker)
+                            {
+                                $add_speaker_info[] = array(
+                                    'add_speaker_image_url' => config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$agenda_speaker->image,
+                                    'add_speaker_name' => $agenda_speaker->name,
+                                    'add_speaker_designation' => $agenda_speaker->designation
+                                );
+                            }
                             $data_agenda[$agkey]['agenda_details'][] = array(
                                 'add_start_time' => date('h:i A',strtotime($agenda_detail->from_time)),
                                 'add_end_time' => date('h:i A',strtotime($agenda_detail->to_time)),
@@ -429,10 +438,7 @@ class EventController extends Controller
                                 'add_session_type' => $agenda_detail->session_type,
                                 'add_hall_number' => $agenda_detail->hall_number,
                                 'add_track' => $agenda_detail->track_name,
-                                'add_speaker_name'  => !empty($agenda_speaker) ? $agenda_speaker->name : NULL,
-                                'add_speaker_designation'  => !empty($agenda_speaker) ? $agenda_speaker->designation : NULL,
-                                'add_speaker_image'  => !empty($agenda_speaker) ? config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$agenda_speaker->image : NULL,
-                                'add_speaker_image_url' => !empty($agenda_speaker) ? config('constants.CDN_URL').'/'.config('constants.SPEAKERS_FOLDER').'/'.$agenda_speaker->image : NULL,
+                                'add_speaker_info' => $add_speaker_info,
                                 'row_id' => $index,
                             );
                             $index++;
@@ -492,15 +498,14 @@ class EventController extends Controller
                     );
                 }
                 $post_data['event_agenda'] = $data_agenda;
-                //dd($post_data['event_agenda']);
+                //dd($post_data);
                 if($data->wp_post_id) {
                     $request_url = config("constants.UPDATE_EVENT").'/'.$data->wp_post_id;
                 } else {
                     $request_url = config("constants.CREATE_EVENT");
                 }
                 $response = Http::post(site_settings('site_api_url').$request_url,$post_data);
-                $response_object = json_decode($response->getBody()->getContents());
-                //dd($response_object->post_id);   
+                $response_object = json_decode($response->getBody()->getContents());  
                 if(isset($response_object->post_id)) {
                     $update_data = array(
                         'wp_post_id' => $response_object->post_id
