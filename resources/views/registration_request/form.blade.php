@@ -71,6 +71,7 @@
                     </div>
                     @endif
                     @endforeach
+                    @if($row_event->registration_type=='P')
                     <div class="col-12" id="field_attendance_type">
                       <div class="form-group">
                         <label class="form-label" for="attendance_type">Attend on</label>
@@ -84,6 +85,7 @@
                         @error('attendance_type')<strong class="error text-red">Invalid Attendance Type</strong>@enderror
                       </div>
                     </div>
+                    @endif
                   </div>
                   <div class="row">
                     <div class="col-md-12">

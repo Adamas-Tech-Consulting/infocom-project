@@ -104,7 +104,9 @@ class FrontendController extends Controller
                     } 
                 }
             }
-            $validation['attendance_type'] = 'required';
+            if($row_event->registration_type=='P') {
+                $validation['attendance_type'] = 'required';
+            }
             $validation['captcha'] = 'required|captcha';
             $validator = Validator::make($request->all(), $validation);
             if($validator->fails()) {
@@ -140,8 +142,12 @@ class FrontendController extends Controller
                     $row_event->registration_type='F';
                 }
                 $order_id = 'INFOCOM'.rand(0,15).rand(6,45).$registration_request_id.rand(300,400).time();
-                $event_price = EventPricing::where('id', $request->attendance_type)->first();
-                $event_price_with_gst = ($event_price->amount + ($event_price->amount*$event_price->gst_percentage)/100);
+                $event_price_with_gst = '0.00';
+                if(!empty($request->attendance_type))
+                {
+                    $event_price = EventPricing::where('id', $request->attendance_type)->first();
+                    $event_price_with_gst = ($event_price->amount + ($event_price->amount*$event_price->gst_percentage)/100);
+                }
                 $rel_input_data = [
                     'event_id' => $row_event->id,
                     'registration_request_id' => $registration_request_id,
@@ -154,7 +160,7 @@ class FrontendController extends Controller
                     'pickup_address' => isset($request->pickup_address) ? $request->pickup_address : NULL,
                     'rt_request' => $rt_request,
                     'order_id' => $order_id,
-                    'attendance_type' => $request->attendance_type,
+                    'attendance_type' => !empty($request->attendance_type) ? $request->attendance_type : NULL,
                     'payable_amount' => ($row_event->registration_type=='P') ? $event_price_with_gst : '0.00'
                 ];
                 $rel_data = EventRegistrationRequest::where('event_id', $event_id)->where('registration_request_id', $registration_request_id);
