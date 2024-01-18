@@ -296,8 +296,8 @@ class FrontendController extends Controller
         $event_price = EventPricing::where('id', $rel_data->attendance_type)->first();
         $row_event = Event::where('id', $rel_data->event_id)->first(['id','title', 'event_venue', 'event_start_date', 'event_end_date', 'last_registration_date','registration_type','event_logo']);
         $mail_data = [
-            'first_name' => $reg_data->first_name,
-            'last_name' => $reg_data->last_name,
+            'first_name' => $rel_data->first_name,
+            'last_name' => $rel_data->last_name,
             'title' => $row_event->title,
             'event_venue' => $row_event->event_venue,
             'event_start_date' => $row_event->event_start_date,
