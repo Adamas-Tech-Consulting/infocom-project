@@ -25,7 +25,9 @@
                   <p>Conference Name :  {{$row_event->title}} </p>
                   <p>Conference Venue : {{$row_event->event_venue}} </p>
                   <p>Conference Date : {{date('F d, Y',strtotime($row_event->event_start_date))}} @if($row_event->event_end_date>$row_event->event_start_date) - {{date('F d, Y',strtotime($row_event->event_end_date))}} @endif</p>
+                  @if($row_event_registration->attendance_type)
                   <p>Attend On : {{ ($row_event->registration_type=='P' && !$row_event_registration->rt_request) ? $event_price->name_with_price : $event_price->name_without_price}}
+                  @endif
                   @if($row_event->registration_type=='P' && !$row_event_registration->rt_request)
                   <p>Order ID  : {{$row_event_registration->order_id}}
                   <p>Amount  : ₹ {{$row_event_registration->payable_amount}}</p>
