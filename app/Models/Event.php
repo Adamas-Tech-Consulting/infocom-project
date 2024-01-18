@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Support\Str;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,5 +17,30 @@ class Event extends Model
     public function getFullTitleAttribute() // notice that the attribute name is in CamelCase.
     {
         return $this->title . ' ' . $this->sub_title;
+    }
+
+    public function setSlugAttribute($value) {
+
+        if (static::whereSlug($slug = Str::slug($value))->exists()) {
+    
+            $slug = $this->incrementSlug($slug);
+        }
+    
+        $this->attributes['slug'] = $slug;
+    }
+
+    public function incrementSlug($slug) {
+
+        $original = $slug;
+    
+        $count = 2;
+    
+        while (static::whereSlug($slug)->exists()) {
+    
+            $slug = "{$original}-" . $count++;
+        }
+    
+        return $slug;
+    
     }
 }
