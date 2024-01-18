@@ -176,7 +176,6 @@ class EventController extends Controller
                     $update_data = [
                         'event_category_id' => $request->event_category_id,
                         'title' => $request->title,
-                        'slug' => Str::slug($request->title,'-'),
                         'sub_title' => $request->sub_title,
                         'event_method_id' => $request->event_method_id,
                         'registration_type' => $request->registration_type,
