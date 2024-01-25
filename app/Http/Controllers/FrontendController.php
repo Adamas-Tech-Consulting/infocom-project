@@ -107,7 +107,7 @@ class FrontendController extends Controller
             if($row_event->registration_type=='P') {
                 $validation['attendance_type'] = 'required';
             }
-            $validation['captcha'] = 'required|captcha';
+            //$validation['captcha'] = 'required|captcha';
             $validator = Validator::make($request->all(), $validation);
             if($validator->fails()) {
                 $request->session()->put('reg_mobile', $request->mobile);
