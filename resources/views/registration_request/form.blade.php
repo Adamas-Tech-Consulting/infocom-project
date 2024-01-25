@@ -6,7 +6,7 @@
 </style>
 <section>
   <div class="container p-1 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100 py-5">
       <div class="col col-xl-10">
         @if(Session::has('success'))
           <div class="alert alert-success alert-dismissible">
