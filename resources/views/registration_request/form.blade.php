@@ -88,7 +88,7 @@
                     @endif
                   </div>
                   <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-8">
                       <div class="form-group"> 
                         <div class="icheck-primary">
                           <input class="form-check-input" type="checkbox" name="agree" id="agree" required>
@@ -106,12 +106,12 @@
                         </div>
                       </div>
                     </div> -->
-                    <div class="col-md-8">
-                      <!-- <div class="form-group mb-4">
+                    <!-- <div class="col-md-8">
+                      <div class="form-group mb-4">
                           <input id="captcha" type="text" class="form-control @error('captcha') is-invalid @enderror" placeholder="Enter Captcha" name="captcha" required>
                           @error('captcha')<strong class="error invalid-feedback">Invalid Captcha</strong>@enderror
-                      </div> -->
-                    </div>
+                      </div>
+                    </div> -->
                     <div class="col-md-4">
                       <button type="submit" class="btn btn-primary btn-block btn-sm">@if($row_event->registration_type=='P' && $rt_request != $page_rt) PAY ₹ <span id="payable_amt"></span> @else SUBMIT @endif</button>
                     </div>
